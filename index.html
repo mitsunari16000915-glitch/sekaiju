@@ -312,7 +312,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.6</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1307,6 +1307,7 @@ function analyzeDomain(input){
 const cv=document.getElementById('cv'), bctx=cv.getContext('2d');
 let ctx=bctx;                      // 点描モード時のみオフスクリーンに切替わる
 let W=0,H=0,DPR=1,bgCanvas=null,CX=0.435;   // CX=投影中心（モバイルは0.5=中央、デスクトップは左寄せ）
+let SOX=0,SOY=0;   // ver.3.6: スクリーン座標の実測センタリング補正（モバイル・未操作時のみ変化）
 let sceneCv=null,sctx=null;        // 点描用オフスクリーン（等倍）
 let stippleCv=null,stCtx=null,stippleTick=0;   // 点描結果のキャッシュ（1フレームおきに再生成）
 function ensureScene(){
@@ -1333,6 +1334,21 @@ addEventListener('resize',resize);
 if(window.visualViewport) visualViewport.addEventListener('resize',()=>resize());
 setTimeout(()=>{ try{resize();}catch(e){} },900);
 setTimeout(()=>{ try{resize();}catch(e){} },2500);
+/* ver.3.6: iOSの「ページ自体のピンチ拡大」を抑止（拡大＋隅寄り表示の原因になり得る。
+   アプリ内のズームはPointer Events実装なので影響なし） */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('touchmove',e=>{ if(e.touches.length>1) e.preventDefault(); },{passive:false});
+/* ver.3.6: 実機診断用オーバーレイ（URLに ?debug を付けた時のみ表示） */
+if(location.search.indexOf('debug')>=0){
+  const dbg=document.createElement('div');
+  dbg.style.cssText='position:fixed;left:8px;bottom:8px;z-index:99;background:rgba(0,0,0,0.72);color:#8f8;font:10px/1.5 monospace;padding:6px 8px;border-radius:4px;pointer-events:none;white-space:pre';
+  document.body.appendChild(dbg);
+  setInterval(()=>{ const vv=window.visualViewport;
+    dbg.textContent='W×H '+W+'×'+H+'  inner '+innerWidth+'×'+innerHeight
+      +'\nvv '+(vv?(Math.round(vv.width)+'×'+Math.round(vv.height)+' scale '+vv.scale.toFixed(2)):'-')
+      +'\ncam d'+Math.round(cam.dist)+' ty'+Math.round(cam.ty)+'  SO '+Math.round(SOX)+','+Math.round(SOY)
+      +'\ntouched '+camTouched+'  ver.3.6'; },500);
+}
 
 /* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
 function buildBackground(){
@@ -1460,10 +1476,31 @@ function fitAllDist(){
 let camTouched=false;   // ドラッグ/ピンチ/ホイール/ズーム/パン/視点プリセットで true
 function camGlue(){
   if(camTouched||pres.on||camAnim) return;
-  if(W/H>=1.05) return;                       // デスクトップは従来どおり
+  if(W/H>=1.05){ SOX=0; SOY=0; return; }      // デスクトップは従来どおり
   const t=camTargets.all;
   cam.dist+=(t.dist-cam.dist)*0.18;
   cam.ty  +=(t.ty  -cam.ty  )*0.18;
+}
+/* ver.3.6〔鈴木様指示「根本的に解決したい」〕: 描画済みノードの実座標(_sx/_sy)から樹の画面上の
+   バウンディング中心を毎フレーム実測し、スクリーン座標オフセットで直接ど真ん中へ補正する。
+   カメラ推定を経由しないため、回転角・機種・ビューポートの癖に関係なく定義上センターに収束する */
+function screenCenterGlue(){
+  if(W/H>=1.05){ SOX=0; SOY=0; return; }
+  if(pres.on||camAnim){ SOX*=0.92; SOY*=0.92; return; }   // プレゼン・視点移動中は補正を自然に解除
+  if(camTouched) return;                                   // ユーザー操作後は凍結（視点の一部として維持）
+  let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9,n=0;
+  for(const nd of nodes){
+    if(nd.hid||nd._sx===undefined) continue;
+    const t=nd.t;
+    if(t!=='leaf'&&t!=='sroot'&&t!=='btip'&&t!=='dleaf'&&t!=='croot') continue;
+    if(nd._sx<minX)minX=nd._sx; if(nd._sx>maxX)maxX=nd._sx;
+    if(nd._sy<minY)minY=nd._sy; if(nd._sy>maxY)maxY=nd._sy;
+    n++;
+  }
+  if(n<20) return;
+  SOX+=(W/2-(minX+maxX)/2)*0.12;   // 目標: bbox中心 = 画面中心（現SOX込みの実測なので差分を加算）
+  SOY+=(H/2-(minY+maxY)/2)*0.12;
+  SOX=Math.max(-W,Math.min(W,SOX)); SOY=Math.max(-H,Math.min(H,SOY));
 }
 
 function project(p,sway){
@@ -1477,7 +1514,7 @@ function project(p,sway){
   const zc=z2+cam.dist;
   if(zc<40) return null;
   const f=760/zc;
-  return {sx:W*CX + x1*f, sy:H/2 - y1*f, d:zc, f};   // 樹をやや左寄せ（右の解決ログと均衡）。モバイルは中央
+  return {sx:W*CX + x1*f + SOX, sy:H/2 - y1*f + SOY, d:zc, f};   // 左寄せ（デスクトップ）／SOX,SOY=ver.3.6の実測センタリング補正
 }
 
 /* --- 状態 --- */
@@ -2090,6 +2127,7 @@ function frame(t){
     }
   }
 
+  screenCenterGlue();   // ver.3.6: 描画済み実座標で画面センターへ直接補正（モバイル・未操作時）
   rafId=requestAnimationFrame(frame);
 }
 /* ver.2.5→3.3: モバイル初期表示は全景フィット（思いっきり引き＋縦センター）〔鈴木様指示〕 */
