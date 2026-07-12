@@ -180,6 +180,15 @@
     opacity:0; transition:opacity .6s; pointer-events:none; }
   .toast.show { opacity:1; }
 
+  /* ver.3.7: 表示時の説明ガイド提案（はい／いいえ）〔鈴木様指示〕 */
+  .ask{ position:fixed; bottom:132px; left:50%; transform:translateX(-50%); z-index:31;
+    background:rgba(22,17,9,0.95); border:1px solid rgba(201,169,97,0.55); border-radius:10px;
+    padding:13px 18px 11px; text-align:center; display:none; box-shadow:0 6px 24px rgba(0,0,0,0.5);
+    max-width:min(92vw,420px); }
+  .ask.show{ display:block; }
+  .ask .q{ font-size:13px; color:var(--pearl); letter-spacing:0.06em; margin-bottom:10px; }
+  .ask .vbtn{ display:inline-block; flex:none; padding:7px 26px; margin:0 7px; font-size:12.5px; }
+
   @media (max-width:760px){
     /* パネルは折りたたみ既定（☰で開閉）。開いた時は細スクロールバーを見せる */
     .panel-toggle{ display:block; }
@@ -312,7 +321,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.6</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.7</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -382,6 +391,12 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ver.3.7: 表示時の説明ガイド -->
+<div class="ask" id="askGuide">
+  <div class="q">簡単に説明を聞きますか？</div>
+  <div><div class="vbtn" id="askYes">はい</div><div class="vbtn" id="askNo">いいえ</div></div>
+</div>
 
 <!-- 全画面ヒートマップ -->
 <div class="hmview" id="hmView">
@@ -2377,7 +2392,7 @@ function gotoStep(id){
   introEl.style.display='flex';
 }
 $('pathDomain').onclick=()=>gotoStep('step1');
-$('pathPlain').onclick=()=>{ introEl.style.display='none'; };
+$('pathPlain').onclick=()=>{ introEl.style.display='none'; showAskGuide(); };
 $('whatLink').onclick=()=>gotoStep('stepHelp');
 $('helpBtn').onclick=()=>gotoStep('stepHelp');
 document.querySelectorAll('[data-to]').forEach(el=>el.onclick=()=>gotoStep(el.dataset.to));
@@ -2406,6 +2421,7 @@ function enterTree(){
   domain.show=true; $('domPanel').classList.add('on'); updateDomLightBtn();
   const n=problems.filter(p=>p._dom5>0).length;
   setTimeout(()=>toast('◈ あなたの領域に連なる '+n+' の課題が黄金に灯りました'),700);
+  showAskGuide();   // ver.3.7
 }
 function showHeatmap(){
   introEl.style.display='none'; $('hmView').classList.add('show');
@@ -2689,7 +2705,26 @@ function spawnPresText(p){
     t:0,dur:5600+Math.random()*3000,s:fs});
 }
 
-setTimeout(()=>toast('▶ を押すと、2026年から2080年へ ── 葉が色づいていきます'),2500);
+/* ver.3.7: 表示時の説明ガイド〔鈴木様指示〕──旧「▶を押すと…」自動トーストはガイドに置換 */
+const GUIDE=[
+  '世界樹（世界の構造樹）へようこそ',
+  '構造の先にある社会課題が、葉として生い茂っています',
+  '時代が進むにつれ、“解決された課題の葉”に色がつきます',
+  '文字表示を増やすと課題名が現れ、クリックで概要を見られます',
+  '迷ったら「🎬 自動プレゼン」── 2080年までのシミュレーションを実行します',
+  '美しい音楽と共にお楽しみください'
+];
+let askShown=false, guideTimers=[];
+function showAskGuide(){
+  if(askShown) return; askShown=true;
+  setTimeout(()=>$('askGuide').classList.add('show'),1400);
+}
+function playGuide(list){
+  guideTimers.forEach(clearTimeout); guideTimers=[];
+  list.forEach((m,i)=>guideTimers.push(setTimeout(()=>toast(m), i*3900)));
+}
+$('askYes').onclick=()=>{ $('askGuide').classList.remove('show'); playGuide(GUIDE); };
+$('askNo').onclick =()=>{ $('askGuide').classList.remove('show'); toast(GUIDE[5]); };
 </script>
 </body>
 </html>
