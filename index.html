@@ -57,6 +57,9 @@
     background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:5px;
     color:var(--gold-soft); font-size:12px; letter-spacing:0.1em; cursor:pointer; user-select:none; }
   body.pres-hide .panel-toggle{ opacity:0; pointer-events:none; }
+  /* ver.3.0: 自動プレゼン中は西暦バーを半透明に（触れると戻る） */
+  body.pres-on .timeline{ opacity:0.28; transition:opacity .8s; }
+  body.pres-on .timeline:hover, body.pres-on .timeline:active{ opacity:1; }
   .panel h3 { font-size:9.5px; letter-spacing:0.3em; color:var(--gold); margin:5px 0 3px;
     font-family:'Cormorant Garamond',serif; font-weight:600; }
   #clusterChips,#elemChips,#tierChips{ display:grid; grid-template-columns:1fr 1fr; }
@@ -300,7 +303,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.2.9</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.0</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -344,6 +347,12 @@
   <h3>MOVE · 画面移動</h3>
   <div class="dpad">
     <div class="vbtn dp" data-dp="left">←</div><div class="vbtn dp" data-dp="up">↑</div><div class="vbtn dp" data-dp="home">⌂</div><div class="vbtn dp" data-dp="down">↓</div><div class="vbtn dp" data-dp="right">→</div>
+  </div>
+  <h3>ZOOM · 拡大縮小</h3>
+  <div class="btnrow">
+    <div class="vbtn zm" data-zm="in" style="flex:1 1 30%">＋ 拡大</div>
+    <div class="vbtn zm" data-zm="out" style="flex:1 1 30%">－ 縮小</div>
+    <div class="vbtn zm" data-zm="fit" style="flex:1 1 30%">⊙ 全景</div>
   </div>
   <div class="dom-panel" id="domPanel">
     <h3>YOUR DOMAIN · 事業領域</h3>
@@ -1302,7 +1311,11 @@ function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; bctx.setTransform(DPR,0,0,DPR,0,0);
   CX = W<=900 ? 0.5 : 0.435;   // 解決ログ非表示のモバイルでは樹を中央に
   buildBackground();
-  try{ if(nodes.length){ camTargets.all.dist=fitAllDist(); } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
+  try{ if(nodes.length){
+    const prev=camTargets.all.dist;
+    camTargets.all.dist=fitAllDist();
+    if(Math.abs(cam.dist-prev)<2) cam.dist=camTargets.all.dist;   // ver.3.0: 既定のままなら回転・URLバー変化にも追従
+  } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
 }
 addEventListener('resize',resize);
 
@@ -1407,7 +1420,7 @@ function fitAllDist(){
     d=Math.max(1220,Math.min(4200,d*r*1.03));
   }
   cam.dist=save;
-  return Math.round(d);
+  return Math.round(Math.min(4600,d*1.30));   // ver.3.0: さらに3割引いた「かなり引きの全景」に〔鈴木様指示〕
 }
 
 function project(p,sway){
@@ -2077,7 +2090,7 @@ cv.addEventListener('pointermove',e=>{
 function doPinch(){ if(!drag||!pinch||pinch.x2===undefined)return;
   const d=Math.hypot((pinch.x2-(drag.lx||drag.x)),(pinch.y2-(drag.ly||drag.y)));
   if(pinch.d0===0){pinch.d0=d;return;}
-  cam.dist=Math.max(180,Math.min(1900,cam.dist*(pinch.d0/d)));
+  cam.dist=Math.max(180,Math.min(4800,cam.dist*(pinch.d0/d)));   // ver.3.0: 上限を全景距離より奥へ（スマホで全景が壊れないように）
   pinch.d0=d;
 }
 cv.addEventListener('pointercancel',()=>{drag=null;pinch=null;cv.classList.remove('drag');});
@@ -2092,7 +2105,7 @@ cv.addEventListener('pointerup',e=>{
   }
 });
 cv.addEventListener('wheel',e=>{e.preventDefault();
-  cam.dist=Math.max(180,Math.min(1900,cam.dist*(1+Math.sign(e.deltaY)*0.09))); autoRot=false;updateRotBtn();},{passive:false});
+  cam.dist=Math.max(180,Math.min(4800,cam.dist*(1+Math.sign(e.deltaY)*0.09))); autoRot=false;updateRotBtn();},{passive:false});
 function pickAt(mx,my){
   let best=null,bd=18;
   nodes.forEach(n=>{ if(n.hid||!n.pick||n._sx===undefined)return;
@@ -2496,6 +2509,20 @@ document.querySelectorAll('.dp').forEach(b=>{
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{ if(rep){clearInterval(rep);rep=null;} }));
 });
 
+/* ver.3.0: 拡大縮小コントローラー（押し続けで連続。スマホのピンチ代替）〔鈴木様指示〕 */
+function zoomView(k){
+  if(k==='fit'){ flyTo('all'); return; }
+  const f=(k==='in')?1/1.055:1.055;
+  cam.dist=Math.max(180,Math.min(4800,cam.dist*f));
+  autoRot=false; updateRotBtn();
+}
+document.querySelectorAll('.zm').forEach(b=>{
+  let rep=null;
+  const fire=()=>zoomView(b.dataset.zm);
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); fire(); if(b.dataset.zm!=='fit')rep=setInterval(fire,60); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{ if(rep){clearInterval(rep);rep=null;} }));
+});
+
 /* ================================================================
    BGM（sekai_bgm/ からランダム連続再生・既定ON）
 ================================================================ */
@@ -2524,6 +2551,7 @@ addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });
 const pres={on:false,yearMs:0,camT:0,target:null,texts:[],hideAt:0};
 function presStart(){
   pres.on=true; pres.yearMs=0; pres.target=null; pres.texts.length=0;
+  document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
   if(playing){ clearInterval(playTimer); playing=false; $('tlPlay').textContent='▶'; }
   autoRot=false; updateRotBtn();
   setYear(2026);
@@ -2532,7 +2560,7 @@ function presStart(){
   toast('🎬 自動プレゼン ── マウスやキーで操作パネルが戻ります（Escで終了）');
 }
 function presStop(){
-  pres.on=false; document.body.classList.remove('pres-hide');
+  pres.on=false; document.body.classList.remove('pres-hide'); document.body.classList.remove('pres-on');
   $('presBtn').textContent='🎬 自動プレゼン';
   autoRot=true; updateRotBtn();
 }
