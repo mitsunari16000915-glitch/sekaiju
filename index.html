@@ -24,9 +24,9 @@
     --pearl-mid:#c8c0b0; --muted:#8a7f66; --bg:#151007;
     --c1:#c5292a; --c2:#c9974a; --c3:#2c5f7a; --c4:#b8923f; --c5:#6b4878; --c6:#5a7048; --c7:#3a7570;
   }
-  html,body { height:100%; overflow:hidden; background:#070911; }
+  html,body { height:100%; overflow:hidden; background:#0a0e20; }
   body { font-family:'Noto Serif JP','Yu Mincho',serif; color:var(--pearl); font-feature-settings:"palt"; }
-  #cv { position:fixed; inset:0; display:block; touch-action:none; cursor:grab; background:#070911; }
+  #cv { position:fixed; inset:0; display:block; touch-action:none; cursor:grab; background:#0a0e20; }
   #cv.drag { cursor:grabbing; }
 
   .topbar { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center;
@@ -36,7 +36,14 @@
   .topbar .ttl span { color:var(--pearl); font-weight:400; }
   .topbar .sub { font-size:10px; letter-spacing:0.3em; color:var(--gold);
     font-family:'Cormorant Garamond',serif; }
-  .topbar .stats { margin-left:auto; font-size:10.5px; color:var(--pearl-mid); letter-spacing:0.08em; text-align:right; line-height:1.5; }
+  .topbar .stats { margin-left:auto; margin-right:86px; font-size:10.5px; color:var(--pearl-mid); letter-spacing:0.08em; text-align:right; line-height:1.5; }
+
+  /* ver.2.8: キャッシュ回避リロード（F5が使えない環境向け）。introの上にも出るよう z-index:52 */
+  .reload-btn{ position:fixed; top:11px; right:14px; z-index:52; padding:6px 12px;
+    background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:16px;
+    color:var(--gold-soft); font-size:11px; letter-spacing:0.08em; cursor:pointer; user-select:none; }
+  .reload-btn:hover{ border-color:var(--gold); color:#fff; }
+  body.pres-hide .reload-btn{ opacity:0; pointer-events:none; }
 
   .panel { position:fixed; left:12px; top:64px; z-index:20; width:212px;
     background:rgba(22,17,9,0.9); border:1px solid rgba(201,169,97,0.35); border-radius:6px;
@@ -44,6 +51,12 @@
     scrollbar-width:none; transition:opacity .8s; }
   .panel::-webkit-scrollbar { display:none; }
   body.pres-hide .panel{ opacity:0; pointer-events:none; }
+
+  /* モバイル用メニュートグル（760px以下でのみ表示） */
+  .panel-toggle{ display:none; position:fixed; left:12px; top:64px; z-index:21; padding:8px 14px;
+    background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:5px;
+    color:var(--gold-soft); font-size:12px; letter-spacing:0.1em; cursor:pointer; user-select:none; }
+  body.pres-hide .panel-toggle{ opacity:0; pointer-events:none; }
   .panel h3 { font-size:9.5px; letter-spacing:0.3em; color:var(--gold); margin:5px 0 3px;
     font-family:'Cormorant Garamond',serif; font-weight:600; }
   #clusterChips,#elemChips,#tierChips{ display:grid; grid-template-columns:1fr 1fr; }
@@ -157,11 +170,23 @@
   .toast.show { opacity:1; }
 
   @media (max-width:760px){
-    .panel { width:172px; top:58px; padding:10px; max-height:calc(100% - 240px); }
+    /* パネルは折りたたみ既定（☰で開閉）。開いた時は細スクロールバーを見せる */
+    .panel-toggle{ display:block; }
+    .panel { display:none; width:186px; top:104px; padding:10px; max-height:calc(100% - 220px);
+      scrollbar-width:thin; }
+    .panel.mob-open{ display:block; }
+    .panel::-webkit-scrollbar{ display:block; width:4px; }
+    .panel::-webkit-scrollbar-thumb{ background:rgba(201,169,97,0.4); border-radius:2px; }
+    .vbtn{ padding:8px 4px; font-size:11.5px; }
+    #clusterChips .chip,#elemChips .chip,#tierChips .chip{ padding:6px 4px; font-size:11px; }
     .detail { width:min(320px, calc(100vw - 24px)); }
     .topbar .ttl{ font-size:15px; } .topbar .stats{ display:none; }
     .timeline { gap:10px; padding:8px 14px; bottom:10px; }
-    #tlRange { width:38vw; } #tlYear{ font-size:22px; } .tl-year{ min-width:80px; }
+    #tlRange { width:38vw; height:28px; } #tlYear{ font-size:22px; } .tl-year{ min-width:80px; }
+    .hm-btn{ padding:8px 13px; font-size:12px; }
+    .intro{ padding:12px; }
+    .intro-card{ padding:20px 18px; }
+    .path-btn{ padding:14px 12px; }
   }
 
   /* ===== 事業領域フロー ===== */
@@ -215,8 +240,10 @@
   .clbar{ display:flex; align-items:center; gap:9px; }
   .clbar .cb-name{ font-size:11px; width:120px; flex:none; color:var(--pearl);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .clbar .cb-track{ flex:1; height:9px; background:rgba(255,255,255,0.05); border-radius:5px; overflow:hidden; }
-  .clbar .cb-fill{ height:100%; border-radius:5px; transition:width .8s cubic-bezier(.2,.8,.2,1); }
+  .clbar .cb-track{ flex:1; height:9px; background:rgba(255,255,255,0.05); border-radius:5px; overflow:hidden; position:relative; }
+  .clbar .cb-eff{ position:absolute; left:0; top:0; height:100%; border-radius:5px; opacity:0.30;
+    transition:width .8s cubic-bezier(.2,.8,.2,1); }   /* 淡＝解決シナジーの波及込み */
+  .clbar .cb-fill{ position:relative; height:100%; border-radius:5px; transition:width .8s cubic-bezier(.2,.8,.2,1); }
   .clbar .cb-val{ font-size:10px; color:var(--gold-soft); width:30px; text-align:right;
     font-family:'Cormorant Garamond',serif; }
   .elbars{ display:flex; flex-direction:column; gap:5px; }
@@ -273,11 +300,13 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.2.4</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.2.9</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
+<div class="reload-btn" id="reloadBtn" title="キャッシュを飛ばして最新版を読み込みます">⟳ 更新</div>
 
+<div class="panel-toggle" id="panelToggle">☰ メニュー</div>
 <div class="panel" id="panel">
   <h3>ROOTS · 7クラスター</h3>
   <div class="chiprow" id="clusterChips"></div>
@@ -410,7 +439,7 @@
       <h2 class="istep-h">あなたの事業領域の解析結果</h2>
       <div class="res-kw" id="resKw"></div>
 
-      <div class="res-sec-lbl">◈ 7クラスターとの関係度</div>
+      <div class="res-sec-lbl">◈ 7クラスターとの関係度 <span class="lbl-note">濃＝直接の関係／淡＝解決シナジーの波及込み（数値は波及込み）</span></div>
       <div class="clbars" id="clBars"></div>
 
       <div class="res-sec-lbl">◈ 関係の深いエレメント（TOP）</div>
@@ -443,8 +472,9 @@
         <span class="num">実</span><span><b>規範が加わった枝には果実が実る（2056年〜）。</b>成果＝金の果実、新たな課題＝腐った果実。腐果は地に落ち、土に還り、<b>次の世界樹を育てる養分</b>になる。</span>
       </div>
       <div class="intro-ops">
-        例：核家族問題──産業革命が父を工場へ連れ出し、百年かけて核家族が規範になった（根）。<br>
-        AI・ロボットの在宅生産体制が職住を再融合させ、<b>2042年頃</b>、この課題の葉が色づく。
+        世界は構造でできている。構造を紐解いた者、あるいは自然とその構造のお眼鏡に叶った者が変革者の如く行動と結果を残し、世界は彼らを英雄という。<br>
+        しかし彼らはその時代の英雄であって同時に次の世代の敵でもある。世界樹が育ててきた実がどんな色でどんな味か・・・それは後世、食す人類からの評価を待つしかない。<br>
+        <b>すべての構造は常に変化と揺らぎをもって世界を成しているのだ。</b>
       </div>
       <button class="intro-btn" data-to="step0" style="margin-top:16px">戻 る</button>
     </div>
@@ -494,7 +524,7 @@ const DATA = [
   ['ロードサイドの均質化','チェーン店で全国の郊外風景が同一化。地域性消失。'],
   ['空き家の景観破壊','全国空き家900万戸。地方都市の歯抜け化。'],
   ['京都の景観論争','伝統と開発の永続的対立。規制が後追い。'],
-  ['伝統的街並みの消失','町家・古民家の取り壊し。戦後で7割以上の歴史的建造物が失われた。'],
+  ['伝統的街並みの消失','町家・古民家の取り壊し。京町家は直近8年で5,566軒滅失（年約700軒）。'],
   ['公共マナーの劣化','「公共」概念の希薄化。'],
   ['美術・芸術教育の衰退','美意識を育てる場の縮小。']]},
  {id:'1-3',n:'倫理規範の継承',h:'far',e:['norm','mind'],hy:'倫理は一世代の教育と実例の蓄積でしか再形成されない。透明化技術と開示制度が先行し、規範の定着は30年超。',is:[
@@ -512,10 +542,10 @@ const DATA = [
   ['年中行事の家庭からの消失','節分・七夕・お盆が商業イベント化。'],
   ['氏神・檀那寺との切断','都市への移住で先祖代々の関係が物理的に切断。'],
   ['神道・仏教離れ','「無宗教」と答える日本人の増加。'],
-  ['民俗芸能の継承不能','獅子舞・神楽・盆踊り。5年で消滅する地域伝統が多数。']]},
+  ['民俗芸能の継承不能','獅子舞・神楽・盆踊り。花祭・霜月神楽など休止事例が相次ぐ。']]},
  {id:'1-5',n:'シンボル・象徴の創出',h:'late',e:['mind','tech'],hy:'生成AIが偽物を無限に作る時代の逆張りとして、「本物の象徴」への需要が高まる。国家級シンボルの形成は30年級の事業。',is:[
   ['国旗国歌への複雑感情','象徴を巡る世代対立が継続。'],
-  ['「日本」ブランドの弱体化','ソフトパワー指数で韓国に逆転。'],
+  ['「日本」ブランドの弱体化','主要指数は上位（2026年3位）だが、伝統文化の発信の中身が薄い。'],
   ['クールジャパンの内容希薄化','アニメ・ゲーム以外の伝統文化発信が不足。'],
   ['公共建築の象徴性欠如','新しい国家象徴建築の不在。'],
   ['国家的コモン・グラウンドの不在','国民が共有する象徴的な場・行事が希薄化。'],
@@ -526,9 +556,9 @@ const DATA = [
  cause:'産業革命以来の職住分離が核家族を生み、百年で規範化した。医療の進歩による人口転換と都市化が家・地域の紐帯を解体した。',
  subs:[
  {id:'2-1',n:'結婚・出産動機の回復',h:'far',e:['norm','prod'],hy:'出生は規範の問題。在宅生産体制・養育の社会化・住宅コスト低下（人口減の逆説的恩恵）が前提条件を整え、規範の転換は一世代後に現れる。',is:[
-  ['30代未婚率の高さ','男性47.4%、女性35.2%。30代の半数が独身。'],
+  ['30代未婚率の高さ','30代前半で男47.4%・女35.2%が未婚。'],
   ['生涯未婚率の上昇','50歳時未婚率：男28.3%、女17.8%。'],
-  ['合計特殊出生率1.20','過去最低更新。出生数72.7万人。'],
+  ['合計特殊出生率1.15','過去最低更新。出生数68.6万人と初の70万人割れ（2024年）。'],
   ['晩産化の固定','第一子出産年齢平均30.9歳。'],
   ['パラサイト・シングル','親同居30代以上の独身が300万人超。'],
   ['婚活疲れ','アプリ婚3割超の一方、婚活市場での疲弊。'],
@@ -539,21 +569,21 @@ const DATA = [
   ['単身世帯38.0%','全世帯の4割が単身。「一人暮らし」が標準化。'],
   ['親戚関係の希薄化','「血縁」の心理的距離が拡大。'],
   ['盆暮の帰省離れ','家族行事の消失。'],
-  ['祖父母世代の孤立','独居高齢者の急増。孤独死が年3万人超と推計。'],
-  ['家業継承の困難','後継者不在で休廃業・解散が年4万件超。'],
+  ['祖父母世代の孤立','独居高齢者の急増。独居自宅死亡は年7.6万人（警察庁2024年初集計）。'],
+  ['家業継承の困難','後継者不在で休廃業・解散が年6.3万件（2024年・過去最多）。'],
   ['「家」概念の消失','先祖・家督・暖簾の意識が継承されない構造。']]},
  {id:'2-3',n:'育児・ケアの社会化',h:'near',e:['tech','prod'],hy:'ケアテック・保育マッチング・リモート勤務の標準化が5〜10年で孤立育児を緩和する。ケアの担い手不足は自動化が最も早く効く領域。',is:[
-  ['保育所不足','首都圏で待機児童問題が継続。'],
+  ['保育所不足','待機児童は過去最少も都市部に残存。地方は定員割れへ転換。'],
   ['育児ノイローゼ','核家族での孤立育児が背景。'],
   ['ヤングケアラー','中学2年生の17人に1人が家族のケアを担う。'],
   ['介護離職','年間約10万人。働き盛りのキャリア中断。'],
-  ['老老介護','65歳以上の介護者比率59.7%。'],
+  ['老老介護','65歳以上同士の介護が63.5%（2022年・過去最高）。'],
   ['ダブルケア','育児と介護の同時担当者が25万人超。'],
   ['産後うつ','発症率10-15%。母親の自殺が産後死因の上位。'],
   ['育休取得率の男女差','制度はあるが実態と乖離。']]},
  {id:'2-4',n:'縮小社会の質的設計',h:'late',e:['prod','tech'],hy:'自動運転物流・遠隔医療・分散電源が「小さくても質の高い集落」を技術的に可能にする。全部は残せない——撤退は儀礼（家じまい）として設計される。',is:[
-  ['限界集落20%超','65歳以上が過半の集落が全体の2割超。'],
-  ['消滅可能性都市896','2040年までに896自治体消滅可能性。'],
+  ['限界集落40%','65歳以上が過半の集落が全体の40.2%（2024年）。'],
+  ['消滅可能性都市896','2014年増田レポート。2024年再推計では744自治体。'],
   ['小学校統廃合','年約400校ペース。地域コミュニティ核の消失。'],
   ['商店街シャッター化','地方の中心市街地空洞化。'],
   ['公共サービス維持困難','バス路線廃止・生活インフラの劣化。'],
@@ -561,10 +591,10 @@ const DATA = [
   ['道路・橋・上下水道の老朽化','高度成長期建設の更新投資不足。'],
   ['人口減少の心理的影響','「先細り」感覚が地域の活力を奪う。']]},
  {id:'2-5',n:'多様性との共生',h:'far',e:['norm','mind'],hy:'AI翻訳が言語の壁を5年で消すが、共生は規範問題であり社会的統合の作法は一世代かけて形成される。',is:[
-  ['外国人労働者の増加と摩擦','在留外国人340万人超。処遇問題。'],
+  ['外国人労働者の増加と摩擦','在留外国人396万人（2025年・過去最多）。処遇問題。'],
   ['婚外子の社会的排除','婚外子率2.4%という極端な低さ。'],
-  ['LGBTQ+の社会的位置づけ','G7で唯一同性婚を認めない国。'],
-  ['移民政策の不在','人口減少なのに受け入れない選択を継続。'],
+  ['LGBTQ+の社会的位置づけ','同性カップルへの国レベルの法的保障がないのはG7で日本のみ。'],
+  ['移民政策の不在','体系的政策の不在のまま、在留396万人へ事実上の拡大が先行。'],
   ['多文化共生の表層化','言葉先行で実質的な統合不足。'],
   ['「日本人」の定義の揺らぎ','外国ルーツの日本人増加で再考迫られる。'],
   ['観光客との文化摩擦','共生のルール未整備。']]}
@@ -575,13 +605,13 @@ const DATA = [
  {id:'3-1',n:'メディアリテラシー育成',h:'late',e:['mind','tech'],hy:'学校教育の改訂サイクルと一世代の入れ替わりで定着する。検証AIが鉛筆並みの日常道具になることが前提条件。',is:[
   ['フェイクニュース拡散','真偽不明情報が事実より速く拡散。'],
   ['陰謀論の浸透','高学歴層も含む広がり。'],
-  ['高齢者のSNS被害','投資詐欺等で年200億円超の被害。'],
+  ['高齢者のSNS被害','SNS型投資詐欺1,275億円＋ロマンス詐欺552億円（2025年）。'],
   ['子供のスマホ依存','学業・心身への影響。'],
-  ['真偽判定能力の欠如','批判的思考スコアの低下。'],
+  ['真偽判定能力の欠如','情報の真偽を検証する習慣・教育の未定着。'],
   ['リテラシー教育の遅れ','義務教育での必修化未実施。'],
   ['専門家への不信','「自分で調べる」が陰謀論への入り口に。']]},
  {id:'3-2',n:'プラットフォーム対抗',h:'near',e:['tech','prod'],hy:'分散型プロトコル・国産AI基盤・欧州型規制の三点セットで、5〜10年で「依存の分散」が始まる。完全解消ではなく選択肢の確保が解。',is:[
-  ['GAFAMへの完全依存','日本のデジタル消費の8割超。'],
+  ['GAFAMへの完全依存','ネット広告の7割がGAFA+・政府クラウドの85%がAWS。'],
   ['広告料の海外流出','ネット広告費5割超が海外へ。'],
   ['日本独自プラットフォーム不在','世界クラスの日本発SaaSがほぼ皆無。'],
   ['データ主権の喪失','個人データの大半が海外サーバーに集約。'],
@@ -605,7 +635,7 @@ const DATA = [
   ['市民広場の不在','公共議論の場が物理的・制度的に不在。'],
   ['記者クラブ制度の硬直','多様な声を排除する構造。']]},
  {id:'3-5',n:'深い思考の習慣化',h:'far',e:['mind','norm'],hy:'注意経済への対抗は教養規範の再建という一世代仕事。AIが要約を無料にするほど「要約が失うもの」の価値が逆照射される。',is:[
-  ['月1冊も本を読まない47.3%','過半数が読書ゼロ。年々悪化。'],
+  ['月1冊も本を読まない62.6%','6割超が読書ゼロ（令和5年度）。5年で15pt悪化。'],
   ['大学生の学習時間','1日平均48分。'],
   ['タイパ志向の蔓延','深い思考の機会を自ら捨てる。'],
   ['2倍速視聴・要約文化','本要約サービスの常用化。'],
@@ -619,7 +649,7 @@ const DATA = [
  {id:'4-1',n:'金融化からの脱却',h:'late',e:['prod','norm'],hy:'財団所有・従業員承継・事業転換積立など「売れない構造」の制度メニューが10〜30年で普及する。人手不足と大承継時代が資本を強制的に動かす。',is:[
   ['四半期決算プレッシャー','長期投資が困難に。'],
   ['自社株買いの常態化','設備・人材投資が圧迫される。'],
-  ['内部留保600兆円超の塩漬け','投資・賃上げに回らない。'],
+  ['内部留保600兆円超の塩漬け','637兆円（2024年度末・13年連続最高）が投資・賃上げに回らない。'],
   ['株主還元優先で投資不足','配当がR&D投資を上回る大企業多数。'],
   ['HFT・超高速取引','実体経済との乖離。'],
   ['金融資産と実体経済の乖離','世界の金融資産はGDPの約4倍。'],
@@ -642,7 +672,7 @@ const DATA = [
   ['老後2000万円問題','自助努力前提に国民困惑。'],
   ['貯蓄ゼロ世帯','30代で約3割。世代間格差の拡大。']]},
  {id:'4-4',n:'長期投資・忍耐',h:'late',e:['prod','norm'],hy:'事業転換積立金・長期基金・財団の器が10〜30年で制度化される。「複利より継承」という金融文化の定着は30年級。',is:[
-  ['R&D投資の伸び悩み','対GDP比は中国・韓国に逆転。'],
+  ['R&D投資の伸び悩み','対GDP比で韓国に逆転、総額では中国にも抜かれた。'],
   ['設備投資の不足','老朽設備の更新が追いつかない。'],
   ['人材投資の停滞','研修費が米欧の数分の1。'],
   ['教育投資の削減','公的教育支出はOECD最下位級。'],
@@ -654,8 +684,8 @@ const DATA = [
   ['バイオ産業の遅れ','創薬で欧米中に後れ。'],
   ['AI開発での遅れ','基盤AI開発で米中に劣勢。'],
   ['脱炭素技術の遅れ','水素・蓄電池で追われる立場に。'],
-  ['DX対応の遅れ','企業のDX進展度が世界27位。'],
-  ['既存産業の延命','ゾンビ企業の増加。'],
+  ['DX対応の遅れ','IMDデジタル競争力31位（2024年）。'],
+  ['既存産業の延命','ゾンビ企業はコロナ期に急増（26.6万社）、足元は淘汰局面。'],
   ['時価総額ランキング後退','世界トップ50中32社→1社。']]}
 ]},
 {r:'Ⅴ',c:'#6b4878',name:'政治・統治の機能不全',
@@ -665,9 +695,9 @@ const DATA = [
   ['東京一極集中','人口・経済・文化・情報が過度集中。'],
   ['地方交付税依存','財政自立度が極端に低い。'],
   ['地方議員のなり手不足','無投票当選が常態化。'],
-  ['無投票当選の常態化','統一選で過去最高を更新。'],
+  ['無投票当選の常態化','2023年統一選で道府県議の4人に1人が無投票（高止まり）。'],
   ['道州制議論の停滞','政治的合意なく停滞。'],
-  ['地方財政の硬直','義務的経費が歳出の8割超。'],
+  ['地方財政の硬直','義務的経費が歳出の約5割・経常収支比率は9割超。'],
   ['平成の大合併の限界','統治能力は強化されず。']]},
  {id:'5-2',n:'100年戦略立案',h:'near',e:['mind','tech'],hy:'フューチャー・デザイン（仮想将来世代）とシナリオ手法は既に実装可能。5〜10年で常設機構化できるかが勝負。未生者を当事者席に着かせる技術は存在する。',is:[
   ['国家ビジョンの不在','50-100年戦略が不在。'],
@@ -692,7 +722,7 @@ const DATA = [
   ['国連での発言力','常任理事国入りは遠のく。'],
   ['経済安保の遅れ','独自戦略の構築遅れ。'],
   ['国際貢献の縮小','影響力の物理的後退。'],
-  ['ソフトパワー指数低下','文化発信力の弱体化。']]},
+  ['ソフトパワーの内実不足','指数は上位（2026年3位）だが発信の中身と持続力に課題。']]},
  {id:'5-5',n:'シンクタンク・知的基盤',h:'now',e:['prod','tech'],hy:'AIリサーチにより小規模独立シンクタンクの成立コストが激減した。「今すぐ」始められる数少ない構造課題。',is:[
   ['政策立案能力の脆弱化','外部知の取り込み不足。'],
   ['独立シンクタンクの不在','米国級の独立機関がほぼ皆無。'],
@@ -706,7 +736,7 @@ const DATA = [
  cause:'化石燃料文明への全面依存と、地震列島という変えられない地質。成長期に築いたインフラの一斉老朽化。',
  subs:[
  {id:'6-1',n:'エネルギー自給',h:'late',e:['tech','prod'],hy:'ペロブスカイト太陽電池・洋上風力・蓄電・次世代炉の実装で、2040年代に自給5割が射程に入る。分散型への制度転換が並走条件。',is:[
-  ['化石燃料93%輸入依存','OECD最高水準の依存度。'],
+  ['化石燃料約8割依存','一次エネルギーの約8割が化石燃料・自給率16%。'],
   ['原発再稼働の停滞','再稼働は一部にとどまる。'],
   ['再エネのコスト高','家庭・企業の負担増。'],
   ['電気代上昇','2-3割の上昇が家計を直撃。'],
@@ -723,14 +753,14 @@ const DATA = [
   ['フードマイレージの長距離化','地産地消比率の低下。']]},
  {id:'6-3',n:'生態系の再構築',h:'far',e:['norm','tech'],hy:'生態系の回復は自然の時間で動く。自然資本会計・生物多様性クレジットが先行し、回復の実感は30年超の後にくる。',is:[
   ['生物多様性の喪失','絶滅速度が自然の100-1000倍。'],
-  ['絶滅危惧種3,772種','10年で1.5倍に増加。'],
+  ['絶滅危惧種3,772種','13年で約1.2倍に増加。'],
   ['里山・里海の荒廃','放置人工林が災害発生源化。'],
   ['海洋プラスチック汚染','日本沿岸の濃度は世界平均の27倍。'],
   ['鹿・猪の獣害','農作物被害年164億円。'],
   ['森林の管理放棄','花粉症・土砂災害源に。'],
   ['サンゴ礁・藻場の消失','海水温上昇で白化。']]},
  {id:'6-4',n:'災害対応・防災',h:'near',e:['tech','prod'],hy:'発生そのものは消せない。予測AI・点検ロボ・事前復興計画で「被害の構造」を5〜10年で変えることが解。制御不能を前提とした備えの文明知が活きる。',is:[
-  ['南海トラフ地震','30年内発生確率70-80%、想定死者32万人。'],
+  ['南海トラフ地震','30年内60〜90%程度以上（2025年改訂）、想定死者29.8万人。'],
   ['首都直下地震','30年内確率70%、被害95兆円。'],
   ['気候災害の頻発','線状降水帯・大型台風の常態化。'],
   ['インフラ老朽化','道路橋の40%が建設後50年超。'],
@@ -751,9 +781,9 @@ const DATA = [
  subs:[
  {id:'7-1',n:'職人技能の継承',h:'now',e:['tech','prod'],hy:'モーションキャプチャとAI記録の技術は揃った。だが保持者はあと5〜10年で引退する。「今」始めなければ物理的に消える締切型課題。記録と並行して、職人が食える経済の再設計が必須。',is:[
   ['伝統工芸の事業所4分の1','40年で3.5万→0.8万事業所。'],
-  ['無形文化財保持者の高齢化','人間国宝の多くが80代。'],
+  ['無形文化財保持者の高齢化','保持者の高齢化・逝去が相次ぎ、認定定員を126名へ拡大（2026年度）。'],
   ['宮大工の不足','国内に100名程度。大規模伝統建築に対応困難。'],
-  ['後継者不在','伝統工芸の7割で後継者未定。'],
+  ['後継者不在','産地調査で過半の事業者が後継者なし。'],
   ['修行の経済的不可能化','修行期間の収入が生活水準を下回る。'],
   ['暗黙知の消失','マニュアル化できない体感・勘が途絶える。'],
   ['道具・素材の供給途絶','道具製造者も連鎖的に消失。']]},
@@ -761,7 +791,7 @@ const DATA = [
   ['教養層の薄さ','共通教養基盤の希薄。'],
   ['文理分断','横断的知性が育たない。'],
   ['大学の就職予備校化','教養教育の縮小。'],
-  ['哲学・歴史教育の軽視','必修化が進まない。'],
+  ['哲学・歴史教育の軽視','歴史総合は必修化（2022年）も、哲学・倫理は選択のまま。'],
   ['古文・漢文離れ','必修見直し議論。古典の現代的意義への誤解。'],
   ['国際教養人材の不足','知的議論を主導できる人材の絶対不足。'],
   ['英語偏重・他言語軽視','戦略的言語教育の不在。']]},
@@ -778,7 +808,7 @@ const DATA = [
   ['任期付ポストの激増','若手研究者の4-6割が任期付き。'],
   ['博士課程進学率低下','研究者の再生産が困難。'],
   ['論文シェア9%→3%','研究力の構造的低下。'],
-  ['大学世界ランキング後退','10年で大幅後退。'],
+  ['大学世界ランキング後退','東大は26位へ回復もトップ200入りの校数は減少。'],
   ['若手研究者の海外流出','高待遇研究機関へ流出。'],
   ['教員の長時間労働','労働時間はOECD最長。志望者激減。']]},
  {id:'7-5',n:'暗黙知のデジタル統合',h:'now',e:['tech'],hy:'LLMとロボット学習が「文書化できない知」の記録を初めて可能にした。制約は技術ではなく保持者の存命時間。今が着手の締切。',is:[
@@ -795,14 +825,14 @@ const DATA = [
 const SPECIAL = {
 '三世代同居の激減':{o:'early',yr:2042,st:'産業革命が父を工場へ連れ出し、職住分離が核家族を生んだ。約百年かけてそれは「規範」として定着した。だがAI・ロボットによる在宅生産体制が整えば、職住は再融合し、父は家に戻る。核家族問題は「解決すべき課題」ではなく「前提条件の消滅によって消える課題」である。生産体制の転換が10〜30年、新しい家族規範の定着はその先30年。'},
 '「家」概念の消失':{yr:2048,st:'家の消失は価値観の堕落ではなく、職住分離という生産体制の帰結だった。在宅生産の復活と事業承継の危機が「家業」を再発見させる。処分権を時間に返上する「預かり所有」の再実装が鍵。'},
-'合計特殊出生率1.20':{o:'late',yr:2058,st:'出生率は規範の問題であり、政策の即効性は乏しい。在宅生産体制・養育の社会化・住宅コスト低下（人口減の逆説的恩恵）が前提条件を整えたあと、一世代（30年）遅れて回復が現れるというのが本世界樹の仮説。'},
+'合計特殊出生率1.15':{o:'late',yr:2058,st:'出生率は規範の問題であり、政策の即効性は乏しい。在宅生産体制・養育の社会化・住宅コスト低下（人口減の逆説的恩恵）が前提条件を整えたあと、一世代（30年）遅れて回復が現れるというのが本世界樹の仮説。'},
 '宮大工の不足':{o:'early',yr:2030,st:'国内に約100名。技能は10年単位でしか人に渡らないため、最後の世代が現役のうちに継承を国家事業化しなければ物理的に消える。締切は5〜10年。デジタル記録（7-5）と職人の経済保障（生産体制）の同時実行が条件。'},
 'GAFAMへの完全依存':{yr:2033,st:'完全な独立は非現実的。分散型プロトコル・国産AI基盤・規制の三点で「依存の分散」を作るのが5〜10年の現実解。データ主権は次の10年の主戦場。'},
 '内部留保600兆円超の塩漬け':{yr:2040,st:'説教では動かない。経営者の大量引退（大承継時代）と人手不足が、資本を強制的に動かす。財団所有・承継ファンド・事業転換積立という「売れない構造」の器が10〜30年で普及する。'},
-'限界集落20%超':{yr:2044,st:'全部は救えない、が結論から逃げないこと。自動運転物流・遠隔医療・分散電源で「残す集落」の質を設計し、たたむ集落は家じまいの儀礼とともに撤退する。撤退の設計も文明の技術である。'},
-'化石燃料93%輸入依存':{o:'early',yr:2043,st:'ペロブスカイト・洋上風力・蓄電・次世代炉の組み合わせで、2040年代に自給5割が射程。エネルギー自給は「地震文明の自立」の物理的土台になる。'},
+'限界集落40%':{yr:2044,st:'全部は救えない、が結論から逃げないこと。自動運転物流・遠隔医療・分散電源で「残す集落」の質を設計し、たたむ集落は家じまいの儀礼とともに撤退する。撤退の設計も文明の技術である。'},
+'化石燃料約8割依存':{o:'early',yr:2043,st:'ペロブスカイト・洋上風力・蓄電・次世代炉の組み合わせで、2040年代に自給5割が射程。エネルギー自給は「地震文明の自立」の物理的土台になる。'},
 '食料自給率38%':{o:'early',yr:2041,st:'精密農業・植物工場・培養タンパクの三本柱で2030年代に反転開始。農地は余っていく——制約は土地ではなく担い手であり、そこにこそ自動化が効く。'},
-'月1冊も本を読まない47.3%':{yr:2057,st:'注意経済への規範的対抗は一世代仕事。だがAIが要約を無料にするほど、「要約では渡らないもの」——長い思考の価値——が逆照射される。読書は希少技能として再評価される。'},
+'月1冊も本を読まない62.6%':{yr:2057,st:'注意経済への規範的対抗は一世代仕事。だがAIが要約を無料にするほど、「要約では渡らないもの」——長い思考の価値——が逆照射される。読書は希少技能として再評価される。'},
 '南海トラフ地震':{o:'early',yr:2032,st:'発生は消せない。これは地震文明の宿命である。解は「被害の構造」を変えること——予測AI・事前復興計画・分散化。試験日は選べないから、備えを暦に書き込む（訓練の祝祭化）。'},
 '裏金問題':{yr:2059,st:'資金の完全透明化は技術的に今すぐ可能。だが政治文化という規範の入れ替わりは世代交代を要する。技術が先行し、規範が30年遅れて追いつく典型例。'},
 '職人の知のロスト':{o:'early',yr:2029,st:'LLMとモーションキャプチャで「記録の革命」は既に起きた。制約は技術ではなく、保持者の存命時間だけ。世界樹の中で最も締切が近い葉のひとつ。'},
@@ -1243,6 +1273,13 @@ function analyzeDomain(input){
   domain.active=true; domain.kw=input;
   domain.elemRaw=raw; domain.elemRel=rel; domain.elem5=five; domain.elemEff=eff;
   domain.clusterRel=cRaw.map(v=>v/cMax);
+  /* ver.2.7: クラスター二段集計＝直接（rel和）と解決シナジー波及込み（eff和）を共通スケールで
+     eff>=rel が要素ごとに保証されるため、淡バー（波及込み）は常に濃バー（直接）以上になる */
+  const cDir=DATA.map(()=>0), cEff=DATA.map(()=>0);
+  ELEM_LIST.forEach((e,i)=>{ cDir[e.ci]+=rel[i]; cEff[e.ci]+=eff[i]; });
+  const cScale=Math.max(0.0001,...cEff);
+  domain.clusterDir=cDir.map(v=>v/cScale);
+  domain.clusterEff=cEff.map(v=>v/cScale);
   return domain;
 }
 
@@ -1251,7 +1288,7 @@ function analyzeDomain(input){
 ================================================================ */
 const cv=document.getElementById('cv'), bctx=cv.getContext('2d');
 let ctx=bctx;                      // 点描モード時のみオフスクリーンに切替わる
-let W=0,H=0,DPR=1,bgCanvas=null;
+let W=0,H=0,DPR=1,bgCanvas=null,CX=0.435;   // CX=投影中心（モバイルは0.5=中央、デスクトップは左寄せ）
 let sceneCv=null,sctx=null;        // 点描用オフスクリーン（等倍）
 let stippleCv=null,stCtx=null,stippleTick=0;   // 点描結果のキャッシュ（1フレームおきに再生成）
 function ensureScene(){
@@ -1263,7 +1300,10 @@ function ensureScene(){
 }
 function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; bctx.setTransform(DPR,0,0,DPR,0,0);
-  buildBackground(); }
+  CX = W<=900 ? 0.5 : 0.435;   // 解決ログ非表示のモバイルでは樹を中央に
+  buildBackground();
+  try{ if(nodes.length){ camTargets.all.dist=fitAllDist(); } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
+}
 addEventListener('resize',resize);
 
 /* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
@@ -1272,13 +1312,13 @@ function buildBackground(){
   bgCanvas=document.createElement('canvas');
   bgCanvas.width=D; bgCanvas.height=D;
   const g=bgCanvas.getContext('2d');
-  /* 深宇宙のグラデーション（中心＝樹の背後がほのかに明るい） */
-  g.fillStyle='#060810'; g.fillRect(0,0,D,D);
+  /* 深宇宙のグラデーション（ver.2.6: 参照画像の深い紺青。中心＝樹の背後がほのかに明るい） */
+  g.fillStyle='#0a0e20'; g.fillRect(0,0,D,D);
   const grad=g.createRadialGradient(D/2,D/2,40, D/2,D/2,D*0.62);
-  grad.addColorStop(0,'rgba(46,40,72,0.55)');
-  grad.addColorStop(0.35,'rgba(28,26,48,0.35)');
-  grad.addColorStop(0.7,'rgba(14,14,26,0.15)');
-  grad.addColorStop(1,'rgba(6,8,16,0)');
+  grad.addColorStop(0,'rgba(58,64,112,0.58)');
+  grad.addColorStop(0.35,'rgba(36,42,82,0.38)');
+  grad.addColorStop(0.7,'rgba(20,24,52,0.18)');
+  grad.addColorStop(1,'rgba(10,14,32,0)');
   g.fillStyle=grad; g.fillRect(0,0,D,D);
   /* 星雲（紫・藍・翠・金の淡い霧） */
   const NEB=[['rgba(107,72,120,',0.16],['rgba(44,95,122,',0.13],['rgba(58,117,112,',0.10],['rgba(201,169,97,',0.07]];
@@ -1288,16 +1328,29 @@ function buildBackground(){
     ng.addColorStop(0,nb[0]+nb[1]+')'); ng.addColorStop(1,nb[0]+'0)');
     g.fillStyle=ng; g.fillRect(Math.max(0,x-R),Math.max(0,y-R),R*2,R*2);
   });
+  /* 樹を囲む淡い金の同心リング（ver.2.6: 参照画像の意匠。回転中心と同心＝回転しても不変） */
+  g.strokeStyle='#c9a961'; g.lineCap='round';
+  [[0.295,0.06,1.4],[0.375,0.045,1.2],[0.46,0.03,1.0]].forEach(rr=>{
+    g.globalAlpha=rr[1]; g.lineWidth=rr[2];
+    g.beginPath(); g.arc(D/2,D/2,D*rr[0],0,6.29); g.stroke();
+  });
+  g.globalAlpha=1;
   /* 星屑（回転しても途切れないよう全面に） */
   const SC=['#ffffff','#fff6dd','#e8c977','#cfe0ff'];
   for(let i=0;i<560;i++){
     const x=Math.random()*D, y=Math.random()*D;
-    const big=Math.random()<0.06;
+    const big=Math.random()<0.075;
     const a=big?0.5+Math.random()*0.5:0.12+Math.random()*0.5;
     g.globalAlpha=a; g.fillStyle=SC[Math.floor(Math.random()*SC.length)];
     const r=big?1.2+Math.random()*1.3:0.4+Math.random()*0.8;
     g.beginPath(); g.arc(x,y,r,0,6.29); g.fill();
-    if(big){ g.globalAlpha=a*0.3; g.beginPath(); g.arc(x,y,r*3,0,6.29); g.fill(); }
+    if(big){ g.globalAlpha=a*0.3; g.beginPath(); g.arc(x,y,r*3,0,6.29); g.fill();
+      /* ver.2.6: 輝星に十字のスパーク（参照画像の星） */
+      g.globalAlpha=a*0.5; g.strokeStyle=g.fillStyle; g.lineWidth=0.7;
+      const fl=r*(3.5+Math.random()*4.5);
+      g.beginPath(); g.moveTo(x-fl,y); g.lineTo(x+fl,y);
+      g.moveTo(x,y-fl); g.lineTo(x,y+fl); g.stroke();
+    }
   }
   /* 金粉（クリムトの名残・樹の周りに漂う） */
   for(let i=0;i<170;i++){
@@ -1335,6 +1388,28 @@ const camTargets={
 let camAnim=null;
 function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; autoRot=false; updateRotBtn(); }
 
+/* ver.2.5: 縦長・狭小画面では全景（葉・根・枝先）が収まる距離を実測の反復で自動調整 */
+function fitAllDist(){
+  if(W/H>=1.05) return 1220;
+  let d=1220;
+  const save=cam.dist;
+  for(let it=0;it<5;it++){
+    cam.dist=d;
+    let r=0;
+    nodes.forEach(n=>{
+      if(n.hid)return;
+      if(n.t!=='leaf'&&n.t!=='sroot'&&n.t!=='btip'&&n.t!=='dleaf'&&n.t!=='croot')return;
+      const pr=project(n); if(!pr)return;
+      r=Math.max(r, Math.abs(pr.sx-W*CX)/(W*0.46), Math.abs(pr.sy-H/2)/(H*0.40));
+    });
+    if(!r) break;
+    if(r<1.001&&r>0.93) break;
+    d=Math.max(1220,Math.min(4200,d*r*1.03));
+  }
+  cam.dist=save;
+  return Math.round(d);
+}
+
 function project(p,sway){
   let x=p.x,y=p.y,z=p.z;
   if(sway){ const s=Math.sin(time*0.0011+(p.ph||0))*Math.min(8,(y/60)); x+=s; z+=s*0.6; }
@@ -1346,7 +1421,7 @@ function project(p,sway){
   const zc=z2+cam.dist;
   if(zc<40) return null;
   const f=760/zc;
-  return {sx:W*0.435 + x1*f, sy:H/2 - y1*f, d:zc, f};   // 樹をやや左寄せ（右の解決ログと均衡）
+  return {sx:W*CX + x1*f, sy:H/2 - y1*f, d:zc, f};   // 樹をやや左寄せ（右の解決ログと均衡）。モバイルは中央
 }
 
 /* --- 状態 --- */
@@ -1671,6 +1746,16 @@ function frame(t){
           ctx.lineTo(P1.sx+nx*WB*bk[0]*0.92,P1.sy+ny*WB*bk[0]*0.92);
           ctx.stroke();
         });
+        /* ver.2.6: 螺旋の捻りリボン＝世界y座標に連続な正弦で幹に巻き付く光と影（参照画像の意匠） */
+        [[0,56,0.30,0.16],[2.1,-70,0.26,0.13],[4.2,44,0.20,0.11]].forEach(tw=>{
+          const f0=Math.sin(A.y*0.016+tw[0])*0.60, f1=Math.sin(B.y*0.016+tw[0])*0.60;
+          ctx.strokeStyle=shade2(C,tw[1]); ctx.globalAlpha=al*tw[2];
+          ctx.lineWidth=Math.max(1,WA*tw[3]);
+          ctx.beginPath();
+          ctx.moveTo(P0.sx+nx*WA*f0,P0.sy+ny*WA*f0);
+          ctx.lineTo(P1.sx+nx*WB*f1,P1.sy+ny*WB*f1);
+          ctx.stroke();
+        });
       }
       ctx.globalAlpha=1;
     }});
@@ -1839,10 +1924,23 @@ function frame(t){
           ctx.beginPath();ctx.arc(pr.sx+R*0.3,pr.sy-R*0.15,R*0.22,0,6.29);ctx.fill();}
       } else if(n.t==='croot'||n.t==='sroot'||n.t==='proot'){
         let col=n.col, aMul=1;
-        if(n.t==='proot'&&state.year>=n.p.yr){ col='#6b6350'; aMul=0.4; } // 原因が癒えて色褪せる
-        const R=Math.max(1.2,n._sr*(n.t==='proot'&&state.year>=n.p.yr?0.75:1));
+        const healed=(n.t==='proot'&&state.year>=n.p.yr);
+        if(healed){ col='#6b6350'; aMul=0.4; } // 原因が癒えて色褪せる
+        /* ver.2.6: 大小の揺らぎ＋光暈＋球体ハイライト（参照画像の根の色彩） */
+        if(n._mag===undefined) n._mag=(n.t==='proot')?0.72+((hashStr(n.p.name)>>>3)%100)/100*0.72:1;
+        const R=Math.max(1.2,n._sr*(healed?0.75:1)*n._mag);
+        if(!healed&&R>1.7){
+          const gl=ctx.createRadialGradient(pr.sx,pr.sy,R*0.3,pr.sx,pr.sy,R*2.3);
+          gl.addColorStop(0,col); gl.addColorStop(1,'rgba(10,14,30,0)');
+          ctx.globalAlpha=al*0.30; ctx.fillStyle=gl;
+          ctx.beginPath();ctx.arc(pr.sx,pr.sy,R*2.3,0,6.29);ctx.fill();
+        }
         ctx.globalAlpha=al*aMul;
-        ctx.fillStyle=n.t==='proot'?col:shade(n.col,0);
+        if(!healed&&R>2.0){
+          const gb=ctx.createRadialGradient(pr.sx-R*0.3,pr.sy-R*0.3,R*0.1,pr.sx,pr.sy,R);
+          gb.addColorStop(0,mixCol(col,'#ffffff',0.5)); gb.addColorStop(1,col);
+          ctx.fillStyle=gb;
+        } else ctx.fillStyle=col;
         ctx.beginPath();ctx.arc(pr.sx,pr.sy,R,0,6.29);ctx.fill();
         if(n.t==='croot'){ctx.strokeStyle='#e8c977';ctx.lineWidth=1.4;ctx.stroke();}
       } else if(n.t==='tier'){
@@ -1851,13 +1949,25 @@ function frame(t){
         ctx.lineWidth=cur?1.8:1; ctx.setLineDash(cur?[]:[4,5]);
         ctx.beginPath();ctx.arc(pr.sx,pr.sy,(halfAt(n.y)*1.18+16)*pr.f,0,6.29);ctx.stroke();ctx.setLineDash([]);
       } else if(n.t==='btip'){
-        ctx.fillStyle=ELEMS[n.elem].c;ctx.beginPath();ctx.arc(pr.sx,pr.sy,Math.max(2,n._sr),0,6.29);ctx.fill();
-        ctx.strokeStyle='#e8c977';ctx.lineWidth=0.8;ctx.stroke();
+        /* ver.2.6: 枝先の宝珠＝発光オーブ＋金の二重リング（参照画像の意匠） */
+        const R=Math.max(2.6,n._sr*1.5), C=ELEMS[n.elem].c;
+        const gl=ctx.createRadialGradient(pr.sx,pr.sy,R*0.2,pr.sx,pr.sy,R*3.0);
+        gl.addColorStop(0,C); gl.addColorStop(1,'rgba(10,14,30,0)');
+        ctx.globalAlpha=al*0.34; ctx.fillStyle=gl;
+        ctx.beginPath();ctx.arc(pr.sx,pr.sy,R*3.0,0,6.29);ctx.fill();
+        ctx.globalAlpha=al;
+        const gb=ctx.createRadialGradient(pr.sx-R*0.3,pr.sy-R*0.35,R*0.12,pr.sx,pr.sy,R);
+        gb.addColorStop(0,'#ffffff'); gb.addColorStop(0.35,mixCol(C,'#ffffff',0.25)); gb.addColorStop(1,shade2(C,-30));
+        ctx.fillStyle=gb; ctx.beginPath();ctx.arc(pr.sx,pr.sy,R,0,6.29);ctx.fill();
+        ctx.strokeStyle='#e8c977'; ctx.lineWidth=Math.max(0.7,R*0.16);
+        ctx.beginPath();ctx.arc(pr.sx,pr.sy,R*1.32,0,6.29);ctx.stroke();
+        ctx.strokeStyle='rgba(201,169,97,0.55)'; ctx.lineWidth=Math.max(0.5,R*0.08);
+        ctx.beginPath();ctx.arc(pr.sx,pr.sy,R*1.75,0,6.29);ctx.stroke();
       }
       ctx.globalAlpha=1;
       const zoomL=zoomF*state.labelBias;   // ＋－で文字の出る距離感を調整
       const showLbl =
-        (n.t==='croot') ||
+        (n.t==='croot'&&(W>=640||zoomL>0.42)) ||   // モバイル全景ではクラスター名を抑制（重なり防止）
         (n.t==='tier') ||
         (n.t==='btip'&&zoomL>0.7) ||
         (n.t==='fruit'&&zoomL>1.15&&fruitT()>0.3) ||
@@ -1865,14 +1975,14 @@ function frame(t){
         (n.t==='sroot'&&zoomL>1.4&&al>0.5) ||
         (state.hover===n);
       if(showLbl&&n.label){
-        const fs=n.t==='croot'?12:(n.t==='tier'?12:(n.t==='btip'?11:9.5));
+        const fs=n.t==='croot'?12:(n.t==='tier'?(W<640?10:12):(n.t==='btip'?11:9.5));
         ctx.font=(n.t==='croot'||n.t==='tier'?'700 ':'')+fs+'px "Noto Serif JP",serif';
         ctx.globalAlpha=Math.min(1,al+0.15);
         const tx=pr.sx+ (n.t==='tier'?(halfAt(n.y)*1.18+26)*pr.f:8), ty2=pr.sy+3;
         ctx.strokeStyle='rgba(10,10,18,0.85)';ctx.lineWidth=3;ctx.strokeText(n.label,tx,ty2);
         ctx.fillStyle=n.t==='tier'?'#e8c977':(n.t==='btip'?ELEMS[n.elem].c:'#f5f0e8');
         ctx.fillText(n.label,tx,ty2);
-        if(n.t==='tier'){ctx.font='9px "Cormorant Garamond",serif';ctx.fillStyle='#c8c0b0';
+        if(n.t==='tier'&&W>=640){ctx.font='9px "Cormorant Garamond",serif';ctx.fillStyle='#c8c0b0';
           ctx.strokeText(TIERS[n.tier].s,tx,ty2+12);ctx.fillText(TIERS[n.tier].s,tx,ty2+12);}
         if((n.t==='leaf')&&(state.sel===n||state.hover===n)){
           ctx.font='600 9px "Cormorant Garamond",serif';ctx.fillStyle='#e8c977';
@@ -1939,6 +2049,8 @@ function frame(t){
 
   rafId=requestAnimationFrame(frame);
 }
+/* ver.2.5: モバイル（縦長画面）は初期表示から全景が収まる距離に自動フィット */
+if(W/H<1.05){ camTargets.all.dist=fitAllDist(); cam.dist=camTargets.all.dist; }
 rafId=requestAnimationFrame(frame);
 /* RAF停止環境（非表示タブ等）フォールバック: 保留中のrAFを必ず取り消してから手動駆動（多重ループ防止） */
 setInterval(()=>{ if(performance.now()-lastT>700){ cancelAnimationFrame(rafId); frame(performance.now()); } },750);
@@ -2017,6 +2129,13 @@ $('lblPlus').onclick=()=>{ state.labelBias=Math.min(3.2,state.labelBias*1.3);
   toast('文字表示 '+Math.round(state.labelBias*100)+'%（遠くから表示）'); };
 $('lblMinus').onclick=()=>{ state.labelBias=Math.max(0.35,state.labelBias/1.3);
   toast('文字表示 '+Math.round(state.labelBias*100)+'%（近づくと表示）'); };
+/* ver.2.5: モバイル用メニュー開閉 */
+$('panelToggle').onclick=()=>$('panel').classList.toggle('mob-open');
+/* ver.2.8: キャッシュ回避リロード＝ランダム4桁のクエリを付けて読み直す（F5が使えないPC向け） */
+$('reloadBtn').onclick=()=>{
+  const v=1000+Math.floor(Math.random()*9000);
+  location.replace(location.pathname+'?v='+v);
+};
 /* 点描画モード */
 function updateDotBtn(){ $('dotBtn').textContent='◦ 点描 '+(state.pointMode?'ON':'OFF'); }
 $('dotBtn').onclick=()=>{ state.pointMode=!state.pointMode; updateDotBtn();
@@ -2210,13 +2329,19 @@ function renderResults(){
   // クラスターバー
   const cb=$('clBars'); cb.innerHTML='';
   DATA.forEach((cl,ci)=>{
-    const rel=domain.clusterRel[ci]||0;
+    /* ver.2.7: 二段バー＝濃（直接の関係）＋淡い延長（解決シナジーの波及込み）。数値は波及込み */
+    const dir=(domain.clusterDir&&domain.clusterDir[ci])||0;
+    const eff=(domain.clusterEff&&domain.clusterEff[ci])||0;
     const row=document.createElement('div'); row.className='clbar';
     row.innerHTML='<div class="cb-name" style="color:'+cl.c+'">'+cl.r+' '+cl.name+'</div>'
-      +'<div class="cb-track"><div class="cb-fill" style="width:0%;background:linear-gradient(90deg,'+cl.c+'88,'+cl.c+')"></div></div>'
-      +'<div class="cb-val">'+Math.round(rel*100)+'</div>';
+      +'<div class="cb-track"><div class="cb-eff" style="width:0%;background:'+cl.c+'"></div>'
+      +'<div class="cb-fill" style="width:0%;background:linear-gradient(90deg,'+cl.c+'88,'+cl.c+')"></div></div>'
+      +'<div class="cb-val">'+Math.round(eff*100)+'</div>';
     cb.appendChild(row);
-    requestAnimationFrame(()=>{ row.querySelector('.cb-fill').style.width=Math.round(rel*100)+'%'; });
+    requestAnimationFrame(()=>{
+      row.querySelector('.cb-eff').style.width=Math.round(eff*100)+'%';
+      row.querySelector('.cb-fill').style.width=Math.round(dir*100)+'%';
+    });
   });
   // エレメントTOP
   const eb=$('elBars'); eb.innerHTML='';
