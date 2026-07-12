@@ -303,7 +303,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.0</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.1</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -389,7 +389,7 @@
     <canvas id="hmcv"></canvas>
     <div class="hm-tip" id="hmTip"></div>
   </div>
-  <div class="hmv-note">ドラッグ＝回転｜ホイール＝拡大（拡大すると項目名が表示されます）｜ホバー＝数値詳細</div>
+  <div class="hmv-note">ドラッグ＝回転｜ホイール／2本指ピンチ＝拡大（拡大すると項目名表示）｜ホバー・<b>タップ</b>＝数値詳細</div>
 </div>
 
 <div class="timeline">
@@ -2453,23 +2453,38 @@ function hmRender(){
     hmx.restore();
   }
 }
-let hmDrag=null;
-hmcv.addEventListener('pointerdown',e=>{ hmcv.setPointerCapture(e.pointerId);
-  hmDrag={x:e.clientX,y:e.clientY}; hmcv.classList.add('drag'); });
+/* ver.3.1: タッチ対応〔鈴木様指示「スマホはカーソルが無くデータが表示されない」〕
+   タップ＝数値詳細（判定半径広め・表示は次のタップ/空タップまで維持）／2本指ピンチ＝拡大／ドラッグ＝回転は従来どおり */
+let hmDrag=null; const hmPts=new Map(); let hmPinch0=0;
+hmcv.addEventListener('pointerdown',e=>{ try{hmcv.setPointerCapture(e.pointerId);}catch(_){}
+  hmPts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(hmPts.size===2){ const a=[...hmPts.values()]; hmPinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); hmDrag=null; }
+  else hmDrag={x:e.clientX,y:e.clientY,moved:0};
+  hmcv.classList.add('drag'); });
 hmcv.addEventListener('pointermove',e=>{
-  if(hmDrag){ hm.yaw+=(e.clientX-hmDrag.x)*0.008;
-    hm.tilt=Math.max(0.16,Math.min(0.86,hm.tilt+(e.clientY-hmDrag.y)*0.0016));
+  if(hmPts.has(e.pointerId)) hmPts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(hmPts.size===2){ const a=[...hmPts.values()]; const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    if(hmPinch0>0&&d>0){ hm.zoom=Math.max(0.5,Math.min(3,hm.zoom*(d/hmPinch0))); hmPinch0=d; hmRender(); }
+    return; }
+  if(hmDrag){ const dx=e.clientX-hmDrag.x, dy=e.clientY-hmDrag.y;
+    hmDrag.moved+=Math.abs(dx)+Math.abs(dy);
+    hm.yaw+=dx*0.008;
+    hm.tilt=Math.max(0.16,Math.min(0.86,hm.tilt+dy*0.0016));
     hmDrag.x=e.clientX;hmDrag.y=e.clientY; hmRender(); }
   else hmHover(e);
 });
-hmcv.addEventListener('pointerup',()=>{hmDrag=null;hmcv.classList.remove('drag');});
-hmcv.addEventListener('pointercancel',()=>{hmDrag=null;hmcv.classList.remove('drag');});
+hmcv.addEventListener('pointerup',e=>{
+  if(hmDrag&&hmDrag.moved<7) hmShowTip(e,true);   // 動かさず離した＝タップ→数値詳細
+  hmPts.delete(e.pointerId); if(hmPts.size<2) hmPinch0=0;
+  hmDrag=null; hmcv.classList.remove('drag');
+});
+hmcv.addEventListener('pointercancel',e=>{ hmPts.delete(e.pointerId); hmPinch0=0; hmDrag=null; hmcv.classList.remove('drag'); });
 hmcv.addEventListener('wheel',e=>{ e.preventDefault();
   hm.zoom=Math.max(0.5,Math.min(3,hm.zoom*(1-Math.sign(e.deltaY)*0.1))); hmRender(); },{passive:false});
-function hmHover(e){
+function hmShowTip(e,tap){
   if(!hm.centers){ return; }
   const r=hmcv.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
-  let best=null,bd=16;
+  let best=null,bd=tap?26:16;                     // タップは指の太さぶん判定を広く
   for(const c of hm.centers){ const d=Math.hypot(c.sx-mx,c.sy-my); if(d<bd){bd=d;best=c;} }
   const tip=$('hmTip');
   if(best){ const A=ELEM_LIST[best.i], B=ELEM_LIST[best.j], s=synVal(best.i,best.j);
@@ -2477,9 +2492,10 @@ function hmHover(e){
     tip.innerHTML='<b style="color:'+A.cl.c+'">'+A.id+' '+A.n+'</b> → <b style="color:'+B.cl.c+'">'+B.id+' '+B.n+'</b>'
       +'<br>解決シナジー '+(best.i===best.j?'（自己）':s+' / 3')+'　事業の実効関係 '+eff+'%　波及度 '+Math.round(best.P*100)+'%';
     tip.classList.add('show'); }
-  else tip.classList.remove('show');
+  else tip.classList.remove('show');              // 何も無い所のタップ/ホバー＝閉じる
 }
-hmcv.addEventListener('pointerleave',()=>$('hmTip').classList.remove('show'));
+function hmHover(e){ if(e.pointerType!=='mouse')return; hmShowTip(e,false); }
+hmcv.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse')$('hmTip').classList.remove('show'); });
 document.querySelectorAll('.hm-btn[data-hm]').forEach(b=>b.onclick=()=>{
   if(b.dataset.hm==='reset'){ hm.yaw=0.62;hm.tilt=0.5;hm.zoom=1; }
   if(b.dataset.hm==='flat'){ hm.flat=!hm.flat; }
