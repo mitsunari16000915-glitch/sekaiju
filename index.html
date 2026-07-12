@@ -345,7 +345,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.6</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -2333,6 +2333,56 @@ $('panelToggle').onclick=()=>$('panel').classList.toggle('mob-open');
 const bgv=document.getElementById('bgVideo');
 bgv.muted=true;   // ver.3.5: iOSは属性だけでなくプロパティ側のmutedも必要なことがある
 bgv.addEventListener('error',()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bgv.src='世界樹_web/chikyu.mp4'; bgv.load(); bgv.play().catch(()=>{}); } });
+
+/* ================================================================
+   ver.4.6: 背景映像の管理画面（URLに ?admin を付けた時のみ表示）
+   - BG_VIDEOS: 配信済み映像のカタログ。新候補を本番に足す時は
+     ①mp4(25MB以下・720p推奨)を 世界樹_web/ に置く ②ここに1行追加 ③デプロイ
+   - 切替は即時反映。「この端末の既定にする」でlocalStorage保存（その端末のみ）
+   - ローカルファイル試写はアップロード不要（blob URL・保存は不可＝その場限り）
+================================================================ */
+const BG_VIDEOS=[
+  {key:'chikyu', name:'地球（青い惑星・現行）', src:'chikyu.mp4'},
+  {key:'none',   name:'映像なし（漆黒の宇宙）', src:''}
+];
+const BGV_LS='yg_bgv_src';
+function applyBgv(src){
+  if(!src){ try{bgv.pause();}catch(e){} bgv.removeAttribute('src'); try{bgv.load();}catch(e){} return; }
+  bgv.dataset.alt = (src==='chikyu.mp4') ? '' : '1';   // 既定以外はerrorフォールバック（chikyu強制復帰）を無効化
+  bgv.src=src; try{bgv.load();}catch(e){} bgv.play().catch(()=>{});
+}
+/* 起動時: この端末に保存された既定があれば適用 */
+try{ const _sv=localStorage.getItem(BGV_LS); if(_sv!==null && _sv!=='chikyu.mp4') applyBgv(_sv); }catch(e){}
+if(location.search.indexOf('admin')>=0)(function buildBgvAdmin(){
+  let cur={src:bgv.getAttribute('src')||'', blob:false};
+  const p=document.createElement('div'); p.id='bgvAdmin';
+  p.style.cssText='position:fixed;top:54px;right:10px;z-index:70;width:272px;background:rgba(10,12,24,0.94);'
+    +'border:1px solid rgba(201,169,97,0.55);border-radius:10px;padding:12px 14px;color:#e8e2d4;'
+    +'font-size:12px;line-height:1.7;box-shadow:0 6px 24px rgba(0,0,0,0.55)';
+  let listHtml='';
+  BG_VIDEOS.forEach((v,i)=>{ listHtml+='<label style="display:block;cursor:pointer"><input type="radio" name="bgvSel" value="'+v.src+'" '+((bgv.getAttribute('src')||'')===v.src?'checked':'')+'> '+v.name+'</label>'; });
+  p.innerHTML='<div style="font-weight:700;color:#c9a961;letter-spacing:0.08em;margin-bottom:6px">🎬 背景映像 管理 <span id="bgvAdmClose" style="float:right;cursor:pointer;color:#8a8474">✕</span></div>'
+    +listHtml
+    +'<div style="margin-top:8px;border-top:1px solid rgba(201,169,97,0.25);padding-top:8px">URLで指定:<br>'
+    +'<input id="bgvUrl" type="text" placeholder="https://…/xxx.mp4" style="width:100%;box-sizing:border-box;background:#1a1d2e;border:1px solid #3a3d52;color:#e8e2d4;border-radius:5px;padding:4px 6px;font-size:11px">'
+    +'<button id="bgvUrlGo" style="margin-top:4px;width:100%;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.5);color:#e8c977;border-radius:5px;padding:4px;cursor:pointer">この動画に切替</button></div>'
+    +'<div style="margin-top:8px">手元のファイルを試写（保存不可）:<br><input id="bgvFile" type="file" accept="video/mp4,video/*" style="width:100%;font-size:11px"></div>'
+    +'<div style="margin-top:10px;display:flex;gap:6px">'
+    +'<button id="bgvSave" style="flex:1;background:rgba(80,160,90,0.18);border:1px solid rgba(120,200,130,0.5);color:#9fd8a8;border-radius:5px;padding:5px;cursor:pointer">この端末の既定にする</button>'
+    +'<button id="bgvReset" style="flex:1;background:rgba(160,80,80,0.15);border:1px solid rgba(200,120,120,0.4);color:#d8a09f;border-radius:5px;padding:5px;cursor:pointer">既定に戻す</button></div>'
+    +'<div id="bgvStat" style="margin-top:8px;color:#8f8;font:10px/1.6 monospace;white-space:pre-wrap"></div>'
+    +'<div style="margin-top:6px;color:#8a8474;font-size:10px">※保存はこの端末のみ。全公開の既定を変える時は鈴木様→Claudeへ「この映像を既定に」と依頼（本番に焼き込み）</div>';
+  document.body.appendChild(p);
+  p.querySelectorAll('input[name=bgvSel]').forEach(r=>{ r.addEventListener('change',()=>{ cur={src:r.value,blob:false}; applyBgv(r.value); }); });
+  p.querySelector('#bgvUrlGo').addEventListener('click',()=>{ const u=p.querySelector('#bgvUrl').value.trim(); if(u){ cur={src:u,blob:false}; applyBgv(u); } });
+  p.querySelector('#bgvFile').addEventListener('change',e=>{ const f=e.target.files&&e.target.files[0]; if(f){ const u=URL.createObjectURL(f); cur={src:u,blob:true}; applyBgv(u); } });
+  p.querySelector('#bgvSave').addEventListener('click',()=>{ if(cur.blob){ alert('ローカル試写は保存できません（ファイルをClaudeに渡して本番配置してください）'); return; } try{ localStorage.setItem(BGV_LS,cur.src); alert('この端末の既定として保存しました'); }catch(e){} });
+  p.querySelector('#bgvReset').addEventListener('click',()=>{ try{ localStorage.removeItem(BGV_LS); }catch(e){} cur={src:'chikyu.mp4',blob:false}; applyBgv('chikyu.mp4'); const r0=p.querySelector('input[name=bgvSel]'); if(r0)r0.checked=true; });
+  p.querySelector('#bgvAdmClose').addEventListener('click',()=>{ p.remove(); });
+  setInterval(()=>{ const s=p.querySelector('#bgvStat'); if(!s)return;
+    s.textContent='状態: '+(bgv.getAttribute('src')?((bgv.paused?'停止':'再生中')+' rs'+bgv.readyState+(bgv.videoWidth?' '+bgv.videoWidth+'×'+bgv.videoHeight:' 未デコード')+' t'+bgv.currentTime.toFixed(1)):'映像なし')
+      +(bgv.error?'\nERR code'+bgv.error.code:''); },800);
+})();
 const bgvKick=()=>{ if(bgv.paused&&!document.hidden) bgv.play().catch(()=>{}); };
 addEventListener('pointerdown',bgvKick);
 bgv.addEventListener('loadeddata',bgvKick);
