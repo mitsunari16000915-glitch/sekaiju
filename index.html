@@ -84,6 +84,11 @@
     background:rgba(201,169,97,0.14); border:1px solid rgba(201,169,97,0.5); border-radius:3px;
     color:var(--pearl); cursor:pointer; transition:all .15s; user-select:none; }
   .vbtn:hover { background:rgba(201,169,97,0.35); }
+  /* ver.3.3: 自動プレゼンの赤枠CTA（パネル最上部・目立たせる）〔鈴木様指示〕 */
+  .pres-cta{ flex:1 1 100%; border:2px solid #e0484a; background:rgba(190,60,60,0.18);
+    color:#ffd9d0; font-weight:700; padding:8px 4px; font-size:12.5px; letter-spacing:0.12em;
+    box-shadow:0 0 12px rgba(224,72,74,0.35); }
+  .pres-cta:hover{ background:rgba(224,72,74,0.38); border-color:#ff6b6b; }
   .hint { font-size:9.5px; color:var(--muted); line-height:1.6; margin-top:8px;
     border-top:1px dashed rgba(201,169,97,0.25); padding-top:6px; }
 
@@ -307,7 +312,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.2</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.3</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -315,7 +320,10 @@
 
 <div class="panel-toggle" id="panelToggle">☰ メニュー</div>
 <div class="panel" id="panel">
-  <h3>ROOTS · 7クラスター</h3>
+  <div class="btnrow" style="margin-bottom:7px;">
+    <div class="vbtn pres-cta" id="presBtn">🎬 自動プレゼン</div>
+  </div>
+  <h3 style="margin-top:0">ROOTS · 7クラスター</h3>
   <div class="chiprow" id="clusterChips"></div>
   <h3>BRANCHES · 4要素</h3>
   <div class="chiprow" id="elemChips"></div>
@@ -333,9 +341,6 @@
     <div class="vbtn" id="rotBtn" style="flex:1 1 30%">⟳ 回転 ON</div>
     <div class="vbtn" id="helpBtn" style="flex:1 1 30%">？ 世界樹</div>
     <div class="vbtn" id="bgmBtn" style="flex:1 1 30%">♪ BGM ON</div>
-  </div>
-  <div class="btnrow" style="margin-top:4px;">
-    <div class="vbtn" id="presBtn" style="flex:1 1 100%">🎬 自動プレゼン</div>
   </div>
   <h3>LABELS · 文字表示</h3>
   <div class="btnrow">
@@ -1316,9 +1321,10 @@ function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   CX = W<=900 ? 0.5 : 0.435;   // 解決ログ非表示のモバイルでは樹を中央に
   buildBackground();
   try{ if(nodes.length){
-    const prev=camTargets.all.dist;
-    camTargets.all.dist=fitAllDist();
-    if(Math.abs(cam.dist-prev)<2) cam.dist=camTargets.all.dist;   // ver.3.0: 既定のままなら回転・URLバー変化にも追従
+    const pD=camTargets.all.dist, pTy=camTargets.all.ty;
+    const f=fitAllDist();
+    camTargets.all.dist=f.dist; camTargets.all.ty=f.ty;
+    if(Math.abs(cam.dist-pD)<2&&Math.abs(cam.ty-pTy)<2){ cam.dist=f.dist; cam.ty=f.ty; }   // 既定のままなら追従
   } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
 }
 addEventListener('resize',resize);
@@ -1404,26 +1410,42 @@ const camTargets={
 let camAnim=null;
 function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; autoRot=false; updateRotBtn(); }
 
-/* ver.2.5: 縦長・狭小画面では全景（葉・根・枝先）が収まる距離を実測の反復で自動調整 */
+/* ver.2.5→3.3: 縦長・狭小画面では全景が収まる距離を実測の反復で自動調整。
+   ver.3.3〔鈴木様指示〕: ①倍率1.30→1.55の「思いっきり引き」 ②樹の投影バウンディング中心が
+   画面の縦センターに来るよう cam.ty も自動調整（従来は重心が上寄りだった） */
 function fitAllDist(){
-  if(W/H>=1.05) return 1220;
-  let d=1220;
-  const save=cam.dist;
-  for(let it=0;it<5;it++){
-    cam.dist=d;
-    let r=0;
+  if(W/H>=1.05) return {dist:1220, ty:255};
+  let d=1220, ty=255;
+  const saveD=cam.dist, saveTy=cam.ty;
+  const measure=()=>{   // 現在のcamで対象ノードの画面範囲を実測
+    let r=0, minY=1e9, maxY=-1e9;
     nodes.forEach(n=>{
       if(n.hid)return;
       if(n.t!=='leaf'&&n.t!=='sroot'&&n.t!=='btip'&&n.t!=='dleaf'&&n.t!=='croot')return;
       const pr=project(n); if(!pr)return;
       r=Math.max(r, Math.abs(pr.sx-W*CX)/(W*0.46), Math.abs(pr.sy-H/2)/(H*0.40));
+      if(pr.sy<minY)minY=pr.sy; if(pr.sy>maxY)maxY=pr.sy;
     });
-    if(!r) break;
-    if(r<1.001&&r>0.93) break;
-    d=Math.max(1220,Math.min(4200,d*r*1.03));
+    return {r, cY:(minY+maxY)/2};
+  };
+  for(let it=0;it<5;it++){
+    cam.dist=d; cam.ty=ty;
+    const m=measure();
+    if(!m.r) break;
+    if(m.r<1.001&&m.r>0.93) break;
+    d=Math.max(1220,Math.min(4200,d*m.r*1.03));
   }
-  cam.dist=save;
-  return Math.round(Math.min(4600,d*1.30));   // ver.3.0: さらに3割引いた「かなり引きの全景」に〔鈴木様指示〕
+  d=Math.min(4600,d*1.55);
+  /* 引いた距離で縦センターを2回反復して合わせ込む（∂sy/∂ty≒cos(pitch)·f） */
+  for(let it=0;it<2;it++){
+    cam.dist=d; cam.ty=ty;
+    const m=measure();
+    if(!m.r) break;
+    const f=760/d, cp=Math.cos(cam.pitch)||1;
+    ty+=(H/2-m.cY)/(cp*f);
+  }
+  cam.dist=saveD; cam.ty=saveTy;
+  return {dist:Math.round(d), ty:Math.round(ty)};
 }
 
 function project(p,sway){
@@ -2051,8 +2073,8 @@ function frame(t){
 
   rafId=requestAnimationFrame(frame);
 }
-/* ver.2.5: モバイル（縦長画面）は初期表示から全景が収まる距離に自動フィット */
-if(W/H<1.05){ camTargets.all.dist=fitAllDist(); cam.dist=camTargets.all.dist; }
+/* ver.2.5→3.3: モバイル初期表示は全景フィット（思いっきり引き＋縦センター）〔鈴木様指示〕 */
+if(W/H<1.05){ const f0=fitAllDist(); camTargets.all.dist=f0.dist; camTargets.all.ty=f0.ty; cam.dist=f0.dist; cam.ty=f0.ty; }
 rafId=requestAnimationFrame(frame);
 /* RAF停止環境（非表示タブ等）フォールバック: 保留中のrAFを必ず取り消してから手動駆動（多重ループ防止） */
 setInterval(()=>{ if(performance.now()-lastT>700){ cancelAnimationFrame(rafId); frame(performance.now()); } },750);
@@ -2563,6 +2585,7 @@ const pres={on:false,yearMs:0,camT:0,target:null,texts:[],hideAt:0};
 function presStart(){
   pres.on=true; pres.yearMs=0; pres.target=null; pres.texts.length=0;
   document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
+  pres.savedBias=state.labelBias; state.labelBias=3.2;   // ver.3.3: プレゼン中は文字表示を最大増に〔鈴木様指示〕
   if(playing){ clearInterval(playTimer); playing=false; $('tlPlay').textContent='▶'; }
   autoRot=false; updateRotBtn();
   setYear(2026);
@@ -2572,6 +2595,7 @@ function presStart(){
 }
 function presStop(){
   pres.on=false; document.body.classList.remove('pres-hide'); document.body.classList.remove('pres-on');
+  if(pres.savedBias!==undefined){ state.labelBias=pres.savedBias; pres.savedBias=undefined; }   // 文字表示を元へ
   $('presBtn').textContent='🎬 自動プレゼン';
   autoRot=true; updateRotBtn();
 }
