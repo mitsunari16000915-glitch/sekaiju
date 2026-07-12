@@ -322,7 +322,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.0</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.1</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1763,13 +1763,14 @@ function frame(t){
 
   /* 自動プレゼン: 1年＝約3.8秒でゆっくり進み、カメラは回転・角度・遠近を漂う */
   if(pres.on){
-    pres.yearMs+=dt;
-    if(pres.yearMs>=3800){ pres.yearMs=0;
+    /* ver.4.1: 年送りを壁時計アンカー方式に（累積会計より頑健・スマホの高リフレッシュ環境でも厳密に3.8秒/年） */
+    if(!pres.nextYearAt) pres.nextYearAt=time+3800;
+    if(time>=pres.nextYearAt){ pres.nextYearAt=time+3800;
       if(state.year>=2080){ setYear(2026); pres.texts.length=0; }
       else { setYear(state.year+1);
         problems.filter(p=>p.yr===state.year).slice(0,6).forEach(spawnPresText); }
     }
-    if(pres.texts.length<3&&Math.random()<0.02){
+    if(pres.texts.length<3&&Math.random()<dt*0.0012){   // ver.4.1: 出現率をdt基準に（120Hz端末で2倍出ていた）
       const sv=problems.filter(p=>p.yr<=state.year);
       if(sv.length)spawnPresText(sv[(Math.random()*sv.length)|0]);
     }
@@ -2312,6 +2313,7 @@ function setYear(y,fromInput){
 }
 $('tlRange').addEventListener('input',e=>setYear(parseInt(e.target.value),true));
 $('tlPlay').onclick=()=>{
+  if(pres.on) presStop();   // ver.4.1: プレゼン中に▶を押したら手動操作を優先＝420ms/年の高速再生がプレゼンと並走して「時間が早く進む」原因だった
   playing=!playing;
   $('tlPlay').textContent=playing?'❚❚':'▶';
   if(playing){
@@ -2700,7 +2702,7 @@ addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });
 ================================================================ */
 const pres={on:false,yearMs:0,camT:0,target:null,texts:[],hideAt:0};
 function presStart(){
-  pres.on=true; pres.yearMs=0; pres.target=null; pres.texts.length=0;
+  pres.on=true; pres.yearMs=0; pres.nextYearAt=0; pres.target=null; pres.texts.length=0;
   document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
   pres.savedBias=state.labelBias; state.labelBias=3.2;   // ver.3.3: プレゼン中は文字表示を最大増に〔鈴木様指示〕
   camTouched=true;   // ver.3.4: プレゼンのカメラ漂いと吸着の競合を防ぐ
