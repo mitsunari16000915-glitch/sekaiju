@@ -345,7 +345,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.4</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.5</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1423,7 +1423,12 @@ if(location.search.indexOf('debug')>=0){
       +'\ncam d'+Math.round(cam.dist)+' ty'+Math.round(cam.ty)+'  SO '+Math.round(SOX)+','+Math.round(SOY)
       +'\nbbox中心 '+bb
       +'\nloop '+(age<200?'生きてる':'停滞')+' +'+age+'ms  touched '+camTouched
-      +'\nERR '+(window.__frameErr||window.__drawErr||window.__lastErr||'なし')+'  ver.3.9'; },500);
+      +'\nvideo '+(function(){ const v=document.getElementById('bgVideo');
+        if(!v)return'なし';
+        return (v.paused?'停止':'再生中')+' rs'+v.readyState+' t'+v.currentTime.toFixed(1)
+          +(v.videoWidth?' '+v.videoWidth+'×'+v.videoHeight:' 未デコード')
+          +(v.error?' ERR'+v.error.code:''); })()
+      +'\nERR '+(window.__frameErr||window.__drawErr||window.__lastErr||'なし')+'  ver.4.5'; },500);
 }
 
 /* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
@@ -1835,6 +1840,18 @@ function frame(t){
      旧実装はclearRectせず半透明の宇宙canvasを毎フレーム上塗り→αが蓄積して不透明化し動画を完全に塞いでいた（PC/スマホとも地球が見えない真因）。
      宇宙canvas・太陽を復活させる場合は、必ず毎フレームclearRectしてから半透明で描くこと */
   ctx.clearRect(0,0,W,H);
+  /* ver.4.5: 地球動画をcanvasへ直接描画（cover相当）。DOM層の重なり（z-index・WebView合成の癖）に一切依存しない＝
+     樹が見えている端末なら同じ経路で地球も必ず見える。DOM側の<video>はデコード源＋保険としてそのまま残す */
+  if(BG_VIDEO_ONLY){
+    try{
+      const _v=window.__bgvEl||(window.__bgvEl=document.getElementById('bgVideo'));
+      if(_v&&_v.readyState>=2&&_v.videoWidth){
+        const vw=_v.videoWidth,vh=_v.videoHeight;
+        const s=Math.max(W/vw,H/vh),dw=vw*s,dh=vh*s;
+        ctx.drawImage(_v,(W-dw)/2,(H-dh)/2,dw,dh);
+      }
+    }catch(e){ if(!window.__drawErr)window.__drawErr='vid:'+String(e&&e.message||e).slice(0,180); }
+  }
   if(!BG_VIDEO_ONLY && bgCanvas){
     const D=bgCanvas.width;
     ctx.save(); ctx.translate(W/2,H/2);
