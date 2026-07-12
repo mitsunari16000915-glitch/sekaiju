@@ -27,7 +27,7 @@
   html,body { height:100%; overflow:hidden; background:#05070d; }
   /* ver.3.2: 最奥の地球レイヤー（星・太陽・樹はこの上に重なる） */
   #bgVideo{ position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
-    pointer-events:none; filter:brightness(0.78) saturate(0.92); }
+    pointer-events:none; filter:brightness(0.95) saturate(0.96); }   /* ver.3.5: 地球の動きが見えるよう明るく */
   body { font-family:'Noto Serif JP','Yu Mincho',serif; color:var(--pearl); font-feature-settings:"palt"; }
   #cv { position:fixed; inset:0; display:block; touch-action:none; cursor:grab; background:transparent; z-index:1; }
   #cv.drag { cursor:grabbing; }
@@ -306,13 +306,13 @@
 </style>
 </head>
 <body>
-<video id="bgVideo" src="chikyu.mp4" muted loop playsinline autoplay preload="auto"></video>
+<video id="bgVideo" src="chikyu.mp4" muted loop playsinline webkit-playsinline autoplay preload="auto" disableremoteplayback></video>
 <canvas id="cv"></canvas>
 
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.4</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.5</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1342,7 +1342,7 @@ function buildBackground(){
   const g=bgCanvas.getContext('2d');
   /* 深宇宙のグラデーション（ver.3.2: 最奥の地球movが透けるよう半透明の帳に。より暗く・奥行き重視） */
   g.clearRect(0,0,D,D);
-  g.fillStyle='rgba(4,6,12,0.46)'; g.fillRect(0,0,D,D);
+  g.fillStyle='rgba(4,6,12,0.28)'; g.fillRect(0,0,D,D);   // ver.3.5: 地球が見えるよう帳を薄く
   const grad=g.createRadialGradient(D/2,D/2,40, D/2,D/2,D*0.62);
   grad.addColorStop(0,'rgba(38,44,84,0.26)');
   grad.addColorStop(0.35,'rgba(24,29,58,0.16)');
@@ -1359,7 +1359,7 @@ function buildBackground(){
   });
   /* 周辺減光＝縁を暗く沈めて奥行きを出す（ver.3.2） */
   const vg=g.createRadialGradient(D/2,D/2,D*0.20, D/2,D/2,D*0.55);
-  vg.addColorStop(0,'rgba(2,3,8,0)'); vg.addColorStop(1,'rgba(2,3,8,0.60)');
+  vg.addColorStop(0,'rgba(2,3,8,0)'); vg.addColorStop(1,'rgba(2,3,8,0.42)');   // ver.3.5: 減光を弱めて動画を活かす
   g.fillStyle=vg; g.fillRect(0,0,D,D);
   /* 樹を囲む淡い金の同心リング（ver.2.6: 参照画像の意匠。回転中心と同心＝回転しても不変） */
   g.strokeStyle='#c9a961'; g.lineCap='round';
@@ -2179,8 +2179,14 @@ $('panelToggle').onclick=()=>$('panel').classList.toggle('mob-open');
 /* ver.3.2: 最奥の地球レイヤー（chikyu.mp4）。master直開き時は 世界樹_web/ 配下へフォールバック。
    自動再生がブロックされたら初回操作で開始（BGMと同じ流儀） */
 const bgv=document.getElementById('bgVideo');
+bgv.muted=true;   // ver.3.5: iOSは属性だけでなくプロパティ側のmutedも必要なことがある
 bgv.addEventListener('error',()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bgv.src='世界樹_web/chikyu.mp4'; bgv.load(); bgv.play().catch(()=>{}); } });
-addEventListener('pointerdown',()=>{ if(bgv.paused) bgv.play().catch(()=>{}); });
+const bgvKick=()=>{ if(bgv.paused&&!document.hidden) bgv.play().catch(()=>{}); };
+addEventListener('pointerdown',bgvKick);
+bgv.addEventListener('loadeddata',bgvKick);
+addEventListener('visibilitychange',bgvKick);
+addEventListener('pageshow',bgvKick);
+setInterval(bgvKick,3000);   // ver.3.5: 何があっても3秒ごとに再生を試みる（Low Power Mode解除後など）
 
 /* ver.2.8: キャッシュ回避リロード＝ランダム4桁のクエリを付けて読み直す（F5が使えないPC向け） */
 $('reloadBtn').onclick=()=>{
@@ -2629,14 +2635,20 @@ addEventListener('pointermove',presWake);
 addEventListener('keydown',e=>{ if(pres.on&&e.key==='Escape'){ presStop(); return; } presWake(); });
 function spawnPresText(p){
   if(pres.texts.length>10)pres.texts.shift();
-  /* 中央（樹）は混雑して読めないので避け、左右の余白と上下の帯に出す */
-  const r=Math.random(); let px,py;
-  if(r<0.34){ px=0.03+Math.random()*0.15; py=0.12+Math.random()*0.72; }        // 左の余白
-  else if(r<0.68){ px=0.60+Math.random()*0.16; py=0.12+Math.random()*0.72; }   // 右の余白
-  else if(r<0.85){ px=0.08+Math.random()*0.72; py=0.045+Math.random()*0.09; }  // 上の帯
-  else { px=0.08+Math.random()*0.72; py=0.80+Math.random()*0.12; }             // 下の帯
-  pres.texts.push({name:p.name,yr:p.yr,x:px,y:py,
-    t:0,dur:5600+Math.random()*3000,s:17+Math.random()*11});                   // フォント大きめ
+  /* ver.3.5〔鈴木様指示〕: 比較的中央を中心に上下左右へ散らし、必ず画面内に収める。
+     文字幅を概算し（CJK≒1em・数字≒0.62em）、はみ出すなら縮小＆座標クランプ */
+  let fs=17+Math.random()*11;
+  const unit=String(p.yr).length*0.62+1.2+p.name.length;
+  if(fs*unit>W*0.94) fs=Math.max(12,(W*0.94)/unit);   // 幅狭端末では長い課題名を自動縮小
+  const est=fs*unit;
+  const cx=0.5+(Math.random()-0.5)*0.66;              // 中央±33%に散らす
+  const cy=0.5+(Math.random()-0.5)*0.58;              // 中央±29%
+  let x=cx*W-est/2;
+  x=Math.max(10,Math.min(W-est-10,x));
+  let y=cy*H;
+  y=Math.max(H*0.10,Math.min(H*0.86,y));              // topbar・年表バーを避ける
+  pres.texts.push({name:p.name,yr:p.yr,x:x/W,y:y/H,
+    t:0,dur:5600+Math.random()*3000,s:fs});
 }
 
 setTimeout(()=>toast('▶ を押すと、2026年から2080年へ ── 葉が色づいていきます'),2500);
