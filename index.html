@@ -322,7 +322,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.2</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.3</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1552,6 +1552,7 @@ function project(p,sway){
 }
 
 /* --- 状態 --- */
+const BG_VIDEO_ONLY=true;   // ver.4.3: 背景を地球動画のみに（宇宙canvas・太陽を停止）〔鈴木様指示〕。falseで旧宇宙背景に戻る
 const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','norm','mind']),
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
   pointMode:false,pointSize:5};
@@ -1788,16 +1789,19 @@ function frame(t){
     if(time>pres.hideAt)document.body.classList.add('pres-hide');
   }
 
-  /* 深宇宙（世界樹と逆方向にごくゆっくり回転＝奥行き） */
-  if(bgCanvas){
+  /* ver.4.3: 背景は地球動画のみ〔鈴木様指示〕。
+     旧実装はclearRectせず半透明の宇宙canvasを毎フレーム上塗り→αが蓄積して不透明化し動画を完全に塞いでいた（PC/スマホとも地球が見えない真因）。
+     宇宙canvas・太陽を復活させる場合は、必ず毎フレームclearRectしてから半透明で描くこと */
+  ctx.clearRect(0,0,W,H);
+  if(!BG_VIDEO_ONLY && bgCanvas){
     const D=bgCanvas.width;
     ctx.save(); ctx.translate(W/2,H/2);
     ctx.rotate(-cam.yaw*0.15 - time*0.0000022);
     ctx.drawImage(bgCanvas,-D/2,-D/2);
     ctx.restore();
-  } else ctx.clearRect(0,0,W,H);
-  /* 太陽（樹の背後を巡る） */
-  try{ drawSun(dt); }catch(e){ if(!window.__drawErr)window.__drawErr='sun:'+String(e&&e.message||e).slice(0,180); }   // ver.3.8
+  }
+  /* 太陽（樹の背後を巡る）— 動画のみモードでは描かない */
+  if(!BG_VIDEO_ONLY){ try{ drawSun(dt); }catch(e){ if(!window.__drawErr)window.__drawErr='sun:'+String(e&&e.message||e).slice(0,180); } }   // ver.3.8
   /* 点描モード: 樹の描画をオフスクリーンへ（宇宙と太陽はそのまま） */
   if(state.pointMode){ ensureScene(); sctx.clearRect(0,0,sceneCv.width,sceneCv.height); ctx=sctx; }
 
