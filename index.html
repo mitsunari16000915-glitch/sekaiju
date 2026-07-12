@@ -312,7 +312,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.3</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.4</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1328,6 +1328,11 @@ function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
 }
 addEventListener('resize',resize);
+/* ver.3.4: iOSはURLバーの伸縮でwindow.resizeが飛ばないことがある→visualViewportも監視。
+   さらに読み込み直後のレイアウト確定後にもう一度フィットを取り直す（実機の初期ズレ対策） */
+if(window.visualViewport) visualViewport.addEventListener('resize',()=>resize());
+setTimeout(()=>{ try{resize();}catch(e){} },900);
+setTimeout(()=>{ try{resize();}catch(e){} },2500);
 
 /* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
 function buildBackground(){
@@ -1408,7 +1413,7 @@ const camTargets={
   fruit:{yaw:2.1,pitch:0.28,dist:430,ty:355}
 };
 let camAnim=null;
-function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; autoRot=false; updateRotBtn(); }
+function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; camTouched=(k!=='all'); autoRot=false; updateRotBtn(); }   // ver.3.4: 全景なら吸着を再開
 
 /* ver.2.5→3.3: 縦長・狭小画面では全景が収まる距離を実測の反復で自動調整。
    ver.3.3〔鈴木様指示〕: ①倍率1.30→1.55の「思いっきり引き」 ②樹の投影バウンディング中心が
@@ -1443,9 +1448,22 @@ function fitAllDist(){
     if(!m.r) break;
     const f=760/d, cp=Math.cos(cam.pitch)||1;
     ty+=(H/2-m.cY)/(cp*f);
+    ty=Math.max(-200,Math.min(900,ty));   // ver.3.4: 発散防止クランプ
   }
   cam.dist=saveD; cam.ty=saveTy;
   return {dist:Math.round(d), ty:Math.round(ty)};
+}
+
+/* ver.3.4: 自己修復カメラ〔鈴木様の実機報告「木がかなりズレている」対応〕
+   一発の初期計算に頼らず、ユーザーがカメラを操作するまで毎フレーム全景位置へ吸着し続ける。
+   iOSのURLバー変動・読み込み順序・回転など、どんな初期化タイミングでも数瞬で正しい構図に収束する */
+let camTouched=false;   // ドラッグ/ピンチ/ホイール/ズーム/パン/視点プリセットで true
+function camGlue(){
+  if(camTouched||pres.on||camAnim) return;
+  if(W/H>=1.05) return;                       // デスクトップは従来どおり
+  const t=camTargets.all;
+  cam.dist+=(t.dist-cam.dist)*0.18;
+  cam.ty  +=(t.ty  -cam.ty  )*0.18;
 }
 
 function project(p,sway){
@@ -1670,6 +1688,7 @@ function frame(t){
     ['yaw','pitch','dist','ty'].forEach(kk=>{cam[kk]=camAnim.from[kk]+(camAnim.to[kk]-camAnim.from[kk])*k;});
     if(camAnim.t>=1)camAnim=null; }
   else if(autoRot) cam.yaw+=0.00018*dt;
+  camGlue();   // ver.3.4: 自己修復カメラ（モバイル・カメラ未操作時のみ全景へ吸着）
 
   /* 自動プレゼン: 1年＝約3.8秒でゆっくり進み、カメラは回転・角度・遠近を漂う */
   if(pres.on){
@@ -2094,6 +2113,7 @@ cv.addEventListener('pointermove',e=>{
     if(Math.abs(dx)+Math.abs(dy)>4)moved=true;
     if(pinch){drag.lx=e.clientX;drag.ly=e.clientY;return doPinch(e);}
     cam.yaw+=dx*0.005; cam.pitch=Math.max(-1.2,Math.min(1.25,cam.pitch+dy*0.004));
+    if(moved)camTouched=true;   // ver.3.4: 実ドラッグで吸着解除
     drag.x=e.clientX;drag.y=e.clientY; autoRot=false;updateRotBtn(); cv.classList.add('drag');
   }
   if(!drag){ state.hover=pickAt(e.clientX,e.clientY); cv.style.cursor=state.hover?'pointer':'grab'; }
@@ -2102,6 +2122,7 @@ function doPinch(){ if(!drag||!pinch||pinch.x2===undefined)return;
   const d=Math.hypot((pinch.x2-(drag.lx||drag.x)),(pinch.y2-(drag.ly||drag.y)));
   if(pinch.d0===0){pinch.d0=d;return;}
   cam.dist=Math.max(180,Math.min(4800,cam.dist*(pinch.d0/d)));   // ver.3.0: 上限を全景距離より奥へ（スマホで全景が壊れないように）
+  camTouched=true;   // ver.3.4
   pinch.d0=d;
 }
 cv.addEventListener('pointercancel',()=>{drag=null;pinch=null;cv.classList.remove('drag');});
@@ -2116,7 +2137,7 @@ cv.addEventListener('pointerup',e=>{
   }
 });
 cv.addEventListener('wheel',e=>{e.preventDefault();
-  cam.dist=Math.max(180,Math.min(4800,cam.dist*(1+Math.sign(e.deltaY)*0.09))); autoRot=false;updateRotBtn();},{passive:false});
+  cam.dist=Math.max(180,Math.min(4800,cam.dist*(1+Math.sign(e.deltaY)*0.09))); camTouched=true; autoRot=false;updateRotBtn();},{passive:false});
 function pickAt(mx,my){
   let best=null,bd=18;
   nodes.forEach(n=>{ if(n.hid||!n.pick||n._sx===undefined)return;
@@ -2528,6 +2549,7 @@ $('domLightBtn').onclick=()=>{ domain.show=!domain.show; updateDomLightBtn(); };
 
 /* 画面移動（↑↓←→・⌂でリセット。押し続けで連続移動） */
 function panView(dir){
+  camTouched=true;   // ver.3.4
   const st=46*(cam.dist/880);
   if(dir==='up')cam.ty+=st;
   else if(dir==='down')cam.ty-=st;
@@ -2547,6 +2569,7 @@ function zoomView(k){
   if(k==='fit'){ flyTo('all'); return; }
   const f=(k==='in')?1/1.055:1.055;
   cam.dist=Math.max(180,Math.min(4800,cam.dist*f));
+  camTouched=true;   // ver.3.4
   autoRot=false; updateRotBtn();
 }
 document.querySelectorAll('.zm').forEach(b=>{
@@ -2586,6 +2609,7 @@ function presStart(){
   pres.on=true; pres.yearMs=0; pres.target=null; pres.texts.length=0;
   document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
   pres.savedBias=state.labelBias; state.labelBias=3.2;   // ver.3.3: プレゼン中は文字表示を最大増に〔鈴木様指示〕
+  camTouched=true;   // ver.3.4: プレゼンのカメラ漂いと吸着の競合を防ぐ
   if(playing){ clearInterval(playTimer); playing=false; $('tlPlay').textContent='▶'; }
   autoRot=false; updateRotBtn();
   setYear(2026);
