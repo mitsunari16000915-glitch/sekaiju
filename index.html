@@ -322,7 +322,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.9</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.0</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -393,9 +393,9 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ver.3.7: 表示時の説明ガイド -->
+<!-- ver.3.7→4.0: 表示時の質問ダイアログ（汎用） -->
 <div class="ask" id="askGuide">
-  <div class="q">簡単に説明を聞きますか？</div>
+  <div class="q" id="askQ">簡単に説明を聞きますか？</div>
   <div><div class="vbtn" id="askYes">はい</div><div class="vbtn" id="askNo">いいえ</div></div>
 </div>
 
@@ -2749,16 +2749,29 @@ const GUIDE=[
   '美しい音楽と共にお楽しみください'
 ];
 let askShown=false, guideTimers=[];
-function showAskGuide(){
-  if(askShown) return; askShown=true;
-  setTimeout(()=>$('askGuide').classList.add('show'),1400);
+/* ver.4.0: 質問ダイアログの汎用化（説明→課題表示の2段質問）〔鈴木様指示〕 */
+function askDialog(q,onYes,onNo){
+  $('askQ').textContent=q;
+  $('askGuide').classList.add('show');
+  $('askYes').onclick=()=>{ $('askGuide').classList.remove('show'); if(onYes)onYes(); };
+  $('askNo').onclick =()=>{ $('askGuide').classList.remove('show'); if(onNo)onNo(); };
+}
+function askLabels(){
+  askDialog('すべての社会課題を表示しますか？',
+    ()=>{ state.labelBias=3.2; toast('文字表示 320%（すべての課題名が表示されます）'); },
+    ()=>{ state.labelBias=2.0; toast('文字表示 200%'); });
 }
 function playGuide(list){
   guideTimers.forEach(clearTimeout); guideTimers=[];
   list.forEach((m,i)=>guideTimers.push(setTimeout(()=>toast(m), i*3900)));
 }
-$('askYes').onclick=()=>{ $('askGuide').classList.remove('show'); playGuide(GUIDE); };
-$('askNo').onclick =()=>{ $('askGuide').classList.remove('show'); toast(GUIDE[5]); };
+function showAskGuide(){
+  if(askShown) return; askShown=true;
+  setTimeout(()=>askDialog('簡単に説明を聞きますか？',
+    ()=>{ playGuide(GUIDE); guideTimers.push(setTimeout(askLabels, GUIDE.length*3900+700)); },   // 説明の後に2問目
+    ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       // 挨拶の後に2問目
+  ),1400);
+}
 </script>
 </body>
 </html>
