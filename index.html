@@ -26,10 +26,11 @@
   }
   html,body { height:100%; overflow:hidden; background:#05070d; }
   /* ver.3.2: 最奥の地球レイヤー（星・太陽・樹はこの上に重なる） */
-  #bgVideo{ position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+  #bgVideo{ position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; object-fit:cover; z-index:0;   /* ver.3.9: inset非対応環境対策でロングハンド */
     pointer-events:none; filter:brightness(0.95) saturate(0.96); }   /* ver.3.5: 地球の動きが見えるよう明るく */
   body { font-family:'Noto Serif JP','Yu Mincho',serif; color:var(--pearl); font-feature-settings:"palt"; }
-  #cv { position:fixed; inset:0; display:block; touch-action:none; cursor:grab; background:transparent; z-index:1; }
+  #cv { position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; display:block;
+    touch-action:none; cursor:grab; background:transparent; z-index:1; }   /* ver.3.9: inset非対応環境ではcanvasがビットマップ実寸(DPR倍)で表示され右下ズレの原因になっていた */
   #cv.drag { cursor:grabbing; }
 
   .topbar { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center;
@@ -152,7 +153,7 @@
   .tl-era { font-size:9px; color:var(--gold); letter-spacing:0.2em; margin-top:1px;
     font-family:'Cormorant Garamond',serif; }
 
-  .intro { position:fixed; inset:0; z-index:50; background:rgba(14,11,5,0.93);
+  .intro { position:fixed; top:0; left:0; right:0; bottom:0; z-index:50; background:rgba(14,11,5,0.93);
     display:flex; align-items:center; justify-content:center; padding:20px; }
   .intro-card { max-width:640px; max-height:92vh; overflow-y:auto; background:rgba(24,19,10,0.97);
     border:1px solid rgba(201,169,97,0.5); border-radius:8px; padding:34px 38px; }
@@ -300,7 +301,7 @@
   .dpad .dp{ flex:none; padding:4px 0; user-select:none; touch-action:none; }
 
   /* 全画面ヒートマップ */
-  .hmview{ position:fixed; inset:0; z-index:60; display:none; flex-direction:column;
+  .hmview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:60; display:none; flex-direction:column;
     background:radial-gradient(ellipse at center, #10131f 0%, #070911 75%); padding:12px 16px 8px; }
   .hmview.show{ display:flex; }
   .hmv-top{ display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -321,7 +322,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.8</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.3.9</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1334,6 +1335,8 @@ function ensureScene(){
 }
 function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; bctx.setTransform(DPR,0,0,DPR,0,0);
+  cv.style.width=W+'px'; cv.style.height=H+'px';   // ver.3.9: JSでもCSSサイズを強制（CSS任せにしない最終保証）
+  const _bv=document.getElementById('bgVideo'); if(_bv){ _bv.style.width=W+'px'; _bv.style.height=H+'px'; }
   CX = W<=900 ? 0.5 : 0.435;   // 解決ログ非表示のモバイルでは樹を中央に
   buildBackground();
   try{ if(nodes.length){
@@ -1371,12 +1374,14 @@ if(location.search.indexOf('debug')>=0){
       if(n)bb=Math.round((mnX+mxX)/2)+','+Math.round((mnY+mxY)/2)+' (ideal '+Math.round(W/2)+','+Math.round(H/2)+')';
     }catch(_){}
     const age=Math.round(performance.now()-lastT);
+    const cr=cv.getBoundingClientRect();
     dbg.textContent='W×H '+W+'×'+H+'  inner '+innerWidth+'×'+innerHeight
+      +'\ncv要素 '+Math.round(cr.width)+'×'+Math.round(cr.height)+' @'+Math.round(cr.left)+','+Math.round(cr.top)
       +'\nvv '+(vv?(Math.round(vv.width)+'×'+Math.round(vv.height)+' scale '+vv.scale.toFixed(2)):'-')
       +'\ncam d'+Math.round(cam.dist)+' ty'+Math.round(cam.ty)+'  SO '+Math.round(SOX)+','+Math.round(SOY)
       +'\nbbox中心 '+bb
       +'\nloop '+(age<200?'生きてる':'停滞')+' +'+age+'ms  touched '+camTouched
-      +'\nERR '+(window.__frameErr||window.__drawErr||window.__lastErr||'なし')+'  ver.3.8'; },500);
+      +'\nERR '+(window.__frameErr||window.__drawErr||window.__lastErr||'なし')+'  ver.3.9'; },500);
 }
 
 /* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
