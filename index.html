@@ -322,7 +322,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.1</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.2</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -1555,6 +1555,7 @@ function project(p,sway){
 const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','norm','mind']),
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
   pointMode:false,pointSize:5};
+if(W/H>=1.05) state.labelBias=3.0;   // ver.4.2: PC（横長）は既定の文字表示を300%に〔鈴木様指示〕。スマホは従来どおり
 function visibleP(p){
   if(!state.clusters.has(p.ci))return false;
   if(!state.elems.has(p.elem))return false;
