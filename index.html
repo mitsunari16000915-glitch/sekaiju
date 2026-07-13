@@ -233,6 +233,24 @@
   .path-btn .pb-sub{ font-size:10.5px; color:var(--pearl-mid); letter-spacing:0.03em; text-align:center; }
   .mini-link{ text-align:center; font-size:11.5px; color:var(--muted); cursor:pointer;
     letter-spacing:0.06em; padding:8px; } .mini-link:hover{ color:var(--gold-soft); }
+  /* ver.4.8: タイトル画面の「世界樹とは」を分かりやすいボタンに */
+  .what-btn{ display:flex; align-items:center; justify-content:center; gap:9px; width:100%;
+    margin-top:4px; padding:13px 16px; cursor:pointer; font-family:inherit;
+    background:rgba(201,169,97,0.05); border:1px solid rgba(201,169,97,0.3); border-radius:6px;
+    color:var(--pearl-mid); font-size:13px; letter-spacing:0.08em; transition:all .18s; }
+  .what-btn:hover{ background:rgba(201,169,97,0.14); border-color:var(--gold); color:var(--gold-soft);
+    transform:translateY(-1px); }
+  .what-btn .wb-ic{ font-size:17px; color:var(--gold-soft); line-height:1; }
+  .what-btn .wb-ttl{ font-weight:700; }
+  /* ver.4.8: 世界樹の物語（エッセイ）ブロック */
+  .tree-essay{ border:1px solid rgba(201,169,97,0.3); border-radius:8px; padding:20px 22px;
+    background:rgba(201,169,97,0.05); margin-bottom:20px; }
+  .tree-essay .te-h{ font-size:18px; font-weight:900; letter-spacing:0.14em; color:var(--gold-soft);
+    text-align:center; margin-bottom:14px; }
+  .tree-essay p{ font-size:13px; line-height:2.0; color:var(--pearl); margin:0 0 12px;
+    text-indent:1em; }
+  .tree-essay p:last-child{ margin-bottom:0; }
+  .tree-essay p b{ color:var(--gold-soft); font-weight:700; }
   .back-link{ font-size:11.5px; color:var(--muted); cursor:pointer; letter-spacing:0.06em;
     margin-bottom:10px; display:inline-block; } .back-link:hover{ color:var(--gold-soft); }
 
@@ -345,7 +363,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.7</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.8</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -472,7 +490,7 @@
           <span class="pb-sub">設定なしで全体像を眺める</span>
         </button>
       </div>
-      <div class="mini-link" id="whatLink">？ 世界樹とは ── 根・幹・枝・葉・果実の読み方</div>
+      <button class="what-btn" id="whatLink"><span class="wb-ic">❦</span><span class="wb-ttl">世界樹とは</span><span style="color:var(--muted);font-size:11px">── 物語と、根・幹・枝・葉・果実の読み方</span></button>
     </div>
 
     <!-- ===== STEP 1 : キーワード入力 ===== -->
@@ -525,19 +543,21 @@
     <!-- ===== 世界樹とは（ヘルプ） ===== -->
     <div class="istep" id="stepHelp" style="display:none">
       <div class="back-link" data-to="step0">‹ 戻る</div>
-      <div class="eyebrow">HOW TO READ · 世界樹の読み方</div>
-      <h2 class="istep-h">根・幹・枝・葉・果実</h2>
+      <div class="eyebrow">THE WORLD TREE · 世界樹とは</div>
+      <div class="tree-essay">
+        <div class="te-h">● 世界樹</div>
+        <p>世界は構造でできている。構造を紐解いた者、あるいはその構造に必要とされた者が変革者の如く行動した結果、世界は彼らを「英雄」と呼ぶのだ。</p>
+        <p>しかし彼らはその時代の英雄であって同時に次の世代の敵ともなり得る。人の世界樹はそうして少しづつ生長してきたのだ。</p>
+        <p>世界樹が育ててきた実がどんな色でどんな味か・・・それは後世、その実を口にする人類からの評価を待つしかない。</p>
+        <p><b>すべての構造は、常に変化と揺らぎをもって世界観を生み出している。技術、営み、規範、意識──その時代の多くの者たちの集合体で、それらは世界樹を育てるための養分となる。</b></p>
+      </div>
+      <h2 class="istep-h" style="font-size:19px">根・幹・枝・葉・果実 の読み方</h2>
       <div class="intro-rule">
         <span class="num">根</span><span><b>地下の根＝課題の原因。</b>7つの太根（クラスター）から35の支根、その先に250の課題が細根として茂る。</span>
         <span class="num">幹</span><span><b>幹は時間の積層。</b>最下段は「過去の構造（変えられない）」、以下「現在」「5〜10年」「10〜30年」「30年〜」の五層。</span>
         <span class="num">枝</span><span><b>7本の大枝＝7つの課題群。</b>そこから35のサブ要素の中枝が伸び、先端は変化の駆動要素──「技術」「生産体制」「意識」「規範」の色を持つ。<b>解決時期が遅いサブ要素ほど大枝の先に付き、「規範」の中枝は最も未来側にしか生えない。</b></span>
         <span class="num">葉</span><span><b>葉＝課題が解決された未来。</b>はじめは薄い金色。<b>下の年表バーを未来へ進める（▶で自動再生）と、解決年を迎えた葉がその課題のテーマ色に染まっていきます。</b>葉を選ぶと根から葉への道筋が金色に灯る。大きな課題ほど、葉も大きく描かれる。</span>
         <span class="num">実</span><span><b>規範が加わった枝には果実が実る（2056年〜）。</b>成果＝金の果実、新たな課題＝腐った果実。腐果は地に落ち、土に還り、<b>次の世界樹を育てる養分</b>になる。</span>
-      </div>
-      <div class="intro-ops">
-        世界は構造でできている。構造を紐解いた者、あるいは自然とその構造のお眼鏡に叶った者が変革者の如く行動と結果を残し、世界は彼らを英雄という。<br>
-        しかし彼らはその時代の英雄であって同時に次の世代の敵でもある。世界樹が育ててきた実がどんな色でどんな味か・・・それは後世、食す人類からの評価を待つしかない。<br>
-        <b>すべての構造は常に変化と揺らぎをもって世界を成しているのだ。</b>
       </div>
       <button class="intro-btn" data-to="step0" style="margin-top:16px">戻 る</button>
     </div>
