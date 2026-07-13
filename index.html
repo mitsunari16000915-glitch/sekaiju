@@ -339,13 +339,13 @@
 </style>
 </head>
 <body>
-<video id="bgVideo" src="chikyu.mp4" muted loop playsinline webkit-playsinline autoplay preload="auto" disableremoteplayback></video>
+<video id="bgVideo" src="bg_stock179523945.mp4" muted loop playsinline webkit-playsinline autoplay preload="auto" disableremoteplayback></video>
 <canvas id="cv"></canvas>
 
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.6</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.7</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -2332,7 +2332,10 @@ $('panelToggle').onclick=()=>$('panel').classList.toggle('mob-open');
    自動再生がブロックされたら初回操作で開始（BGMと同じ流儀） */
 const bgv=document.getElementById('bgVideo');
 bgv.muted=true;   // ver.3.5: iOSは属性だけでなくプロパティ側のmutedも必要なことがある
-bgv.addEventListener('error',()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bgv.src='世界樹_web/chikyu.mp4'; bgv.load(); bgv.play().catch(()=>{}); } });
+const BGV_DEFAULT='bg_stock179523945.mp4';   // ver.4.7: 全公開の既定映像〔鈴木様選定・AdobeStock 179523945〕
+const bgvFallback=()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bgv.src='世界樹_web/'+BGV_DEFAULT; bgv.load(); bgv.play().catch(()=>{}); } };
+bgv.addEventListener('error',bgvFallback);
+if(bgv.error) bgvFallback();   // ver.4.7: リスナー登録前にエラー済みのケース（master直開き・ローカルHTTP）を救済
 
 /* ================================================================
    ver.4.6: 背景映像の管理画面（URLに ?admin を付けた時のみ表示）
@@ -2342,17 +2345,18 @@ bgv.addEventListener('error',()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bg
    - ローカルファイル試写はアップロード不要（blob URL・保存は不可＝その場限り）
 ================================================================ */
 const BG_VIDEOS=[
-  {key:'chikyu', name:'地球（青い惑星・現行）', src:'chikyu.mp4'},
+  {key:'stock1795', name:'蒼の光霧（現行・AdobeStock）', src:'bg_stock179523945.mp4'},
+  {key:'chikyu', name:'地球（青い惑星）', src:'chikyu.mp4'},
   {key:'none',   name:'映像なし（漆黒の宇宙）', src:''}
 ];
 const BGV_LS='yg_bgv_src';
 function applyBgv(src){
   if(!src){ try{bgv.pause();}catch(e){} bgv.removeAttribute('src'); try{bgv.load();}catch(e){} return; }
-  bgv.dataset.alt = (src==='chikyu.mp4') ? '' : '1';   // 既定以外はerrorフォールバック（chikyu強制復帰）を無効化
+  bgv.dataset.alt = (src===BGV_DEFAULT) ? '' : '1';   // 既定以外はerrorフォールバック（既定強制復帰）を無効化
   bgv.src=src; try{bgv.load();}catch(e){} bgv.play().catch(()=>{});
 }
 /* 起動時: この端末に保存された既定があれば適用 */
-try{ const _sv=localStorage.getItem(BGV_LS); if(_sv!==null && _sv!=='chikyu.mp4') applyBgv(_sv); }catch(e){}
+try{ const _sv=localStorage.getItem(BGV_LS); if(_sv!==null && _sv!==BGV_DEFAULT) applyBgv(_sv); }catch(e){}
 if(location.search.indexOf('admin')>=0)(function buildBgvAdmin(){
   let cur={src:bgv.getAttribute('src')||'', blob:false};
   const p=document.createElement('div'); p.id='bgvAdmin';
@@ -2377,7 +2381,7 @@ if(location.search.indexOf('admin')>=0)(function buildBgvAdmin(){
   p.querySelector('#bgvUrlGo').addEventListener('click',()=>{ const u=p.querySelector('#bgvUrl').value.trim(); if(u){ cur={src:u,blob:false}; applyBgv(u); } });
   p.querySelector('#bgvFile').addEventListener('change',e=>{ const f=e.target.files&&e.target.files[0]; if(f){ const u=URL.createObjectURL(f); cur={src:u,blob:true}; applyBgv(u); } });
   p.querySelector('#bgvSave').addEventListener('click',()=>{ if(cur.blob){ alert('ローカル試写は保存できません（ファイルをClaudeに渡して本番配置してください）'); return; } try{ localStorage.setItem(BGV_LS,cur.src); alert('この端末の既定として保存しました'); }catch(e){} });
-  p.querySelector('#bgvReset').addEventListener('click',()=>{ try{ localStorage.removeItem(BGV_LS); }catch(e){} cur={src:'chikyu.mp4',blob:false}; applyBgv('chikyu.mp4'); const r0=p.querySelector('input[name=bgvSel]'); if(r0)r0.checked=true; });
+  p.querySelector('#bgvReset').addEventListener('click',()=>{ try{ localStorage.removeItem(BGV_LS); }catch(e){} cur={src:BGV_DEFAULT,blob:false}; applyBgv(BGV_DEFAULT); const r0=p.querySelector('input[name=bgvSel][value="'+BGV_DEFAULT+'"]')||p.querySelector('input[name=bgvSel]'); if(r0)r0.checked=true; });
   p.querySelector('#bgvAdmClose').addEventListener('click',()=>{ p.remove(); });
   setInterval(()=>{ const s=p.querySelector('#bgvStat'); if(!s)return;
     s.textContent='状態: '+(bgv.getAttribute('src')?((bgv.paused?'停止':'再生中')+' rs'+bgv.readyState+(bgv.videoWidth?' '+bgv.videoWidth+'×'+bgv.videoHeight:' 未デコード')+' t'+bgv.currentTime.toFixed(1)):'映像なし')
