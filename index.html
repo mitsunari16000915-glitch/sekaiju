@@ -422,6 +422,56 @@
   .nw-ttl:hover{ color:var(--gold-soft); text-decoration:underline; }
   .nw-sum{ font-size:11px; color:var(--pearl-mid); line-height:1.75; }
   .nw-meta{ font-size:9.5px; color:var(--muted); margin-top:4px; letter-spacing:0.03em; }
+
+  /* ===== ver.5.1: 未来知のブレ ===== */
+  .rev-notice{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:8px 0 10px;
+    padding:7px 10px; border-radius:6px; background:rgba(224,72,74,0.10);
+    border:1px solid rgba(224,72,74,0.45); }
+  .rv-msg{ font-size:11.5px; font-weight:700; color:#ff6b6d; letter-spacing:0.03em; }
+  .rv-btn{ font-size:10.5px; padding:3px 9px; border-radius:11px; cursor:pointer; font-family:inherit;
+    background:rgba(224,72,74,0.16); border:1px solid rgba(224,72,74,0.6); color:#ff8a8b;
+    transition:all .15s; }
+  .rv-btn:hover{ background:rgba(224,72,74,0.32); color:#fff; }
+  .wl-rbadge{ flex:none; font-size:9px; padding:1px 5px; border-radius:8px;
+    background:rgba(224,72,74,0.18); border:1px solid rgba(224,72,74,0.5); color:#ff8a8b; }
+
+  .dfview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:61; display:none; flex-direction:column;
+    background:radial-gradient(ellipse at top, #1a1116 0%, #08060a 78%); padding:12px 16px 8px; }
+  .dfview.show{ display:flex; }
+  .df-body{ flex:1; overflow-y:auto; overflow-x:hidden; padding:12px 0 40px; }
+  .df-track{ max-width:840px; margin:0 auto; }
+  .df-lead{ font-size:11.5px; color:var(--pearl-mid); line-height:1.9; margin-bottom:16px;
+    padding:10px 12px; border-radius:6px; background:rgba(255,255,255,0.03);
+    border-left:2px solid rgba(224,72,74,0.5); }
+  .df-item{ margin-bottom:16px; padding:14px 16px; border-radius:8px;
+    background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); }
+  .df-item.hit{ border-color:rgba(224,72,74,0.6); background:rgba(224,72,74,0.07); }
+  .df-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:7px; }
+  .df-kind{ font-size:9px; font-weight:700; padding:2px 7px; border-radius:9px; letter-spacing:0.04em; }
+  .df-kind.k1{ background:rgba(224,72,74,0.18); border:1px solid rgba(224,72,74,0.55); color:#ff8a8b; }
+  .df-kind.k2{ background:rgba(201,169,97,0.16); border:1px solid rgba(201,169,97,0.5); color:var(--gold-soft); }
+  .df-kind.k3{ background:rgba(74,138,181,0.16); border:1px solid rgba(74,138,181,0.5); color:#8fc3e8; }
+  .df-tgt{ font-size:12.5px; font-weight:700; color:var(--pearl); }
+  .df-date{ font-size:9.5px; color:var(--muted); margin-left:auto; font-family:'Cormorant Garamond',serif; }
+  .df-head{ font-size:12px; color:var(--gold-soft); font-weight:700; margin-bottom:9px; line-height:1.6; }
+  .df-ba{ display:grid; grid-template-columns:56px 1fr; gap:5px 9px; font-size:11px; line-height:1.8;
+    margin-bottom:9px; }
+  .df-ba .lb{ font-size:9px; font-weight:700; letter-spacing:0.06em; text-align:center; padding:2px 0;
+    border-radius:4px; height:fit-content; }
+  .df-ba .lb.old{ background:rgba(120,120,120,0.2); color:#9a9384; border:1px solid rgba(150,150,150,0.3); }
+  .df-ba .lb.new{ background:rgba(224,72,74,0.16); color:#ff8a8b; border:1px solid rgba(224,72,74,0.5); }
+  .df-ba .old-txt{ color:var(--muted); text-decoration:line-through; text-decoration-color:rgba(224,72,74,0.5); }
+  .df-ba .new-txt{ color:var(--pearl); }
+  .df-find{ font-size:11px; line-height:1.85; color:var(--pearl-mid); padding:8px 10px; border-radius:5px;
+    background:rgba(0,0,0,0.25); margin-bottom:8px; }
+  .df-srcs{ display:flex; flex-direction:column; gap:3px; }
+  .df-src{ font-size:10px; color:var(--muted); }
+  .df-src a{ color:#8fc3e8; text-decoration:none; }
+  .df-src a:hover{ text-decoration:underline; color:var(--gold-soft); }
+  .df-applied{ font-size:9.5px; padding:1px 6px; border-radius:8px; }
+  .df-applied.no{ background:rgba(201,169,97,0.12); border:1px solid rgba(201,169,97,0.4); color:var(--gold-soft); }
+  .df-applied.yes{ background:rgba(120,190,130,0.14); border:1px solid rgba(120,190,130,0.45); color:#9fd8a8; }
+  @media(max-width:760px){ .df-ba{ grid-template-columns:1fr; } .df-ba .lb{ width:56px; } }
 </style>
 </head>
 <body>
@@ -431,7 +481,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.0</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.1</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -443,7 +493,8 @@
     <div class="vbtn pres-cta" id="presBtn">🎬 自動プレゼン</div>
   </div>
   <div class="btnrow" style="margin-bottom:7px;">
-    <div class="vbtn" id="wlBtn">⋮ 世 界 線</div>
+    <div class="vbtn" id="wlBtn" style="flex:1 1 48%">⋮ 世 界 線</div>
+    <div class="vbtn" id="dfBtn" style="flex:1 1 48%">⚠ 未来知のブレ</div>
   </div>
   <h3 style="margin-top:0">ROOTS · 7クラスター</h3>
   <div class="chiprow" id="clusterChips"></div>
@@ -540,6 +591,19 @@
   </div>
   <div class="wl-legend" id="wlLegend"></div>
   <div class="wl-body" id="wlBody"><div class="wl-track" id="wlTrack"></div></div>
+</div>
+
+<!-- ===== ver.5.1: 未来知のブレ -DRIFT OF FUTURE KNOWLEDGE- ===== -->
+<div class="dfview" id="dfView">
+  <div class="hmv-top">
+    <div><span class="hmv-ttl" style="color:#ff8a8b">未 来 知 の ブ レ <span style="font-size:11px;color:var(--muted)">-DRIFT OF FUTURE KNOWLEDGE-</span></span>
+      <span class="hmv-kw" id="dfKw"></span></div>
+    <div class="hmv-btns">
+      <span class="hm-btn" id="dfAll">全ての記録</span>
+      <span class="hm-btn" id="dfClose">✕ 閉じる</span>
+    </div>
+  </div>
+  <div class="df-body"><div class="df-track" id="dfTrack"></div></div>
 </div>
 
 <div class="timeline">
@@ -2598,6 +2662,7 @@ function select(n,silent){
     const done=state.year>=p.yr;
     h+='<div class="d-eyebrow">'+(n.t==='leaf'?'LEAF · 解決された未来':'ROOT · 課題の原因')+'</div>';
     h+='<div class="d-title">'+p.name+'</div>';
+    h+=revNoticeHtml(p);   // ver.5.1: 再検証の赤字メッセージ＋【未来知のブレ】
     h+='<div class="d-sec" style="display:flex;align-items:baseline;gap:10px;">'
       +'<span class="d-year">'+p.yr+'</span>'
       +'<span style="font-size:11px;color:'+(done?'#e8c977':'#c8c0b0')+';">'
@@ -2647,7 +2712,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">この枝の小枝（サブ要素）</div><div class="d-txt">'+n.binfo.subs.join('<br>')+'</div></div>';
     if(n.elem==='norm')h+='<div class="d-sec"><div class="d-story">規範の枝は30年より下の層にはほとんど生えない。規範は一世代かけてしか変わらない──この枝にだけ、果実が実る。</div></div>';
   }
-  b.innerHTML=h; $('detail').classList.add('show');
+  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b);   // ver.5.1
 }
 window.jumpTo=function(i){ const n=nodes[i];
   camAnim={from:{...cam},to:{...cam,tx:0,ty:n.y,dist:Math.max(330,cam.dist*0.6)},t:0};
@@ -2740,6 +2805,43 @@ function newsHtml(p){
   }).join('')+'</div>';
   return h;
 }
+/* ================================================================
+   ver.5.1: 未来知のブレ -DRIFT OF FUTURE KNOWLEDGE-〔鈴木様指示〕
+   仮説と反証の記録。新しいエビデンスを世界樹に反映しつつ、
+   「過去にどう考えていたか」を消さずに残すための改訂台帳（revisions.json）。
+   ・課題/サブ要素に改訂があれば、詳細に赤字で「再検証により新たな知を獲得しました」
+   ・【未来知のブレ】ボタンで、旧仮説→新エビデンスの書き換え過程を表示
+   ・kind: 仮説の反証 / 数値更新 / 定義の要確認
+================================================================ */
+const REV={loaded:false, items:[], byKey:new Map()};
+function revFor(p){
+  // 課題名の改訂＋その課題が属するサブ要素の改訂（＝仮説の反証）を両方拾う
+  return [...(REV.byKey.get('problem:'+p.name)||[]), ...(REV.byKey.get('sub:'+p.sub.id)||[])];
+}
+function revNoticeHtml(p){
+  const rs=revFor(p);
+  if(!rs.length)return '';
+  return '<div class="rev-notice" data-rev-key="'+encodeURIComponent(p.name)+'">'
+    +'<span class="rv-msg">⚠ 再検証により新たな知を獲得しました</span>'
+    +'<button class="rv-btn" data-rev-open="'+encodeURIComponent(p.name)+'">【未来知のブレ】'+rs.length+'件</button></div>';
+}
+function bindRevButtons(root){
+  (root||document).querySelectorAll('[data-rev-open]').forEach(b=>{
+    b.onclick=e=>{ e.stopPropagation(); showDrift(decodeURIComponent(b.dataset.revOpen)); };
+  });
+}
+(function loadRevisions(){
+  const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
+  grab('revisions.json').catch(()=>grab('世界樹_web/revisions.json')).then(j=>{
+    REV.items=j.items||[]; REV.generated=j.generated||'';
+    REV.items.forEach(r=>{ const k=r.scope+':'+r.key;
+      if(!REV.byKey.has(k))REV.byKey.set(k,[]); REV.byKey.get(k).push(r); });
+    REV.loaded=true;
+    if($('wlView').classList.contains('show')){ const nm=wlOpenName; wlBuild(); if(nm)wlToggle(nm,true); }
+    if(state.sel)refreshDetail();
+  }).catch(()=>{ REV.loaded=false; });
+})();
+
 (function loadNews(){
   // 本番(世界樹_web/)では同階層。マスターを 01_strategy/ から開いた時は 世界樹_web/ に退避する
   const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
@@ -2809,6 +2911,7 @@ function wlBuild(){
       +'<div class="wl-main"><span class="wl-name">'+p.name+'</span>'
       +'<span class="wl-badge" style="opacity:'+Math.max(0.5,cs.op)+'">'+cs.n+'</span>'
       +(nn?'<span class="wl-nbadge" title="関連ニュース'+nn+'件">📰'+nn+'</span>':'')
+      +(revFor(p).length?'<span class="wl-rbadge" title="再検証により新たな知を獲得しました">⚠ブレ</span>':'')
       +'</div></div>'
       +'<div class="wl-det" data-d="'+encodeURIComponent(p.name)+'"></div>';
   });
@@ -2822,6 +2925,7 @@ function wlDetHtml(p){
   const cs=CONF_STYLE[p.conf]||CONF_STYLE['－'];
   const sp=SPECIAL[p.name];
   let h='<div class="dt">'+p.name+'</div>';
+  h+=revNoticeHtml(p);   // ver.5.1: 再検証の赤字メッセージ＋【未来知のブレ】
   h+='<div class="wl-conf"><b style="color:var(--gold-soft)">信頼度 '+cs.n+'</b> ── '+cs.d+'</div>';
   h+='<div class="d-tags" style="margin-bottom:8px">'+tag(p.cluster.r+' '+p.cluster.name,p.cluster.c)
     +tag(p.sub.id+' '+p.sub.n,'#c8c0b0')+tag(p.yr+'年 解決見込み','#e8c977')+'</div>';
@@ -2853,6 +2957,7 @@ function wlToggle(name,forceOpen){
   const p=problems.find(x=>x.name===name); if(!p)return;
   det.innerHTML=wlDetHtml(p); det.classList.add('open'); wlOpenName=name;
   det.onclick=e=>e.stopPropagation();   // 詳細内のクリックで行トグルが走らないように
+  bindRevButtons(det);   // ver.5.1
   const bindJumps=()=>det.querySelectorAll('.wl-jump[data-j]').forEach(b=>{
     b.onclick=()=>wlJump(decodeURIComponent(b.dataset.j)); });
   bindJumps();
@@ -2870,6 +2975,61 @@ function wlJump(name){
   row.scrollIntoView({behavior:'smooth',block:'center'});
   row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
 }
+/* ver.5.1: 未来知のブレ ── 旧仮説→新エビデンスの書き換え記録を表示
+   focusName を渡すと、その課題に関わる記録を先頭に据えて強調する（全記録も下に続く） */
+const DF_KIND_CLS={'仮説の反証':'k1','数値更新':'k2','定義の要確認':'k3'};
+function dfItemHtml(r,hit){
+  const cls=DF_KIND_CLS[r.kind]||'k3';
+  const tgt=r.scope==='sub' ? (function(){ let n=r.key;
+      DATA.forEach(cl=>cl.subs.forEach(s=>{ if(s.id===r.key)n=s.id+' '+s.n+'（サブ要素の解決仮説）'; })); return n; })()
+    : r.key;
+  let h='<div class="df-item'+(hit?' hit':'')+'">';
+  h+='<div class="df-top"><span class="df-kind '+cls+'">'+esc(r.kind)+'</span>'
+    +'<span class="df-tgt">'+esc(tgt)+'</span>'
+    +'<span class="df-applied '+(r.applied?'yes':'no')+'">'+(r.applied?'本体に反映済み':'本体未反映・判断待ち')+'</span>'
+    +'<span class="df-date">'+esc(r.date)+'</span></div>';
+  h+='<div class="df-head">'+esc(r.headline)+'</div>';
+  h+='<div class="df-ba">'
+    +'<span class="lb old">旧</span><span class="old-txt">'+esc(r.before)+'</span>'
+    +'<span class="lb new">新</span><span class="new-txt">'+esc(r.after)+'</span></div>';
+  h+='<div class="df-find">'+esc(r.finding)+'</div>';
+  if((r.sources||[]).length){
+    h+='<div class="df-srcs">'+r.sources.map(s=>
+      '<span class="df-src">▸ <a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a>'
+      +' <span style="color:var(--muted)">— '+esc(s.source)+'</span></span>').join('')+'</div>';
+  } else {
+    h+='<div class="df-src" style="color:var(--muted)">▸ 出典未確定（この点自体が要調査）</div>';
+  }
+  return h+'</div>';
+}
+function dfRender(focusName){
+  const t=$('dfTrack');
+  if(!REV.loaded||!REV.items.length){ t.innerHTML='<div class="df-lead">改訂の記録はまだありません。</div>'; return; }
+  const focus=focusName?problems.find(p=>p.name===focusName):null;
+  const hits=focus?revFor(focus):[];
+  const hitIds=new Set(hits.map(r=>r.id));
+  const rest=REV.items.filter(r=>!hitIds.has(r.id));
+  const k={}; REV.items.forEach(r=>k[r.kind]=(k[r.kind]||0)+1);
+  let h='<div class="df-lead">世界樹の仮説は「検証された予測」ではなく<b>明示された仮説</b>です。'
+    +'新しいエビデンスが見つかれば書き換えます。ただし<b>過去にどう考えていたかを消しません</b>——'
+    +'その振れ幅こそが、未来を読む営みの精度そのものだからです。<br>'
+    +'現在の記録: <b style="color:#ff8a8b">'+REV.items.length+'件</b>'
+    +'（'+Object.entries(k).map(([a,b])=>esc(a)+' '+b).join(' · ')+'）　最終更新 '+esc(REV.generated||'')+'</div>';
+  if(focus&&hits.length){
+    h+='<div style="font-size:11px;letter-spacing:0.14em;color:#ff8a8b;margin:0 0 8px;font-family:\'Cormorant Garamond\',serif">この課題に関わる記録</div>';
+    h+=hits.map(r=>dfItemHtml(r,true)).join('');
+    h+='<div style="font-size:11px;letter-spacing:0.14em;color:var(--muted);margin:22px 0 8px;font-family:\'Cormorant Garamond\',serif">その他の記録</div>';
+  }
+  h+=rest.map(r=>dfItemHtml(r,false)).join('');
+  t.innerHTML=h;
+  $('dfKw').textContent=focus?('── '+focus.name):'';
+  $('dfView').querySelector('.df-body').scrollTop=0;
+}
+function showDrift(focusName){ $('dfView').classList.add('show'); dfRender(focusName); }
+function closeDrift(){ $('dfView').classList.remove('show'); }
+$('dfClose').onclick=closeDrift;
+$('dfAll').onclick=()=>dfRender(null);
+
 function showWorldLine(){
   introEl.style.display='none'; $('hmView').classList.remove('show');
   $('wlView').classList.add('show');
@@ -2879,6 +3039,7 @@ function showWorldLine(){
 function closeWorldLine(){ $('wlView').classList.remove('show'); }
 $('wlBtn').onclick=showWorldLine;
 $('wlTree').onclick=closeWorldLine;
+$('dfBtn').onclick=()=>showDrift(null);   // ver.5.1
 
 /* 結果レンダリング */
 function renderResults(){
