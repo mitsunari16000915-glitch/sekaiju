@@ -242,6 +242,21 @@
     transform:translateY(-1px); }
   .what-btn .wb-ic{ font-size:17px; color:var(--gold-soft); line-height:1; }
   .what-btn .wb-ttl{ font-weight:700; }
+  /* ver.5.3: 7クラスターを読む */
+  .cl-list{ display:flex; flex-direction:column; gap:8px; }
+  .cl-card{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:7px;
+    text-decoration:none; cursor:pointer; transition:all .16s;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); }
+  .cl-card:hover{ background:rgba(201,169,97,0.10); transform:translateX(3px); }
+  .cl-r{ flex:none; width:30px; text-align:center; font-family:'Cormorant Garamond',serif;
+    font-size:21px; font-weight:700; line-height:1; }
+  .cl-body{ flex:1; min-width:0; }
+  .cl-n{ font-size:13.5px; font-weight:700; color:var(--pearl); margin-bottom:2px; }
+  .cl-c{ font-size:10.5px; color:var(--muted); line-height:1.6; overflow:hidden;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .cl-go{ flex:none; font-size:10px; color:var(--gold-soft); letter-spacing:0.08em; white-space:nowrap; }
+  .cl-card:hover .cl-go{ color:#fff; }
+
   /* ver.4.8: 世界樹の物語（エッセイ）ブロック */
   .tree-essay{ border:1px solid rgba(201,169,97,0.3); border-radius:8px; padding:20px 22px;
     background:rgba(201,169,97,0.05); margin-bottom:20px; }
@@ -328,10 +343,27 @@
   .hm-btn{ font-size:10.5px; padding:4px 10px; border-radius:14px; cursor:pointer;
     background:rgba(22,17,9,0.85); border:1px solid rgba(201,169,97,0.4); color:var(--pearl-mid);
     letter-spacing:0.04em; } .hm-btn:hover{ color:var(--pearl); border-color:var(--gold); }
-  .hm-tip{ position:absolute; left:10px; bottom:10px; font-size:11px; color:var(--gold-soft);
-    background:rgba(16,12,6,0.85); border:1px solid rgba(201,169,97,0.35); border-radius:4px;
-    padding:6px 10px; max-width:70%; line-height:1.5; pointer-events:none; opacity:0; transition:opacity .2s; }
+  /* ver.5.3: 文字が小さすぎたので大型パネル化〔鈴木様指示〕。ヒートマップに被ってよい */
+  .hm-tip{ position:absolute; left:14px; bottom:14px; z-index:5;
+    background:rgba(14,11,5,0.96); border:1px solid rgba(201,169,97,0.55); border-radius:8px;
+    padding:14px 18px; min-width:300px; max-width:min(440px,calc(100% - 28px));
+    box-shadow:0 8px 30px rgba(0,0,0,0.6); pointer-events:none; opacity:0; transition:opacity .18s; }
   .hm-tip.show{ opacity:1; }
+  .hmt-pair{ display:flex; flex-direction:column; gap:5px; margin-bottom:11px; }
+  .hmt-el{ font-size:15px; font-weight:700; line-height:1.45; letter-spacing:0.02em; }
+  .hmt-el .eid{ font-family:'Cormorant Garamond',serif; font-size:13px; opacity:0.8; margin-right:6px; }
+  .hmt-arrow{ font-size:11px; color:var(--muted); letter-spacing:0.1em; padding-left:2px; }
+  .hmt-rows{ border-top:1px solid rgba(201,169,97,0.28); padding-top:9px;
+    display:grid; grid-template-columns:auto 1fr; gap:5px 14px; align-items:baseline; }
+  .hmt-k{ font-size:11.5px; color:var(--muted); letter-spacing:0.04em; white-space:nowrap; }
+  .hmt-v{ font-size:15px; font-weight:700; color:var(--gold-soft); font-family:'Cormorant Garamond',serif;
+    letter-spacing:0.03em; }
+  .hmt-v .u{ font-size:11px; color:var(--pearl-mid); font-family:inherit; margin-left:2px; font-weight:400; }
+  .hmt-self{ font-size:12px; color:var(--pearl-mid); }
+  @media(max-width:760px){
+    .hm-tip{ left:8px; right:8px; bottom:8px; min-width:0; max-width:none; padding:12px 14px; }
+    .hmt-el{ font-size:13.5px; } .hmt-v{ font-size:14px; }
+  }
 
   /* 樹画面の領域ボタン */
   .dom-panel{ margin-top:8px; border-top:1px dashed rgba(201,169,97,0.25); padding-top:8px; display:none; }
@@ -481,7 +513,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.2</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.3</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -639,6 +671,7 @@
         </button>
       </div>
       <button class="what-btn" id="whatLink"><span class="wb-ic">❦</span><span class="wb-ttl">世界樹とは</span><span style="color:var(--muted);font-size:11px">── 物語と、根・幹・枝・葉・果実の読み方</span></button>
+      <button class="what-btn" id="clustersLink"><span class="wb-ic">◈</span><span class="wb-ttl">現課題｜7クラスターを読む</span><span style="color:var(--muted);font-size:11px">── 各クラスターの構造解析</span></button>
     </div>
 
     <!-- ===== STEP 1 : キーワード入力 ===== -->
@@ -686,6 +719,17 @@
           <span class="pb-sub">あなたの領域が黄金に灯ります</span>
         </button>
       </div>
+    </div>
+
+    <!-- ===== ver.5.3: 現課題｜7クラスターを読む ===== -->
+    <div class="istep" id="stepClusters" style="display:none">
+      <div class="back-link" data-to="step0">‹ 戻る</div>
+      <div class="eyebrow">CURRENT STRUCTURE · 現課題の構造解析</div>
+      <h2 class="istep-h">7クラスターを読む</h2>
+      <div class="istep-desc">世界樹の250課題は、7つの構造の崩れから生えています。<br>
+        各クラスターの<b>構造解析</b>——何が起きているのか、なぜそうなったのか——を別画面で読めます。</div>
+      <div class="cl-list" id="clList"></div>
+      <button class="intro-btn" data-to="step0" style="margin-top:18px">戻 る</button>
     </div>
 
     <!-- ===== 世界樹とは（ヘルプ） ===== -->
@@ -2727,7 +2771,7 @@ function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show')
    事業領域フロー UI ＋ 35×35 立体ヒートマップ
 ================================================================ */
 const introEl=$('intro'), introCard=$('introCard');
-const STEPS=['step0','step1','step2','stepHelp'];
+const STEPS=['step0','step1','step2','stepHelp','stepClusters'];
 function gotoStep(id){
   STEPS.forEach(s=>{const el=$(s); if(el)el.style.display = (s===id?'block':'none');});
   introCard.classList.toggle('wide', id==='step2');
@@ -2740,6 +2784,30 @@ $('pathPlain').onclick=()=>{ introEl.style.display='none'; showAskGuide(); };
 $('whatLink').onclick=()=>gotoStep('stepHelp');
 $('helpBtn').onclick=()=>gotoStep('stepHelp');
 document.querySelectorAll('[data-to]').forEach(el=>el.onclick=()=>gotoStep(el.dataset.to));
+
+/* ================================================================
+   ver.5.3: 現課題｜7クラスターを読む〔鈴木様指示〕
+   各クラスターの構造解析HTML（別途作成済み）を新しいタブで開く。
+   配信名は cluster1..7.html（元の日本語ファイル名との対応は 世界樹_web/CLUSTERS_README.md）。
+   本番では同階層、マスターを 01_strategy/ から開いた時は 世界樹_web/ に在るのでプローブで切替。
+================================================================ */
+let CL_BASE='';
+function buildClusterList(){
+  const box=$('clList'); if(!box)return;
+  box.innerHTML=DATA.map((cl,ci)=>
+    '<a class="cl-card" href="'+CL_BASE+'cluster'+(ci+1)+'.html" target="_blank" rel="noopener noreferrer">'
+    +'<span class="cl-r" style="color:'+cl.c+'">'+cl.r+'</span>'
+    +'<span class="cl-body"><span class="cl-n">'+esc(cl.name)+'</span>'
+    +'<span class="cl-c">'+esc(cl.cause)+'</span></span>'
+    +'<span class="cl-go">構造解析を読む ↗</span></a>').join('');
+}
+(function probeClusterBase(){
+  fetch('cluster1.html',{method:'HEAD'}).then(r=>{ if(!r.ok)throw 0; })
+    .catch(()=>{ CL_BASE='世界樹_web/'; })
+    .then(()=>buildClusterList());
+})();
+buildClusterList();   // プローブ前でも表示できるよう先に一度組む（解決後に貼り直す）
+$('clustersLink').onclick=()=>gotoStep('stepClusters');
 
 /* 例チップ（一般の方が自分の仕事を見つけやすい20業種） */
 const EXAMPLES=['介護・福祉','保育・子育て支援','学校・教育・塾','農業・食品','漁業・水産',
@@ -3305,8 +3373,21 @@ function hmShowTip(e,tap){
   const tip=$('hmTip');
   if(best){ const A=ELEM_LIST[best.i], B=ELEM_LIST[best.j], s=synVal(best.i,best.j);
     const eff=Math.round(((domain.elemEff&&domain.elemEff[best.i])||0)*100);
-    tip.innerHTML='<b style="color:'+A.cl.c+'">'+A.id+' '+A.n+'</b> → <b style="color:'+B.cl.c+'">'+B.id+' '+B.n+'</b>'
-      +'<br>解決シナジー '+(best.i===best.j?'（自己）':s+' / 3')+'　事業の実効関係 '+eff+'%　波及度 '+Math.round(best.P*100)+'%';
+    const self=best.i===best.j;
+    /* ver.5.3: 大きく読める構造に。行×列の要素名を主役にし、数値は単位を添えて並べる */
+    let h='<div class="hmt-pair">'
+      +'<div class="hmt-el" style="color:'+A.cl.c+'"><span class="eid">'+A.id+'</span>'+esc(A.n)+'</div>';
+    if(!self){
+      h+='<div class="hmt-arrow">↓ の解決が促進する</div>'
+        +'<div class="hmt-el" style="color:'+B.cl.c+'"><span class="eid">'+B.id+'</span>'+esc(B.n)+'</div>';
+    }
+    h+='</div><div class="hmt-rows">';
+    h+='<span class="hmt-k">解決シナジー</span>'
+      +'<span class="hmt-v">'+(self?'<span class="hmt-self">同一要素（自己）</span>':s+'<span class="u"> / 3</span>')+'</span>';
+    h+='<span class="hmt-k">事業の実効関係</span><span class="hmt-v">'+eff+'<span class="u">%</span></span>';
+    h+='<span class="hmt-k">波及度</span><span class="hmt-v">'+Math.round(best.P*100)+'<span class="u">%</span></span>';
+    h+='</div>';
+    tip.innerHTML=h;
     tip.classList.add('show'); }
   else tip.classList.remove('show');              // 何も無い所のタップ/ホバー＝閉じる
 }

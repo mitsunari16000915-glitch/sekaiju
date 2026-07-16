@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クラスターⅠ 物語・象徴構造の崩壊 — 構造解析</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep:   #0b0d14;
+    --bg-mid:    #141828;
+    --bg-soft:   #1a1f30;
+    --gold:      #c9a961;
+    --gold-soft: #e8c977;
+    --gold-deep: #8a6f47;
+    --pearl:     #f5f0e8;
+    --pearl-mid: #c8c0b0;
+    --muted:     #6b6f80;
+    --c1:        #c5292a;       /* 朱 - cluster 1 primary */
+    --c1-soft:   rgba(197,41,42,0.15);
+    --c1-mid:    #8b1c1d;
+    --c1-bright: #e74c3c;
+    --c1-deep:   #5c1213;
+  }
+
+  body {
+    font-family: 'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+    background:
+      radial-gradient(ellipse at top, #2a1a1f 0%, transparent 60%),
+      radial-gradient(ellipse at bottom, #1a1620 0%, transparent 70%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+    background-attachment: fixed;
+    color: var(--pearl);
+    line-height: 1.7;
+    padding: 80px 30px 120px;
+    font-feature-settings: "palt";
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    margin-bottom: 100px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.2);
+    position: relative;
+  }
+  .crumb {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    margin-bottom: 30px;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .crumb .active { color: var(--c1); }
+  .cluster-num {
+    display: inline-block;
+    width: 120px; height: 120px;
+    border: 2px solid var(--c1);
+    border-radius: 50%;
+    line-height: 120px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 90px;
+    font-weight: 600;
+    color: var(--c1);
+    margin-bottom: 32px;
+    background: radial-gradient(circle, rgba(197,41,42,0.2), transparent);
+    box-shadow: 0 0 60px rgba(197,41,42,0.4);
+  }
+  .eyebrow {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.6em;
+    margin-bottom: 20px;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .main-title {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    color: var(--pearl);
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+  .main-title .accent {
+    color: var(--c1);
+  }
+  .main-sub {
+    color: var(--pearl-mid);
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    font-weight: 300;
+  }
+  .deco-line {
+    width: 80px;
+    height: 1px;
+    background: var(--c1);
+    margin: 40px auto 0;
+  }
+
+  /* === SECTION === */
+  .section { margin-bottom: 140px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-num {
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    margin-bottom: 16px;
+  }
+  .section-num::before, .section-num::after {
+    content: '─';
+    margin: 0 16px;
+    color: var(--gold-deep);
+  }
+  .section-title {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pearl);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .section-desc {
+    color: var(--pearl-mid);
+    font-size: 17px;
+    letter-spacing: 0.05em;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* === FIGURE 1: 6 Components === */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .comp-card {
+    background: linear-gradient(135deg, rgba(197,41,42,0.08), rgba(0,0,0,0.3));
+    border: 1px solid rgba(197,41,42,0.3);
+    border-top: 3px solid var(--c1);
+    border-radius: 4px;
+    padding: 32px 26px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+  .comp-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--c1);
+  }
+  .comp-icon {
+    font-size: 44px;
+    color: var(--c1);
+    margin-bottom: 18px;
+    line-height: 1;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .comp-name {
+    font-size: 20px;
+    color: var(--pearl);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .comp-func {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .comp-example {
+    font-size: 13px;
+    color: var(--pearl-mid);
+    line-height: 1.6;
+    border-top: 1px solid rgba(201,169,97,0.2);
+    padding-top: 12px;
+  }
+
+  /* === FIGURE 2: 3-Layer Pyramid === */
+  .pyramid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px auto;
+    max-width: 900px;
+  }
+  .layer {
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 36px 50px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
+    border-left: 5px solid var(--col);
+    border-right: 5px solid var(--col);
+    position: relative;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  }
+  .layer-3 { width: 100%; --col: var(--c1); }
+  .layer-2 { width: 80%; --col: var(--gold); }
+  .layer-1 { width: 60%; --col: var(--c1-bright); }
+  .layer-num {
+    color: var(--col);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    margin-bottom: 8px;
+  }
+  .layer-title {
+    color: var(--pearl);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .layer-role {
+    color: var(--col);
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .layer-detail {
+    color: var(--pearl-mid);
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+  .pyramid-arrow {
+    color: var(--gold);
+    font-size: 24px;
+    margin: 4px 0;
+  }
+  .pyramid-note {
+    margin-top: 30px;
+    padding: 24px 30px;
+    background: rgba(201,169,97,0.06);
+    border-left: 3px solid var(--gold);
+    color: var(--pearl-mid);
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    max-width: 800px;
+  }
+  .pyramid-note strong { color: var(--gold); }
+
+  /* === FIGURE 3: Timeline === */
+  .timeline-wrap {
+    margin: 60px auto;
+    max-width: 1100px;
+    overflow: hidden;
+  }
+  .timeline-svg { width: 100%; height: auto; display: block; }
+
+  /* === FIGURE 4: 4 Destruction Paths === */
+  .paths-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .path-card {
+    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(197,41,42,0.08));
+    border: 1px solid rgba(197,41,42,0.3);
+    border-radius: 4px;
+    padding: 36px 32px;
+    position: relative;
+  }
+  .path-letter {
+    position: absolute;
+    top: 24px; right: 30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 600;
+    color: var(--c1);
+    opacity: 0.4;
+    line-height: 1;
+  }
+  .path-label {
+    color: var(--c1);
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    margin-bottom: 10px;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .path-title {
+    color: var(--pearl);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .path-period {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    margin-bottom: 14px;
+  }
+  .path-events {
+    list-style: none;
+    padding: 0;
+  }
+  .path-events li {
+    color: var(--pearl-mid);
+    font-size: 14px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    padding: 4px 0 4px 20px;
+    position: relative;
+  }
+  .path-events li::before {
+    content: '▶';
+    color: var(--c1);
+    position: absolute;
+    left: 0;
+    font-size: 10px;
+    top: 7px;
+  }
+
+  /* === FIGURE 5: Cascade === */
+  .cascade {
+    max-width: 880px;
+    margin: 40px auto;
+  }
+  .cas-level {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.25));
+    border-left: 5px solid var(--col);
+    padding: 28px 36px 28px 130px;
+    position: relative;
+    margin-bottom: 6px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .cas-circle {
+    position: absolute;
+    left: 30px; top: 50%;
+    transform: translateY(-50%);
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: var(--col);
+    color: var(--pearl);
+    text-align: center;
+    line-height: 70px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    box-shadow: 0 0 25px var(--col);
+  }
+  .cas-stage {
+    color: var(--col);
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    margin-bottom: 6px;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .cas-title {
+    color: var(--pearl);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .cas-mech {
+    color: var(--pearl-mid);
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.7;
+  }
+  .cas-symptom {
+    background: rgba(0,0,0,0.4);
+    border-left: 2px solid var(--gold);
+    padding: 10px 14px;
+    color: var(--gold-soft);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+  .cas-symptom::before {
+    content: '症状  ';
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    font-size: 11px;
+  }
+  .cas-arrow-mid {
+    text-align: center;
+    color: var(--gold-deep);
+    font-size: 18px;
+    margin: 0 0 6px;
+    line-height: 1;
+  }
+
+  /* === FIGURE 6: Triple Loss === */
+  .losses-wrap {
+    margin: 60px auto;
+    max-width: 1100px;
+    position: relative;
+  }
+  .losses-svg { width: 100%; height: auto; display: block; }
+
+  /* === FIGURE 7: Synthesis === */
+  .synthesis {
+    margin: 60px auto;
+    max-width: 1100px;
+  }
+  .synthesis-svg { width: 100%; height: auto; display: block; }
+
+  /* === Footer === */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    margin-top: 100px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201, 169, 97, 0.15);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  @media (max-width: 760px) {
+    .components-grid, .paths-grid { grid-template-columns: 1fr; }
+    .main-title { font-size: 36px; }
+    .section-title { font-size: 28px; }
+    .layer-1, .layer-2 { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- === HEADER === -->
+  <div class="header">
+    <div class="crumb">CLUSTER · <span class="active">Ⅰ</span> · ⅠⅠ · ⅠⅠⅠ · ⅠⅤ · Ⅴ · ⅥⅠ · ⅥⅠⅠ</div>
+    <div class="cluster-num">Ⅰ</div>
+    <div class="eyebrow">DEEPEST CORE · 最深部・最深刻のクラスター</div>
+    <h1 class="main-title">物 語 ・ 象 徴 構 造 の<br><span class="accent">崩 壊</span></h1>
+    <div class="main-sub">成り立ち · 崩壊メカニズム · 社会問題化のカスケード</div>
+    <div class="deco-line"></div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 1: 6 Components -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅰ</div>
+      <h2 class="section-title">構 造 の 本 質 ─ 六 つ の 構 成 要 素</h2>
+      <p class="section-desc">物語・象徴構造は、相互に参照し合う6要素の有機的連結体である。一つの要素だけでは機能しない。</p>
+    </div>
+
+    <div class="components-grid">
+      <div class="comp-card">
+        <div class="comp-icon">i</div>
+        <div class="comp-name">起 源 神 話</div>
+        <div class="comp-func">「我々は誰か」</div>
+        <div class="comp-example">古事記・日本書紀<br>天孫降臨・神武東征</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">ii</div>
+        <div class="comp-name">歴 史 叙 述</div>
+        <div class="comp-func">「我々は何を経たか」</div>
+        <div class="comp-example">国史・武士道<br>明治維新譚・戦争の記憶</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">iii</div>
+        <div class="comp-name">倫 理 規 範</div>
+        <div class="comp-func">「何が正しいか」</div>
+        <div class="comp-example">朱子学・武士道<br>神道倫理・恥の文化</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">iv</div>
+        <div class="comp-name">美 意 識</div>
+        <div class="comp-func">「何が美しいか」</div>
+        <div class="comp-example">侘寂・幽玄<br>もののあはれ・粋</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">v</div>
+        <div class="comp-name">儀 礼 ・ 祭 祀</div>
+        <div class="comp-func">時間の聖別と再生産</div>
+        <div class="comp-example">神社祭祀・年中行事<br>皇室儀礼・通過儀礼</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">vi</div>
+        <div class="comp-name">シ ン ボ ル 体 系</div>
+        <div class="comp-func">全要素の凝縮装置</div>
+        <div class="comp-example">日の丸・菊紋・天守<br>富士山・桜・伊勢神宮</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 2: 3-Layer Pyramid -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅱ</div>
+      <h2 class="section-title">成 り 立 ち ─ 三 層 の 構 築 原 理</h2>
+      <p class="section-desc">物語・象徴構造は必ず三層が積層して形成される。第一層が涸れても第二・第三層は数世代持続する（廃墟効果）。だから崩壊は遅れて顕在化する。</p>
+    </div>
+
+    <div class="pyramid">
+      <div class="layer layer-3">
+        <div class="layer-num">LAYER Ⅲ ─ 投射層</div>
+        <div class="layer-title">シ ン ボ ル ・ 建 築 ・ 景 観 ・ 芸 術</div>
+        <div class="layer-role">文明の自己表現 · 外に投射する装置</div>
+        <div class="layer-detail">天守・伊勢神宮・京都の街並み・能・茶の湯・日本画・庭園 — 物語が物質化したもの</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-2">
+        <div class="layer-num">LAYER Ⅱ ─ 機構層</div>
+        <div class="layer-title">儀 礼 ・ 教 育 ・ 宗 教 ・ 教 養 体 系</div>
+        <div class="layer-role">継承の仕組み · 次世代に渡す水路</div>
+        <div class="layer-detail">神社祭祀・寺院・修身教育・教育勅語・芸道の家元制度・地域の年中行事</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-1">
+        <div class="layer-num">LAYER Ⅰ ─ 根源層</div>
+        <div class="layer-title">神 話 ・ 原 典 ・ 聖 地 ・ 始 祖</div>
+        <div class="layer-role">意味の源泉 · 全てが立脚する基盤</div>
+        <div class="layer-detail">古事記・日本書紀・皇祖神・伊勢の神宮・天孫降臨</div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;">
+      <div class="pyramid-note">
+        <strong>廃墟効果 ─</strong> 第一層が涸れても、第二・第三層は数世代は持続する。神話を信じない人でも神社で参拝するように、機構と投射は慣性で動き続ける。だから物語崩壊は <strong>遅れて顕在化する</strong>。これが構造的見落としを生む最大の理由。日本の戦後は、まさに「根源層を抜かれたまま機構層と投射層が惰性で回ってきた」状態。
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 3: Timeline (5 Waves) -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅲ</div>
+      <h2 class="section-title">日 本 の 構 築 史 ─ 五 つ の 大 波</h2>
+      <p class="section-desc">日本の物語・象徴構造は5つの構築波で築かれた。明治期に過去千年の蓄積が国体OSに統合され、最も強固な完成形を見たが、その完成形ゆえに戦後の解体ショックが過大となった。</p>
+    </div>
+
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tlGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5c1213"/>
+            <stop offset="50%" stop-color="#c5292a"/>
+            <stop offset="100%" stop-color="#e74c3c"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Background grid -->
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="#3a3f4f" stroke-width="1" stroke-dasharray="3,4"/>
+
+        <!-- Main timeline line -->
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="url(#tlGrad)" stroke-width="3"/>
+
+        <!-- Era markers and content -->
+        <!-- Wave 1: 古代 -->
+        <g>
+          <circle cx="160" cy="280" r="14" fill="#5c1213" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="160" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅰ</text>
+          <line x1="160" y1="266" x2="160" y2="190" stroke="#8a6f47" stroke-width="1"/>
+          <text x="160" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">WAVE Ⅰ</text>
+          <text x="160" y="155" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">古 代</text>
+          <text x="160" y="130" font-size="11" fill="#c9a961" text-anchor="middle">~ 794</text>
+          <text x="160" y="100" font-size="12" fill="#c8c0b0" text-anchor="middle">古事記 712</text>
+          <text x="160" y="82" font-size="12" fill="#c8c0b0" text-anchor="middle">日本書紀 720</text>
+          <text x="160" y="64" font-size="12" fill="#c8c0b0" text-anchor="middle">伊勢神宮</text>
+          <text x="160" y="320" font-size="12" fill="#c5292a" text-anchor="middle" font-weight="700" letter-spacing="2">起源神話の確立</text>
+        </g>
+
+        <!-- Wave 2: 平安 -->
+        <g>
+          <circle cx="360" cy="280" r="14" fill="#8b1c1d" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="360" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅱ</text>
+          <line x1="360" y1="294" x2="360" y2="370" stroke="#8a6f47" stroke-width="1"/>
+          <text x="360" y="396" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">WAVE Ⅱ</text>
+          <text x="360" y="420" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">平 安</text>
+          <text x="360" y="442" font-size="11" fill="#c9a961" text-anchor="middle">794 – 1192</text>
+          <text x="360" y="464" font-size="12" fill="#c8c0b0" text-anchor="middle">もののあはれ・密教曼荼羅・宮廷美意識</text>
+          <text x="360" y="252" font-size="12" fill="#c5292a" text-anchor="middle" font-weight="700" letter-spacing="2">美意識の体系化</text>
+        </g>
+
+        <!-- Wave 3: 中世 -->
+        <g>
+          <circle cx="560" cy="280" r="14" fill="#a92426" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="560" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅲ</text>
+          <line x1="560" y1="266" x2="560" y2="190" stroke="#8a6f47" stroke-width="1"/>
+          <text x="560" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">WAVE Ⅲ</text>
+          <text x="560" y="155" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">中 世</text>
+          <text x="560" y="130" font-size="11" fill="#c9a961" text-anchor="middle">1192 – 1603</text>
+          <text x="560" y="100" font-size="12" fill="#c8c0b0" text-anchor="middle">武士道・禅・能・茶</text>
+          <text x="560" y="82" font-size="12" fill="#c8c0b0" text-anchor="middle">神仏習合</text>
+          <text x="560" y="320" font-size="12" fill="#c5292a" text-anchor="middle" font-weight="700" letter-spacing="2">武家の価値体系</text>
+        </g>
+
+        <!-- Wave 4: 近世 -->
+        <g>
+          <circle cx="780" cy="280" r="16" fill="#c5292a" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="780" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅳ</text>
+          <line x1="780" y1="296" x2="780" y2="370" stroke="#8a6f47" stroke-width="1"/>
+          <text x="780" y="396" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">WAVE Ⅳ</text>
+          <text x="780" y="420" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">近 世</text>
+          <text x="780" y="442" font-size="11" fill="#c9a961" text-anchor="middle">1603 – 1867</text>
+          <text x="780" y="464" font-size="12" fill="#c8c0b0" text-anchor="middle">朱子学・国学・庶民文化・寛永度天守</text>
+          <text x="780" y="252" font-size="12" fill="#c5292a" text-anchor="middle" font-weight="700" letter-spacing="2">思想と庶民文化の成熟</text>
+        </g>
+
+        <!-- Wave 5: 近代 -->
+        <g>
+          <circle cx="1020" cy="280" r="20" fill="#e74c3c" stroke="#f5f0e8" stroke-width="3"/>
+          <text x="1020" y="288" font-size="16" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅴ</text>
+          <line x1="1020" y1="260" x2="1020" y2="190" stroke="#c5292a" stroke-width="2"/>
+          <text x="1020" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">WAVE Ⅴ ─ ZENITH</text>
+          <text x="1020" y="148" font-size="24" fill="#f5f0e8" text-anchor="middle" font-weight="900" letter-spacing="3">近 代</text>
+          <text x="1020" y="124" font-size="11" fill="#c9a961" text-anchor="middle">1868 – 1945</text>
+          <text x="1020" y="98" font-size="12" fill="#c8c0b0" text-anchor="middle">国体論・国家神道</text>
+          <text x="1020" y="80" font-size="12" fill="#c8c0b0" text-anchor="middle">教育勅語・修身</text>
+          <text x="1020" y="62" font-size="12" fill="#c8c0b0" text-anchor="middle">国旗国歌の法定化</text>
+          <text x="1020" y="320" font-size="13" fill="#e74c3c" text-anchor="middle" font-weight="700" letter-spacing="2">国体OSへの統合・最強完成形</text>
+        </g>
+
+        <!-- End collapse marker -->
+        <g>
+          <circle cx="1110" cy="280" r="8" fill="#0b0d14" stroke="#c5292a" stroke-width="2"/>
+          <text x="1110" y="320" font-size="11" fill="#6b6f80" text-anchor="middle" letter-spacing="2">1945 ▶</text>
+          <text x="1110" y="338" font-size="11" fill="#6b6f80" text-anchor="middle">崩壊期へ</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 4: 4 Destruction Paths -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅳ</div>
+      <h2 class="section-title">崩 壊 の メ カ ニ ズ ム ─ 四 つ の 経 路</h2>
+      <p class="section-desc">物語・象徴構造はどう崩れるか。経路は4つ。日本では <span style="color:var(--c1)"><strong>すべてが同時並行で進んだ</strong></span> ことが特異。</p>
+    </div>
+
+    <div class="paths-grid">
+      <div class="path-card">
+        <div class="path-letter">A</div>
+        <div class="path-label">EXTERNAL CUT</div>
+        <div class="path-title">外 圧 に よ る 強 制 切 断</div>
+        <div class="path-period">1945 – 1952</div>
+        <ul class="path-events">
+          <li>神道指令（1945年12月）─ 国家神道解体</li>
+          <li>教育勅語の廃止（1948年）</li>
+          <li>修身教育停止・教科書墨塗り</li>
+          <li>東京裁判 ─「日本=加害者」史観の制度化</li>
+          <li>天皇の人間宣言（1946年元旦）</li>
+        </ul>
+      </div>
+
+      <div class="path-card">
+        <div class="path-letter">B</div>
+        <div class="path-label">NATURAL EROSION</div>
+        <div class="path-title">産 業 化 ・ 都 市 化 に よ る<br>自 然 消 滅</div>
+        <div class="path-period">1955 – 1990</div>
+        <ul class="path-events">
+          <li>高度成長で農村共同体が解体</li>
+          <li>地方→東京で氏神・檀那寺との関係が切断</li>
+          <li>核家族化で家庭内継承儀礼が省略</li>
+          <li>テレビ普及で物語供給源が「家・地域・寺社」から「マスメディア」へ</li>
+        </ul>
+      </div>
+
+      <div class="path-card">
+        <div class="path-letter">C</div>
+        <div class="path-label">SUBSTITUTE FAILURE</div>
+        <div class="path-title">代 替 物 語 の 登 場 と 失 効</div>
+        <div class="path-period">1955 – 現在</div>
+        <ul class="path-events">
+          <li>経済成長物語 ─ 機能期間 1955-1990、バブル崩壊で停止</li>
+          <li>平和憲法物語 ─ 部分的に現在も。安保環境変化で不十分に</li>
+          <li>一億総中流物語 ─ 1970s-1990s。格差拡大で消失</li>
+          <li>失効後、新しい物語が来ていない</li>
+        </ul>
+      </div>
+
+      <div class="path-card">
+        <div class="path-letter">D</div>
+        <div class="path-label">TECH &amp; GLOBAL</div>
+        <div class="path-title">技 術 ・ グ ロ ー バ ル 化 に よ る<br>象 徴 の 摩 耗</div>
+        <div class="path-period">1990 – 現在</div>
+        <ul class="path-events">
+          <li>SNSで物語の権威構造が崩壊（誰でも語れる）</li>
+          <li>グローバル文化で「日本独自」の自明性が揺らぐ</li>
+          <li>都市景観の看板・電線・高層ビル化で美意識基盤が消失</li>
+          <li>AI生成で「本物」と「複製」の区別が曖昧化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 5: Cascade -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅴ</div>
+      <h2 class="section-title">社 会 問 題 化 の カ ス ケ ー ド</h2>
+      <p class="section-desc">物語崩壊は「個人 → 共同体 → 公共空間 → 国家 → 国際」の順に問題を生む。各段階で異なる症状が表れるが、すべて根は同じ。</p>
+    </div>
+
+    <div class="cascade">
+      <div class="cas-level" style="--col:#e74c3c">
+        <div class="cas-circle">Ⅰ</div>
+        <div class="cas-stage">STAGE Ⅰ ─ INDIVIDUAL</div>
+        <div class="cas-title">個 人 ─ 意 味 の 真 空</div>
+        <div class="cas-mech">物語が消えると「自分はなぜ生きているか」が答えられない。真空状態は耐え難いので、人は代替物を求める。健全な代替（趣味・推し活）と病理的代替（依存・陰謀論・カルト）が混在する。</div>
+        <div class="cas-symptom">若年自殺率がG7最悪、希死念慮の常態化、「親ガチャ」言説、ギャンブル/スマホ依存、極端政治への流出</div>
+      </div>
+      <div class="cas-arrow-mid">▼</div>
+
+      <div class="cas-level" style="--col:#c5292a">
+        <div class="cas-circle">Ⅱ</div>
+        <div class="cas-stage">STAGE Ⅱ ─ COMMUNITY</div>
+        <div class="cas-title">共 同 体 ─ 規 範 の 喪 失</div>
+        <div class="cas-mech">共有された倫理がなくなると、行動規範は明文ルールだけになる。明文化されないグレー領域では「バレなければ良い」が支配する。</div>
+        <div class="cas-symptom">大企業の品質偽装・粉飾決算、官僚の文書改ざん、政治家不祥事の常態化、いじめ・ハラスメントの非対応、信頼資本の枯渇</div>
+      </div>
+      <div class="cas-arrow-mid">▼</div>
+
+      <div class="cas-level" style="--col:#a92426">
+        <div class="cas-circle">Ⅲ</div>
+        <div class="cas-stage">STAGE Ⅲ ─ PUBLIC SPACE</div>
+        <div class="cas-title">公 共 空 間 ─ 美 意 識 の 物 質 的 崩 壊</div>
+        <div class="cas-mech">美意識という「無形のOS」が消えると、空間設計の判断基準は経済合理性のみになる。結果、看板・電線・コンビニで埋め尽くされた景観が出現する。</div>
+        <div class="cas-symptom">京都の景観論争、地方都市の郊外化（ロードサイド化）、公共建築の凡庸化、街並みからの「日本的なもの」消失、観光客が驚く電線・看板の混沌</div>
+      </div>
+      <div class="cas-arrow-mid">▼</div>
+
+      <div class="cas-level" style="--col:#8b1c1d">
+        <div class="cas-circle">Ⅳ</div>
+        <div class="cas-stage">STAGE Ⅳ ─ NATION</div>
+        <div class="cas-title">国 家 ─ 戦 略 不 在</div>
+        <div class="cas-mech">物語がなければ「何のために強くなるか」「何を守るか」が定義できない。結果、政策は短期の経済指標と選挙対策に縛られる。</div>
+        <div class="cas-symptom">50年・100年戦略の不在、エネルギー・食料・防衛の場当たり化、産業政策の失敗連鎖、移民・多様性政策の答え不能、Society 5.0等の表層スローガン</div>
+      </div>
+      <div class="cas-arrow-mid">▼</div>
+
+      <div class="cas-level" style="--col:#5c1213">
+        <div class="cas-circle">Ⅴ</div>
+        <div class="cas-stage">STAGE Ⅴ ─ INTERNATIONAL</div>
+        <div class="cas-title">国 際 ─ ソ フ ト パ ワ ー の 構 造 的 限 界</div>
+        <div class="cas-mech">文明としての物語がない国は、どれだけ経済力があっても「意味の発信者」にはなれない。アニメ・ゲームのクールジャパンは投射層の輸出のみで、根源層・機構層は欠けている。</div>
+        <div class="cas-symptom">国際舞台での議論主導力不在、「アジアの経済国」止まりの位置づけ、文明圏自己認識の欠如、ソフトパワー指数で韓国に逆転、外交での「日本らしさ」発信不能</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 6: Triple Loss -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅵ</div>
+      <h2 class="section-title">日 本 固 有 の 三 重 苦 ─ 150年で3度の物語崩壊</h2>
+      <p class="section-desc">他のG7諸国は19世紀以降の物語連続性を保っているが、日本は150年で <span style="color:var(--c1)"><strong>3回、国民物語を壊された</strong></span>。これが世界的にも特異な歴史的負荷。</p>
+    </div>
+
+    <div class="losses-wrap">
+      <svg class="losses-svg" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lossGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5c1213"/>
+            <stop offset="100%" stop-color="#c5292a"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Year axis -->
+        <line x1="60" y1="500" x2="1140" y2="500" stroke="#5a5a6a" stroke-width="2"/>
+        <text x="60" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1700</text>
+        <text x="280" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1850</text>
+        <text x="500" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1900</text>
+        <text x="720" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1950</text>
+        <text x="940" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2000</text>
+        <text x="1130" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2026</text>
+
+        <!-- Edo intact (江戸期物語の連続) -->
+        <rect x="60" y="380" width="280" height="120" fill="#3a7570" opacity="0.4" rx="2"/>
+        <text x="200" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">江 戸 期 物 語</text>
+        <text x="200" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">武士道・職人文化・</text>
+        <text x="200" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">封建美意識</text>
+
+        <!-- Meiji boost (明治の国体物語) -->
+        <rect x="380" y="320" width="320" height="180" fill="#a92426" opacity="0.5" rx="2"/>
+        <text x="540" y="365" font-size="15" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">明 治 国 体 物 語</text>
+        <text x="540" y="390" font-size="11" fill="#c8c0b0" text-anchor="middle">国家神道・教育勅語</text>
+        <text x="540" y="408" font-size="11" fill="#c8c0b0" text-anchor="middle">大東亜共栄圏・修身</text>
+
+        <!-- Postwar boost (戦後経済成長物語) -->
+        <rect x="730" y="380" width="280" height="120" fill="#b8923f" opacity="0.5" rx="2"/>
+        <text x="870" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">戦 後 経 済 物 語</text>
+        <text x="870" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">経済成長・一億総中流</text>
+        <text x="870" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">平和憲法</text>
+
+        <!-- Empty period (現在の真空) -->
+        <rect x="1030" y="450" width="120" height="50" fill="none" stroke="#c5292a" stroke-width="1.5" stroke-dasharray="6,4" rx="2"/>
+        <text x="1090" y="475" font-size="12" fill="#c5292a" text-anchor="middle" letter-spacing="2" font-weight="700">真 空</text>
+        <text x="1090" y="492" font-size="9" fill="#6b6f80" text-anchor="middle">第四の物語不在</text>
+
+        <!-- Loss markers (3 vertical bolts) -->
+
+        <!-- Loss 1: 1868 -->
+        <line x1="368" y1="60" x2="368" y2="500" stroke="#e74c3c" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="368" cy="60" r="32" fill="#5c1213" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="368" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">①</text>
+        <text x="368" y="120" font-size="14" fill="#e74c3c" text-anchor="middle" letter-spacing="3" font-weight="700">第 一 の 喪 失</text>
+        <text x="368" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">1868</text>
+        <text x="368" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">明 治 維 新</text>
+        <text x="368" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">江戸期の連続性消失</text>
+        <text x="368" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">武士道・職人文化喪失</text>
+
+        <!-- Loss 2: 1945 -->
+        <line x1="715" y1="60" x2="715" y2="500" stroke="#e74c3c" stroke-width="4" stroke-dasharray="8,4" opacity="1"/>
+        <circle cx="715" cy="60" r="38" fill="#c5292a" stroke="#f5f0e8" stroke-width="3"/>
+        <text x="715" y="70" font-family="Cormorant Garamond, serif" font-size="32" fill="#f5f0e8" text-anchor="middle" font-weight="700">②</text>
+        <text x="715" y="125" font-size="14" fill="#e74c3c" text-anchor="middle" letter-spacing="3" font-weight="700">第 二 の 喪 失</text>
+        <text x="715" y="147" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">1945</text>
+        <text x="715" y="167" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">敗 戦 ・ 占 領</text>
+        <text x="715" y="189" font-size="11" fill="#c8c0b0" text-anchor="middle">明治国体物語の解体</text>
+        <text x="715" y="205" font-size="11" fill="#c8c0b0" text-anchor="middle">国家神道・修身廃止</text>
+
+        <!-- Loss 3: 1991 -->
+        <line x1="1010" y1="60" x2="1010" y2="500" stroke="#e74c3c" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="1010" cy="60" r="32" fill="#5c1213" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="1010" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">③</text>
+        <text x="1010" y="120" font-size="14" fill="#e74c3c" text-anchor="middle" letter-spacing="3" font-weight="700">第 三 の 喪 失</text>
+        <text x="1010" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">1991 ─</text>
+        <text x="1010" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">バ ブ ル 崩 壊</text>
+        <text x="1010" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">戦後経済物語の失効</text>
+        <text x="1010" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">失われた30年</text>
+
+        <!-- Bottom note -->
+        <text x="600" y="565" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">─ 第四の物語が、まだ来ていない ─</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIGURE 7: Synthesis Diagram -->
+  <!-- ========================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅶ</div>
+      <h2 class="section-title">統 合 ダ イ ア グ ラ ム ─ 全 体 メ カ ニ ズ ム</h2>
+      <p class="section-desc">構築 → 崩壊 → 社会問題化 の全体構造を一枚で示す。物語崩壊が <span style="color:var(--c1)"><strong>遅れて、しかし必ず、あらゆる層に波及する</strong></span> ことを視覚化。</p>
+    </div>
+
+    <div class="synthesis">
+      <svg class="synthesis-svg" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="synBuild" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#3a7570"/>
+            <stop offset="100%" stop-color="#5a8a85"/>
+          </linearGradient>
+          <linearGradient id="synDestroy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c5292a"/>
+            <stop offset="100%" stop-color="#5c1213"/>
+          </linearGradient>
+          <filter id="synGlow">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- LEFT BLOCK: 成り立ち -->
+        <rect x="40" y="60" width="320" height="680" fill="url(#synBuild)" opacity="0.15" rx="6" stroke="#3a7570" stroke-width="1.5"/>
+        <text x="200" y="100" font-size="13" fill="#3a7570" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 1 · BUILD</text>
+        <text x="200" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">成 り 立 ち</text>
+
+        <!-- 3 layers stacked vertically -->
+        <rect x="80" y="180" width="240" height="60" fill="#3a7570" opacity="0.4" rx="3"/>
+        <text x="200" y="205" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅰ</text>
+        <text x="200" y="226" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">根 源 層</text>
+
+        <rect x="80" y="260" width="240" height="60" fill="#3a7570" opacity="0.5" rx="3"/>
+        <text x="200" y="285" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅱ</text>
+        <text x="200" y="306" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">機 構 層</text>
+
+        <rect x="80" y="340" width="240" height="60" fill="#3a7570" opacity="0.6" rx="3"/>
+        <text x="200" y="365" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅲ</text>
+        <text x="200" y="386" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">投 射 層</text>
+
+        <!-- Build duration: 千年 -->
+        <text x="200" y="450" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="3">~ 1,400 YEARS ~</text>
+        <text x="200" y="470" font-size="13" fill="#c8c0b0" text-anchor="middle">古代から明治まで</text>
+        <text x="200" y="488" font-size="13" fill="#c8c0b0" text-anchor="middle">5波で築かれた</text>
+
+        <!-- 6 components -->
+        <text x="200" y="540" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2">SIX COMPONENTS</text>
+        <text x="200" y="565" font-size="11" fill="#c8c0b0" text-anchor="middle">起源神話 · 歴史叙述</text>
+        <text x="200" y="583" font-size="11" fill="#c8c0b0" text-anchor="middle">倫理規範 · 美意識</text>
+        <text x="200" y="601" font-size="11" fill="#c8c0b0" text-anchor="middle">儀礼祭祀 · シンボル体系</text>
+
+        <!-- Outcome -->
+        <text x="200" y="660" font-size="13" fill="#3a7570" text-anchor="middle" font-weight="700" letter-spacing="2">↓</text>
+        <text x="200" y="690" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">明 治 完 成 形</text>
+        <text x="200" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">国体OSへ統合</text>
+
+        <!-- ARROW: 1 to 2 -->
+        <path d="M 360 400 L 440 400" stroke="#c5292a" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#c5292a"/>
+          </marker>
+        </defs>
+
+        <!-- CENTER BLOCK: 崩壊 -->
+        <rect x="440" y="60" width="320" height="680" fill="url(#synDestroy)" opacity="0.18" rx="6" stroke="#c5292a" stroke-width="1.5"/>
+        <text x="600" y="100" font-size="13" fill="#c5292a" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 2 · COLLAPSE</text>
+        <text x="600" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">崩 壊</text>
+
+        <!-- 4 paths -->
+        <g filter="url(#synGlow)">
+          <rect x="475" y="170" width="115" height="80" fill="#5c1213" rx="3"/>
+          <text x="532" y="195" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">A</text>
+          <text x="532" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">外 圧 切 断</text>
+          <text x="532" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">1945-52</text>
+
+          <rect x="610" y="170" width="115" height="80" fill="#5c1213" rx="3"/>
+          <text x="667" y="195" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">B</text>
+          <text x="667" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">自 然 消 滅</text>
+          <text x="667" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">1955-90</text>
+
+          <rect x="475" y="270" width="115" height="80" fill="#5c1213" rx="3"/>
+          <text x="532" y="295" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">C</text>
+          <text x="532" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">代 替 失 効</text>
+          <text x="532" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">1955-現在</text>
+
+          <rect x="610" y="270" width="115" height="80" fill="#5c1213" rx="3"/>
+          <text x="667" y="295" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">D</text>
+          <text x="667" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">象 徴 摩 耗</text>
+          <text x="667" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">1990-現在</text>
+        </g>
+
+        <!-- Convergence symbol -->
+        <text x="600" y="400" font-size="12" fill="#c5292a" text-anchor="middle" letter-spacing="3">▼ 同時並行 ▼</text>
+
+        <!-- Triple loss markers -->
+        <g>
+          <circle cx="510" cy="450" r="20" fill="#5c1213" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="510" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">①</text>
+          <text x="510" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">1868</text>
+
+          <circle cx="600" cy="450" r="22" fill="#c5292a" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="600" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">②</text>
+          <text x="600" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">1945</text>
+
+          <circle cx="690" cy="450" r="20" fill="#5c1213" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="690" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">③</text>
+          <text x="690" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">1991</text>
+        </g>
+        <text x="600" y="525" font-size="11" fill="#e74c3c" text-anchor="middle" letter-spacing="2" font-weight="700">三重の物語崩壊</text>
+
+        <!-- 廃墟効果 -->
+        <text x="600" y="580" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">廃 墟 効 果</text>
+        <text x="600" y="603" font-size="10" fill="#c8c0b0" text-anchor="middle">第一層が涸れても</text>
+        <text x="600" y="618" font-size="10" fill="#c8c0b0" text-anchor="middle">第二・第三層は数世代持続</text>
+        <text x="600" y="638" font-size="10" fill="#c8c0b0" text-anchor="middle">→ 崩壊は遅れて顕在化</text>
+
+        <!-- Outcome -->
+        <text x="600" y="690" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" letter-spacing="2">意 味 の 真 空</text>
+        <text x="600" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">第四の物語、未到来</text>
+
+        <!-- ARROW: 2 to 3 -->
+        <path d="M 760 400 L 840 400" stroke="#c5292a" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+        <!-- RIGHT BLOCK: 社会問題化 -->
+        <rect x="840" y="60" width="320" height="680" fill="#1a1620" opacity="0.5" rx="6" stroke="#8b1c1d" stroke-width="1.5"/>
+        <text x="1000" y="100" font-size="13" fill="#e74c3c" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 3 · MANIFEST</text>
+        <text x="1000" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">社 会 問 題 化</text>
+
+        <!-- 5 cascade levels -->
+        <rect x="880" y="170" width="240" height="50" fill="#e74c3c" opacity="0.5" rx="3"/>
+        <text x="900" y="200" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅰ</text>
+        <text x="930" y="195" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">個 人</text>
+        <text x="930" y="213" font-size="10" fill="#c8c0b0">意味の真空 · 自殺 · 依存</text>
+
+        <rect x="880" y="240" width="240" height="50" fill="#c5292a" opacity="0.55" rx="3"/>
+        <text x="900" y="270" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅱ</text>
+        <text x="930" y="265" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">共 同 体</text>
+        <text x="930" y="283" font-size="10" fill="#c8c0b0">規範崩壊 · 不祥事頻発</text>
+
+        <rect x="880" y="310" width="240" height="50" fill="#a92426" opacity="0.6" rx="3"/>
+        <text x="900" y="340" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅲ</text>
+        <text x="930" y="335" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">公 共 空 間</text>
+        <text x="930" y="353" font-size="10" fill="#c8c0b0">景観劣化 · 美意識消失</text>
+
+        <rect x="880" y="380" width="240" height="50" fill="#8b1c1d" opacity="0.65" rx="3"/>
+        <text x="900" y="410" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅳ</text>
+        <text x="930" y="405" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">国 家</text>
+        <text x="930" y="423" font-size="10" fill="#c8c0b0">戦略不在 · 政策の場当たり化</text>
+
+        <rect x="880" y="450" width="240" height="50" fill="#5c1213" opacity="0.7" rx="3"/>
+        <text x="900" y="480" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅴ</text>
+        <text x="930" y="475" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">国 際</text>
+        <text x="930" y="493" font-size="10" fill="#c8c0b0">ソフトパワー低下 · 経済国止まり</text>
+
+        <!-- Connecting arrows in cascade -->
+        <text x="1000" y="232" font-size="14" fill="#c5292a" text-anchor="middle">▼</text>
+        <text x="1000" y="302" font-size="14" fill="#c5292a" text-anchor="middle">▼</text>
+        <text x="1000" y="372" font-size="14" fill="#c5292a" text-anchor="middle">▼</text>
+        <text x="1000" y="442" font-size="14" fill="#c5292a" text-anchor="middle">▼</text>
+
+        <!-- Outcome -->
+        <text x="1000" y="555" font-size="13" fill="#c5292a" text-anchor="middle" font-weight="700" letter-spacing="2">↓ 全層 ↓</text>
+        <rect x="880" y="580" width="240" height="80" fill="#0b0d14" stroke="#e74c3c" stroke-width="2" rx="4"/>
+        <text x="1000" y="610" font-size="14" fill="#e74c3c" text-anchor="middle" font-weight="700" letter-spacing="3">他 ６ ク ラ ス タ ー</text>
+        <text x="1000" y="635" font-size="11" fill="#c8c0b0" text-anchor="middle">人口・情報・経済・政治</text>
+        <text x="1000" y="652" font-size="11" fill="#c8c0b0" text-anchor="middle">自然・知識すべての根源</text>
+
+        <text x="1000" y="700" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-style="italic">クラスター①は</text>
+        <text x="1000" y="718" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-style="italic">他全クラスターの根源層</text>
+
+      </svg>
+    </div>
+  </div>
+
+  <div class="footer">CLAUDE CODE COO · 2026.04.26 · CLUSTER Ⅰ STRUCTURAL ANALYSIS</div>
+
+</div>
+
+</body>
+</html>

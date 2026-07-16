@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クラスターⅣ 経済・金融構造の歪み — 構造解析</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-deep: #0b0d14; --bg-mid: #141828;
+    --gold: #c9a961; --gold-soft: #e8c977; --gold-deep: #8a6f47;
+    --pearl: #f5f0e8; --pearl-mid: #c8c0b0; --muted: #6b6f80;
+    --c1: #b8923f; --c1-soft: rgba(184,146,63,0.15);
+    --c1-mid: #8a6c28; --c1-bright: #d4a648; --c1-deep: #5c4818;
+  }
+  body { font-family: 'Noto Serif JP', 'Yu Mincho', serif;
+    background: radial-gradient(ellipse at top, #2a2418 0%, transparent 60%),
+      radial-gradient(ellipse at bottom, #1a1620 0%, transparent 70%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+    background-attachment: fixed; color: var(--pearl);
+    line-height: 1.7; padding: 80px 30px 120px; font-feature-settings: "palt"; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 100px; padding-bottom: 60px;
+    border-bottom: 1px solid rgba(201,169,97,0.2); position: relative; }
+  .crumb { color: var(--muted); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 30px; font-family: 'Cormorant Garamond', serif; }
+  .crumb .active { color: var(--c1); }
+  .cluster-num { display: inline-block; width: 120px; height: 120px;
+    border: 2px solid var(--c1); border-radius: 50%; line-height: 120px;
+    font-family: 'Cormorant Garamond', serif; font-size: 90px; font-weight: 600;
+    color: var(--c1); margin-bottom: 32px;
+    background: radial-gradient(circle, rgba(184,146,63,0.2), transparent);
+    box-shadow: 0 0 60px rgba(184,146,63,0.4); }
+  .eyebrow { color: var(--gold); font-size: 13px; letter-spacing: 0.6em;
+    margin-bottom: 20px; font-family: 'Cormorant Garamond', serif; }
+  .main-title { font-size: 56px; font-weight: 900; letter-spacing: 0.18em;
+    color: var(--pearl); line-height: 1.3; margin-bottom: 24px; }
+  .main-title .accent { color: var(--c1); }
+  .main-sub { color: var(--pearl-mid); font-size: 18px; letter-spacing: 0.3em; font-weight: 300; }
+  .deco-line { width: 80px; height: 1px; background: var(--c1); margin: 40px auto 0; }
+  .section { margin-bottom: 140px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-num { color: var(--gold); font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; letter-spacing: 0.5em; margin-bottom: 16px; }
+  .section-num::before, .section-num::after { content: '─'; margin: 0 16px; color: var(--gold-deep); }
+  .section-title { font-size: 42px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--pearl); margin-bottom: 16px; line-height: 1.4; }
+  .section-desc { color: var(--pearl-mid); font-size: 17px; letter-spacing: 0.05em;
+    max-width: 760px; margin: 0 auto; }
+  .components-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .comp-card { background: linear-gradient(135deg, rgba(184,146,63,0.08), rgba(0,0,0,0.3));
+    border: 1px solid rgba(184,146,63,0.3); border-top: 3px solid var(--c1);
+    border-radius: 4px; padding: 32px 26px; text-align: center; transition: transform 0.3s; }
+  .comp-card:hover { transform: translateY(-4px); border-color: var(--c1); }
+  .comp-icon { font-size: 44px; color: var(--c1); margin-bottom: 18px; line-height: 1;
+    font-family: 'Cormorant Garamond', serif; }
+  .comp-name { font-size: 20px; color: var(--pearl); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 12px; }
+  .comp-func { font-size: 13px; color: var(--gold); letter-spacing: 0.1em;
+    margin-bottom: 14px; font-style: italic; }
+  .comp-example { font-size: 13px; color: var(--pearl-mid); line-height: 1.6;
+    border-top: 1px solid rgba(201,169,97,0.2); padding-top: 12px; }
+  .pyramid { display: flex; flex-direction: column; align-items: center;
+    margin: 40px auto; max-width: 900px; }
+  .layer { width: 100%; margin-bottom: 4px; padding: 36px 50px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
+    border-left: 5px solid var(--col); border-right: 5px solid var(--col);
+    position: relative; box-shadow: 0 4px 30px rgba(0,0,0,0.4); }
+  .layer-3 { width: 100%; --col: var(--c1); }
+  .layer-2 { width: 80%; --col: var(--gold); }
+  .layer-1 { width: 60%; --col: var(--c1-bright); }
+  .layer-num { color: var(--col); font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; letter-spacing: 0.4em; margin-bottom: 8px; }
+  .layer-title { color: var(--pearl); font-size: 24px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 8px; }
+  .layer-role { color: var(--col); font-size: 14px; letter-spacing: 0.15em;
+    font-style: italic; margin-bottom: 12px; }
+  .layer-detail { color: var(--pearl-mid); font-size: 14px; letter-spacing: 0.05em; }
+  .pyramid-arrow { color: var(--gold); font-size: 24px; margin: 4px 0; }
+  .pyramid-note { margin-top: 30px; padding: 24px 30px;
+    background: rgba(201,169,97,0.06); border-left: 3px solid var(--gold);
+    color: var(--pearl-mid); font-size: 14px; line-height: 1.8;
+    letter-spacing: 0.05em; max-width: 800px; }
+  .pyramid-note strong { color: var(--gold); }
+  .timeline-wrap { margin: 60px auto; max-width: 1100px; overflow: hidden; }
+  .timeline-svg { width: 100%; height: auto; display: block; }
+  .paths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .path-card { background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(184,146,63,0.08));
+    border: 1px solid rgba(184,146,63,0.3); border-radius: 4px;
+    padding: 36px 32px; position: relative; }
+  .path-letter { position: absolute; top: 24px; right: 30px;
+    font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 600;
+    color: var(--c1); opacity: 0.4; line-height: 1; }
+  .path-label { color: var(--c1); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 10px; font-family: 'Cormorant Garamond', serif; }
+  .path-title { color: var(--pearl); font-size: 22px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 16px; line-height: 1.4; }
+  .path-period { color: var(--gold); font-size: 13px; letter-spacing: 0.2em; margin-bottom: 14px; }
+  .path-events { list-style: none; padding: 0; }
+  .path-events li { color: var(--pearl-mid); font-size: 14px; line-height: 1.7;
+    letter-spacing: 0.03em; padding: 4px 0 4px 20px; position: relative; }
+  .path-events li::before { content: '▶'; color: var(--c1); position: absolute;
+    left: 0; font-size: 10px; top: 7px; }
+  .cascade { max-width: 880px; margin: 40px auto; }
+  .cas-level { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.25));
+    border-left: 5px solid var(--col); padding: 28px 36px 28px 130px;
+    position: relative; margin-bottom: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .cas-circle { position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+    width: 70px; height: 70px; border-radius: 50%; background: var(--col);
+    color: var(--pearl); text-align: center; line-height: 70px;
+    font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600;
+    box-shadow: 0 0 25px var(--col); }
+  .cas-stage { color: var(--col); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 6px; font-family: 'Cormorant Garamond', serif; }
+  .cas-title { color: var(--pearl); font-size: 22px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 10px; }
+  .cas-mech { color: var(--pearl-mid); font-size: 14px; margin-bottom: 10px; line-height: 1.7; }
+  .cas-symptom { background: rgba(0,0,0,0.4); border-left: 2px solid var(--gold);
+    padding: 10px 14px; color: var(--gold-soft); font-size: 13px;
+    letter-spacing: 0.05em; line-height: 1.6; }
+  .cas-symptom::before { content: '症状  '; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.3em; font-size: 11px; }
+  .cas-arrow-mid { text-align: center; color: var(--gold-deep); font-size: 18px;
+    margin: 0 0 6px; line-height: 1; }
+  .losses-wrap { margin: 60px auto; max-width: 1100px; position: relative; }
+  .losses-svg { width: 100%; height: auto; display: block; }
+  .synthesis { margin: 60px auto; max-width: 1100px; }
+  .synthesis-svg { width: 100%; height: auto; display: block; }
+  .footer { text-align: center; color: var(--muted); font-size: 12px;
+    letter-spacing: 0.3em; margin-top: 100px; padding-top: 40px;
+    border-top: 1px solid rgba(201,169,97,0.15); font-family: 'Cormorant Garamond', serif; }
+  @media (max-width: 760px) { .components-grid, .paths-grid { grid-template-columns: 1fr; }
+    .main-title { font-size: 36px; } .section-title { font-size: 28px; }
+    .layer-1, .layer-2 { width: 100%; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="crumb">CLUSTER · Ⅰ · ⅠⅠ · ⅠⅠⅠ · <span class="active">Ⅳ</span> · Ⅴ · ⅥⅠ · ⅥⅠⅠ</div>
+    <div class="cluster-num">Ⅳ</div>
+    <div class="eyebrow">SURFACE SYMPTOM · 表層・上流クラスターの症状を映す鏡</div>
+    <h1 class="main-title">経 済 ・ 金 融 構 造 の<br><span class="accent">歪 み</span></h1>
+    <div class="main-sub">成り立ち · 崩壊メカニズム · 社会問題化のカスケード</div>
+    <div class="deco-line"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅰ</div>
+      <h2 class="section-title">構 造 の 本 質 ─ 六 つ の 構 成 要 素</h2>
+      <p class="section-desc">経済・金融構造は、限られた資源を社会全体に「配分・調整・継承」する仕組み。価値の生成・交換・蓄積・分配の総体。</p>
+    </div>
+    <div class="components-grid">
+      <div class="comp-card"><div class="comp-icon">i</div><div class="comp-name">通 貨 ・ 貨 幣</div><div class="comp-func">価値の保存・移転</div><div class="comp-example">信頼される基軸通貨<br>円・ドル・ユーロ</div></div>
+      <div class="comp-card"><div class="comp-icon">ii</div><div class="comp-name">市 場 メ カ ニ ズ ム</div><div class="comp-func">需給の調整</div><div class="comp-example">価格による情報伝達<br>競争と効率化</div></div>
+      <div class="comp-card"><div class="comp-icon">iii</div><div class="comp-name">企 業 組 織</div><div class="comp-func">生産の単位</div><div class="comp-example">長期投資・人材育成<br>イノベーション</div></div>
+      <div class="comp-card"><div class="comp-icon">iv</div><div class="comp-name">労 働 シ ス テ ム</div><div class="comp-func">価値創出の担い手</div><div class="comp-example">安定雇用・適切な対価<br>能力開発</div></div>
+      <div class="comp-card"><div class="comp-icon">v</div><div class="comp-name">金 融 シ ス テ ム</div><div class="comp-func">資本配分</div><div class="comp-example">実体経済を支える<br>銀行・市場</div></div>
+      <div class="comp-card"><div class="comp-icon">vi</div><div class="comp-name">政 府 の 経 済 機 能</div><div class="comp-func">公共財・再分配・規制</div><div class="comp-example">市場の失敗を補正<br>セーフティネット</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅱ</div>
+      <h2 class="section-title">成 り 立 ち ─ 三 層 の 構 築 原 理</h2>
+      <p class="section-desc">①〜③の根源層は人間の精神的構造、④の根源層は「物質と労働」。実体経済こそ全ての土台。<span style="color:var(--c1)"><strong>現代日本の歪みは三層が逆転している</strong></span> こと。</p>
+    </div>
+    <div class="pyramid">
+      <div class="layer layer-3">
+        <div class="layer-num">LAYER Ⅲ ─ 表象層</div>
+        <div class="layer-title">G D P ・ 株 価 ・ 為 替 ・ 経 済 指 標</div>
+        <div class="layer-role">指標 · 結果として観測されるもの</div>
+        <div class="layer-detail">日経平均、為替レート、経常収支、内部留保500兆円超 — メディアで報じられる数字</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-2">
+        <div class="layer-num">LAYER Ⅱ ─ 機構層</div>
+        <div class="layer-title">通 貨 ・ 銀 行 ・ 市 場 ・ 企 業 ・ 労 働 市 場 ・ 税 制</div>
+        <div class="layer-role">仕組み · 経済を動かす制度</div>
+        <div class="layer-detail">日銀・東証・労働者派遣法・株式持ち合い・メインバンク制 — 制度設計が経済の動き方を決める</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-1">
+        <div class="layer-num">LAYER Ⅰ ─ 実体層</div>
+        <div class="layer-title">生 産 ・ 労 働 ・ 資 源 ・ 物 質 的 価 値 ・ 実 需</div>
+        <div class="layer-role">実体 · 全ての経済の土台</div>
+        <div class="layer-detail">工場・農地・職人・労働者・天然資源 — 真の価値創造の場</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <div class="pyramid-note">
+        <strong>逆転の罠 ─</strong> 健全な経済は「実体→機構→表象」の順で動くが、現代日本（および世界）では <strong>「表象が実体を引きずる」</strong> 逆転が起きている。四半期決算、ROE経営、株主還元優先で、設備投資・人材投資・研究開発が圧迫される。これが「失われた30年」の構造的本質。
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅲ</div>
+      <h2 class="section-title">日 本 の 経 済 構 築 史 ─ 五 つ の 大 波</h2>
+      <p class="section-desc">江戸期堂島米会所（世界初の先物市場）から始まり、明治の財閥、戦後の日本型経営を経て、1990年バブル崩壊以降の失われた30年へ。</p>
+    </div>
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tlGrad4" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5c4818"/>
+            <stop offset="60%" stop-color="#b8923f"/>
+            <stop offset="80%" stop-color="#d4a648"/>
+            <stop offset="100%" stop-color="#5c4818"/>
+          </linearGradient>
+        </defs>
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="#3a3f4f" stroke-width="1" stroke-dasharray="3,4"/>
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="url(#tlGrad4)" stroke-width="3"/>
+
+        <g><circle cx="160" cy="280" r="14" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="160" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅰ</text>
+          <text x="160" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">江 戸</text>
+          <text x="160" y="155" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">米 経 済</text>
+          <text x="160" y="130" font-size="11" fill="#c9a961" text-anchor="middle">~1867</text>
+          <text x="160" y="100" font-size="12" fill="#c8c0b0" text-anchor="middle">大坂堂島米会所</text>
+          <text x="160" y="82" font-size="12" fill="#c8c0b0" text-anchor="middle">世界初の先物市場 (1730)</text>
+          <text x="160" y="320" font-size="12" fill="#b8923f" text-anchor="middle" font-weight="700" letter-spacing="2">商人文化の確立</text></g>
+
+        <g><circle cx="360" cy="280" r="14" fill="#8a6c28" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="360" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅱ</text>
+          <text x="360" y="396" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">明 治</text>
+          <text x="360" y="420" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">日 銀 ・ 財 閥</text>
+          <text x="360" y="442" font-size="11" fill="#c9a961" text-anchor="middle">1868-1926</text>
+          <text x="360" y="464" font-size="12" fill="#c8c0b0" text-anchor="middle">三井三菱住友・殖産興業・日銀(1882)</text>
+          <text x="360" y="252" font-size="12" fill="#b8923f" text-anchor="middle" font-weight="700" letter-spacing="2">近代資本主義の導入</text></g>
+
+        <g><circle cx="560" cy="280" r="16" fill="#a07835" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="560" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅲ</text>
+          <text x="560" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">高 度 成 長</text>
+          <text x="560" y="155" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">日 本 型 経 営</text>
+          <text x="560" y="130" font-size="11" fill="#c9a961" text-anchor="middle">1955-1973</text>
+          <text x="560" y="100" font-size="12" fill="#c8c0b0" text-anchor="middle">終身雇用・年功序列</text>
+          <text x="560" y="82" font-size="12" fill="#c8c0b0" text-anchor="middle">企業別組合・株式持ち合い</text>
+          <text x="560" y="320" font-size="12" fill="#b8923f" text-anchor="middle" font-weight="700" letter-spacing="2">独自モデルの完成</text></g>
+
+        <g><circle cx="780" cy="280" r="20" fill="#d4a648" stroke="#f5f0e8" stroke-width="3"/>
+          <text x="780" y="288" font-size="16" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅳ</text>
+          <text x="780" y="396" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">バ ブ ル ZENITH</text>
+          <text x="780" y="424" font-size="24" fill="#f5f0e8" text-anchor="middle" font-weight="900" letter-spacing="3">ジ ャ パ ン #1</text>
+          <text x="780" y="448" font-size="11" fill="#c9a961" text-anchor="middle">1973-1990</text>
+          <text x="780" y="470" font-size="12" fill="#c8c0b0" text-anchor="middle">プラザ合意 (1985)</text>
+          <text x="780" y="252" font-size="13" fill="#d4a648" text-anchor="middle" font-weight="700" letter-spacing="2">世界時価総額トップ50中32社が日本</text></g>
+
+        <g><circle cx="1020" cy="280" r="14" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="1020" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅴ</text>
+          <text x="1020" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">失 わ れ た 30 年</text>
+          <text x="1020" y="155" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">停 滞 ・ 衰 退</text>
+          <text x="1020" y="130" font-size="11" fill="#c9a961" text-anchor="middle">1991-現在</text>
+          <text x="1020" y="100" font-size="12" fill="#c8c0b0" text-anchor="middle">バブル崩壊・デフレ</text>
+          <text x="1020" y="82" font-size="12" fill="#c8c0b0" text-anchor="middle">時価総額トップ50中1社のみ</text>
+          <text x="1020" y="320" font-size="12" fill="#5c4818" text-anchor="middle" font-weight="700" letter-spacing="2">「日本病」が学問用語に</text></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅳ</div>
+      <h2 class="section-title">崩 壊 の メ カ ニ ズ ム ─ 四 つ の 経 路</h2>
+      <p class="section-desc">経済・金融構造はどう歪むか。日本では <span style="color:var(--c1)"><strong>金融化・グローバル化・労働二極化・日本型経営崩壊が同時並行</strong></span> で進んだ。</p>
+    </div>
+    <div class="paths-grid">
+      <div class="path-card"><div class="path-letter">A</div>
+        <div class="path-label">FINANCIALIZATION</div>
+        <div class="path-title">金 融 化 の 暴 走</div>
+        <div class="path-period">1980 – 現在</div>
+        <ul class="path-events">
+          <li>米国発の株主資本主義の世界化</li>
+          <li>四半期決算・四半期ガイダンス</li>
+          <li>金融資産は世界GDPの約4倍に</li>
+          <li>2003年以降、日本でROE経営化</li>
+          <li>自社株買い・配当が設備投資を圧迫</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">B</div>
+        <div class="path-label">GLOBALIZATION SHADOW</div>
+        <div class="path-title">グ ロ ー バ ル 化 の 影</div>
+        <div class="path-period">1985 – 現在</div>
+        <ul class="path-events">
+          <li>1985プラザ合意（240円→120円）</li>
+          <li>製造業の海外移転（中国・ASEAN）</li>
+          <li>国内産業の空洞化</li>
+          <li>GVC脆弱性露呈（コロナ・ウクライナ）</li>
+          <li>半導体・医薬品の経済安保問題化</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">C</div>
+        <div class="path-label">LABOR POLARIZATION</div>
+        <div class="path-title">労 働 構 造 の 二 極 化</div>
+        <div class="path-period">1985 – 現在</div>
+        <ul class="path-events">
+          <li>1985 労働者派遣法・1999 原則自由化</li>
+          <li>2004 製造業派遣解禁</li>
+          <li>非正規比率：1990年20%→2020年37%</li>
+          <li>正規/非正規の身分化</li>
+          <li>ワーキングプア年収200万以下1,100万人</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">D</div>
+        <div class="path-label">JAPANESE MODEL FAILURE</div>
+        <div class="path-title">日 本 型 経 営 の 機 能 不 全</div>
+        <div class="path-period">1991 – 現在</div>
+        <ul class="path-events">
+          <li>終身雇用・年功序列の維持困難</li>
+          <li>株式持ち合い解消（外国人比率30%超）</li>
+          <li>メインバンク制の弱体化</li>
+          <li>新モデルへの移行が中途半端</li>
+          <li>「ハイブリッドの罠」内部留保500兆円超</li>
+        </ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅴ</div>
+      <h2 class="section-title">社 会 問 題 化 の カ ス ケ ー ド</h2>
+      <p class="section-desc">経済・金融の歪みは「個人 → 家族 → 企業 → 国家 → 文明」へ波及。最終的に経済モデルの提案者から失敗例へ転落。</p>
+    </div>
+    <div class="cascade">
+      <div class="cas-level" style="--col:#d4a648"><div class="cas-circle">Ⅰ</div>
+        <div class="cas-stage">STAGE Ⅰ ─ INDIVIDUAL</div>
+        <div class="cas-title">個 人 ─ 賃 金 停 滞 と 老 後 不 安</div>
+        <div class="cas-mech">実質賃金は1996年がピーク、以降30年横ばい。OECDで唯一賃金が伸びていない先進国。</div>
+        <div class="cas-symptom">実質賃金1996年ピーク以降ほぼ横ばい／米国は1990-2020で約1.5倍／非正規の罠（年齢で賃金上がらず）／2000万円問題／30代貯蓄ゼロ世帯約3割</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#b8923f"><div class="cas-circle">Ⅱ</div>
+        <div class="cas-stage">STAGE Ⅱ ─ FAMILY</div>
+        <div class="cas-title">家 族 ─ 教 育 費 と 相 続 格 差</div>
+        <div class="cas-mech">共働き標準化も保育所不足。教育費・介護費が家計を圧迫。相続による資産格差固定（ピケティ的状況）。</div>
+        <div class="cas-symptom">私立中学受験 首都圏年100万円超／大学進学費用1,000万円規模／親の介護費用／相続格差固定／「親ガチャ」言説の経済的根拠</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#a07835"><div class="cas-circle">Ⅲ</div>
+        <div class="cas-stage">STAGE Ⅲ ─ ENTERPRISE</div>
+        <div class="cas-title">企 業 ─ 投 資 不 足 ・ イ ノ ベ ー シ ョ ン 停 滞</div>
+        <div class="cas-mech">内部留保500兆円超が投資・賃上げに回らない。R&D停滞、ベンチャー育成不足、大企業病、意思決定の遅さ。</div>
+        <div class="cas-symptom">世界時価総額：1989年トップ50中32社→2024年1社（トヨタのみ）／米国比でユニコーン1/100／時間当たりGDPはOECD下位</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#8a6c28"><div class="cas-circle">Ⅳ</div>
+        <div class="cas-stage">STAGE Ⅳ ─ NATION</div>
+        <div class="cas-title">国 家 ─ 国 際 競 争 力 の 構 造 的 低 下</div>
+        <div class="cas-mech">IMD世界競争力1位→35位。一人当たりGDPで韓国・台湾に並ばれる。財政硬直化と円安・購買力低下。</div>
+        <div class="cas-symptom">IMD競争力 1989年1位→2023年35位／一人当たりGDPで韓台に並ばれる／実質実効為替レートは1970年代水準／社会保障費140兆円超</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#5c4818"><div class="cas-circle">Ⅴ</div>
+        <div class="cas-stage">STAGE Ⅴ ─ CIVILIZATION</div>
+        <div class="cas-title">文 明 ─ 経 済 モ デ ル の 提 案 者 か ら 失 敗 例 へ</div>
+        <div class="cas-mech">1980年代「ジャパン・アズ・ナンバーワン」から、2020年代「失われた30年」へ転落。世界の教科書で「日本病」がケース化。</div>
+        <div class="cas-symptom">「Japanification」が経済学用語に／アジア新興国へのプレゼンス低下／「先進国でこの長期停滞は異例」の国際認識／学ぶべき先進国から避けるべき先例へ</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅵ</div>
+      <h2 class="section-title">日 本 固 有 の 三 重 苦 ─ 30年で3度の経済ショック</h2>
+      <p class="section-desc">第一は「資産」、第二は「競争力」、第三は「通貨価値」。<span style="color:var(--c1)"><strong>段階的に失う対象が深化</strong></span> している。</p>
+    </div>
+    <div class="losses-wrap">
+      <svg class="losses-svg" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="500" x2="1140" y2="500" stroke="#5a5a6a" stroke-width="2"/>
+        <text x="60" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1985</text>
+        <text x="320" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1995</text>
+        <text x="600" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2008</text>
+        <text x="880" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2020</text>
+        <text x="1130" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2026</text>
+
+        <rect x="60" y="350" width="280" height="150" fill="#d4a648" opacity="0.4" rx="2"/>
+        <text x="200" y="395" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">バ ブ ル 期</text>
+        <text x="200" y="420" font-size="11" fill="#c8c0b0" text-anchor="middle">日経平均38,915円(1989)</text>
+        <text x="200" y="438" font-size="11" fill="#c8c0b0" text-anchor="middle">時価総額世界1位多数</text>
+
+        <rect x="360" y="380" width="270" height="120" fill="#b8923f" opacity="0.5" rx="2"/>
+        <text x="495" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">失 わ れ た 10 年</text>
+        <text x="495" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">不良債権・デフレ</text>
+        <text x="495" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">金融危機</text>
+
+        <rect x="650" y="380" width="270" height="120" fill="#8a6c28" opacity="0.55" rx="2"/>
+        <text x="785" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">失 わ れ た 20 年</text>
+        <text x="785" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">超円高・空洞化</text>
+        <text x="785" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">アベノミクス試行</text>
+
+        <rect x="940" y="380" width="200" height="120" fill="#5c4818" opacity="0.55" rx="2"/>
+        <text x="1040" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">失 わ れ た 30 年</text>
+        <text x="1040" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">円安・物価高</text>
+        <text x="1040" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">賃金は上がらず</text>
+
+        <line x1="320" y1="60" x2="320" y2="500" stroke="#d4a648" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="320" cy="60" r="32" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="320" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">①</text>
+        <text x="320" y="120" font-size="14" fill="#d4a648" text-anchor="middle" letter-spacing="3" font-weight="700">第 一 の 喪 失</text>
+        <text x="320" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">1991-1995</text>
+        <text x="320" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">資 産 価 値</text>
+        <text x="320" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">バブル崩壊・地価下落</text>
+        <text x="320" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">含み益経営の破綻</text>
+
+        <line x1="600" y1="60" x2="600" y2="500" stroke="#d4a648" stroke-width="4" stroke-dasharray="8,4" opacity="1"/>
+        <circle cx="600" cy="60" r="38" fill="#b8923f" stroke="#f5f0e8" stroke-width="3"/>
+        <text x="600" y="70" font-family="Cormorant Garamond, serif" font-size="32" fill="#f5f0e8" text-anchor="middle" font-weight="700">②</text>
+        <text x="600" y="125" font-size="14" fill="#d4a648" text-anchor="middle" letter-spacing="3" font-weight="700">第 二 の 喪 失</text>
+        <text x="600" y="147" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">2008-2012</text>
+        <text x="600" y="167" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">国 際 競 争 力</text>
+        <text x="600" y="189" font-size="11" fill="#c8c0b0" text-anchor="middle">リーマン・超円高</text>
+        <text x="600" y="205" font-size="11" fill="#c8c0b0" text-anchor="middle">製造業の海外移転加速</text>
+
+        <line x1="940" y1="60" x2="940" y2="500" stroke="#d4a648" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="940" cy="60" r="32" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="940" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">③</text>
+        <text x="940" y="120" font-size="14" fill="#d4a648" text-anchor="middle" letter-spacing="3" font-weight="700">第 三 の 喪 失</text>
+        <text x="940" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">2022 ─</text>
+        <text x="940" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">通 貨 価 値 ・ 購 買 力</text>
+        <text x="940" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">円安と物価高</text>
+        <text x="940" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">賃金は上がらず</text>
+
+        <text x="600" y="565" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">─ 段階的に失う対象が深化 ─</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅶ</div>
+      <h2 class="section-title">統 合 ダ イ ア グ ラ ム ─ 上 流 の 症 状 が 集 約 す る 場</h2>
+      <p class="section-desc">クラスター④は <span style="color:var(--c1)"><strong>「結果の集約点」</strong></span>。①②③の歪みが全て経済指標に現れる。経済以前の構造を治さない限り、経済政策は効かない。</p>
+    </div>
+    <div class="synthesis">
+      <svg class="synthesis-svg" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="synBuild4" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#3a7570"/><stop offset="100%" stop-color="#5a8a85"/>
+          </linearGradient>
+          <linearGradient id="synDestroy4" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b8923f"/><stop offset="100%" stop-color="#5c4818"/>
+          </linearGradient>
+          <marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#b8923f"/></marker>
+        </defs>
+
+        <rect x="40" y="60" width="320" height="680" fill="url(#synBuild4)" opacity="0.15" rx="6" stroke="#3a7570" stroke-width="1.5"/>
+        <text x="200" y="100" font-size="13" fill="#3a7570" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 1 · BUILD</text>
+        <text x="200" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">成 り 立 ち</text>
+
+        <rect x="80" y="180" width="240" height="60" fill="#3a7570" opacity="0.4" rx="3"/>
+        <text x="200" y="205" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅰ</text>
+        <text x="200" y="226" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">実 体 層</text>
+
+        <rect x="80" y="260" width="240" height="60" fill="#3a7570" opacity="0.5" rx="3"/>
+        <text x="200" y="285" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅱ</text>
+        <text x="200" y="306" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">機 構 層</text>
+
+        <rect x="80" y="340" width="240" height="60" fill="#3a7570" opacity="0.6" rx="3"/>
+        <text x="200" y="365" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅲ</text>
+        <text x="200" y="386" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">表 象 層</text>
+
+        <text x="200" y="450" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="3">~ 400 YEARS ~</text>
+        <text x="200" y="470" font-size="13" fill="#c8c0b0" text-anchor="middle">堂島米会所(1730)</text>
+        <text x="200" y="488" font-size="13" fill="#c8c0b0" text-anchor="middle">日本型経営の完成</text>
+
+        <text x="200" y="540" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2">SIX COMPONENTS</text>
+        <text x="200" y="565" font-size="11" fill="#c8c0b0" text-anchor="middle">通貨 · 市場</text>
+        <text x="200" y="583" font-size="11" fill="#c8c0b0" text-anchor="middle">企業 · 労働</text>
+        <text x="200" y="601" font-size="11" fill="#c8c0b0" text-anchor="middle">金融 · 政府機能</text>
+
+        <text x="200" y="660" font-size="13" fill="#3a7570" text-anchor="middle" font-weight="700" letter-spacing="2">↓</text>
+        <text x="200" y="690" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">バ ブ ル 期 完 成 形</text>
+        <text x="200" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">時価総額1位32社</text>
+
+        <path d="M 360 400 L 440 400" stroke="#b8923f" stroke-width="2" fill="none" marker-end="url(#arrowhead4)"/>
+
+        <rect x="440" y="60" width="320" height="680" fill="url(#synDestroy4)" opacity="0.18" rx="6" stroke="#b8923f" stroke-width="1.5"/>
+        <text x="600" y="100" font-size="13" fill="#b8923f" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 2 · DISTORT</text>
+        <text x="600" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">歪 み</text>
+
+        <rect x="475" y="170" width="115" height="80" fill="#5c4818" rx="3"/>
+        <text x="532" y="195" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">A</text>
+        <text x="532" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">金 融 化</text>
+        <text x="532" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">1980-現在</text>
+
+        <rect x="610" y="170" width="115" height="80" fill="#5c4818" rx="3"/>
+        <text x="667" y="195" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">B</text>
+        <text x="667" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">グ ロ ー バ ル 化</text>
+        <text x="667" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">1985-現在</text>
+
+        <rect x="475" y="270" width="115" height="80" fill="#5c4818" rx="3"/>
+        <text x="532" y="295" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">C</text>
+        <text x="532" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">労 働 二 極 化</text>
+        <text x="532" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">1985-現在</text>
+
+        <rect x="610" y="270" width="115" height="80" fill="#5c4818" rx="3"/>
+        <text x="667" y="295" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">D</text>
+        <text x="667" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">日 本 型 崩 壊</text>
+        <text x="667" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">1991-現在</text>
+
+        <text x="600" y="400" font-size="12" fill="#b8923f" text-anchor="middle" letter-spacing="3">▼ 同時並行 ▼</text>
+
+        <circle cx="510" cy="450" r="20" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="510" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">①</text>
+        <text x="510" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">1991</text>
+
+        <circle cx="600" cy="450" r="22" fill="#b8923f" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="600" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">②</text>
+        <text x="600" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">2008</text>
+
+        <circle cx="690" cy="450" r="20" fill="#5c4818" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="690" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">③</text>
+        <text x="690" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">2022</text>
+
+        <text x="600" y="525" font-size="11" fill="#d4a648" text-anchor="middle" letter-spacing="2" font-weight="700">資産 → 競争力 → 通貨</text>
+
+        <text x="600" y="580" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">表 象 が 実 体 を 引 き ず る 逆 転</text>
+        <text x="600" y="603" font-size="10" fill="#c8c0b0" text-anchor="middle">四半期決算・株主還元優先で</text>
+        <text x="600" y="618" font-size="10" fill="#c8c0b0" text-anchor="middle">設備投資・人材投資が圧迫</text>
+        <text x="600" y="638" font-size="10" fill="#c8c0b0" text-anchor="middle">→ これが「失われた30年」の本質</text>
+
+        <text x="600" y="690" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" letter-spacing="2">失 わ れ た 30 年</text>
+        <text x="600" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">「日本病」が世界の警告例に</text>
+
+        <path d="M 760 400 L 840 400" stroke="#b8923f" stroke-width="2" fill="none" marker-end="url(#arrowhead4)"/>
+
+        <rect x="840" y="60" width="320" height="680" fill="#1a1620" opacity="0.5" rx="6" stroke="#8a6c28" stroke-width="1.5"/>
+        <text x="1000" y="100" font-size="13" fill="#d4a648" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 3 · MANIFEST</text>
+        <text x="1000" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">社 会 問 題 化</text>
+
+        <rect x="880" y="170" width="240" height="50" fill="#d4a648" opacity="0.5" rx="3"/>
+        <text x="900" y="200" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅰ</text>
+        <text x="930" y="195" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">個 人</text>
+        <text x="930" y="213" font-size="10" fill="#c8c0b0">賃金停滞・老後不安</text>
+
+        <rect x="880" y="240" width="240" height="50" fill="#b8923f" opacity="0.55" rx="3"/>
+        <text x="900" y="270" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅱ</text>
+        <text x="930" y="265" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">家 族</text>
+        <text x="930" y="283" font-size="10" fill="#c8c0b0">教育費・相続格差固定</text>
+
+        <rect x="880" y="310" width="240" height="50" fill="#a07835" opacity="0.6" rx="3"/>
+        <text x="900" y="340" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅲ</text>
+        <text x="930" y="335" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">企 業</text>
+        <text x="930" y="353" font-size="10" fill="#c8c0b0">投資不足・イノベ停滞</text>
+
+        <rect x="880" y="380" width="240" height="50" fill="#8a6c28" opacity="0.65" rx="3"/>
+        <text x="900" y="410" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅳ</text>
+        <text x="930" y="405" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">国 家</text>
+        <text x="930" y="423" font-size="10" fill="#c8c0b0">国際競争力低下・財政硬直</text>
+
+        <rect x="880" y="450" width="240" height="50" fill="#5c4818" opacity="0.7" rx="3"/>
+        <text x="900" y="480" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">Ⅴ</text>
+        <text x="930" y="475" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">文 明</text>
+        <text x="930" y="493" font-size="10" fill="#c8c0b0">「日本病」がケース化</text>
+
+        <text x="1000" y="232" font-size="14" fill="#b8923f" text-anchor="middle">▼</text>
+        <text x="1000" y="302" font-size="14" fill="#b8923f" text-anchor="middle">▼</text>
+        <text x="1000" y="372" font-size="14" fill="#b8923f" text-anchor="middle">▼</text>
+        <text x="1000" y="442" font-size="14" fill="#b8923f" text-anchor="middle">▼</text>
+
+        <text x="1000" y="555" font-size="13" fill="#b8923f" text-anchor="middle" font-weight="700" letter-spacing="2">↑ 結果 ↑</text>
+        <rect x="880" y="580" width="240" height="80" fill="#0b0d14" stroke="#d4a648" stroke-width="2" rx="4"/>
+        <text x="1000" y="610" font-size="14" fill="#d4a648" text-anchor="middle" font-weight="700" letter-spacing="3">上 流 ① ② ③ の 症 状</text>
+        <text x="1000" y="635" font-size="11" fill="#c8c0b0" text-anchor="middle">物語・人口・情報の歪み</text>
+        <text x="1000" y="652" font-size="11" fill="#c8c0b0" text-anchor="middle">が全て④に集約</text>
+
+        <text x="1000" y="700" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-style="italic">経済以前の構造を治さない限り</text>
+        <text x="1000" y="718" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-style="italic">経済政策は効かない</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="footer">CLAUDE CODE COO · 2026.04.26 · CLUSTER Ⅳ STRUCTURAL ANALYSIS</div>
+</div>
+</body>
+</html>

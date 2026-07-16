@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クラスターⅢ 情報・認知構造の汚染 — 構造解析</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-deep: #0b0d14; --bg-mid: #141828;
+    --gold: #c9a961; --gold-soft: #e8c977; --gold-deep: #8a6f47;
+    --pearl: #f5f0e8; --pearl-mid: #c8c0b0; --muted: #6b6f80;
+    --c1: #2c5f7a; --c1-soft: rgba(44,95,122,0.15);
+    --c1-mid: #1d4255; --c1-bright: #4a7d98; --c1-deep: #15323e;
+  }
+  body { font-family: 'Noto Serif JP', 'Yu Mincho', serif;
+    background: radial-gradient(ellipse at top, #1a2a35 0%, transparent 60%),
+      radial-gradient(ellipse at bottom, #1a1620 0%, transparent 70%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+    background-attachment: fixed; color: var(--pearl);
+    line-height: 1.7; padding: 80px 30px 120px; font-feature-settings: "palt"; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 100px; padding-bottom: 60px;
+    border-bottom: 1px solid rgba(201,169,97,0.2); position: relative; }
+  .crumb { color: var(--muted); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 30px; font-family: 'Cormorant Garamond', serif; }
+  .crumb .active { color: var(--c1); }
+  .cluster-num { display: inline-block; width: 120px; height: 120px;
+    border: 2px solid var(--c1); border-radius: 50%; line-height: 120px;
+    font-family: 'Cormorant Garamond', serif; font-size: 90px; font-weight: 600;
+    color: var(--c1); margin-bottom: 32px;
+    background: radial-gradient(circle, rgba(44,95,122,0.2), transparent);
+    box-shadow: 0 0 60px rgba(44,95,122,0.4); }
+  .eyebrow { color: var(--gold); font-size: 13px; letter-spacing: 0.6em;
+    margin-bottom: 20px; font-family: 'Cormorant Garamond', serif; }
+  .main-title { font-size: 56px; font-weight: 900; letter-spacing: 0.18em;
+    color: var(--pearl); line-height: 1.3; margin-bottom: 24px; }
+  .main-title .accent { color: var(--c1); }
+  .main-sub { color: var(--pearl-mid); font-size: 18px; letter-spacing: 0.3em; font-weight: 300; }
+  .deco-line { width: 80px; height: 1px; background: var(--c1); margin: 40px auto 0; }
+  .section { margin-bottom: 140px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-num { color: var(--gold); font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; letter-spacing: 0.5em; margin-bottom: 16px; }
+  .section-num::before, .section-num::after { content: '─'; margin: 0 16px; color: var(--gold-deep); }
+  .section-title { font-size: 42px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--pearl); margin-bottom: 16px; line-height: 1.4; }
+  .section-desc { color: var(--pearl-mid); font-size: 17px; letter-spacing: 0.05em;
+    max-width: 760px; margin: 0 auto; }
+  .components-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .comp-card { background: linear-gradient(135deg, rgba(44,95,122,0.08), rgba(0,0,0,0.3));
+    border: 1px solid rgba(44,95,122,0.3); border-top: 3px solid var(--c1);
+    border-radius: 4px; padding: 32px 26px; text-align: center; transition: transform 0.3s; }
+  .comp-card:hover { transform: translateY(-4px); border-color: var(--c1); }
+  .comp-icon { font-size: 44px; color: var(--c1); margin-bottom: 18px; line-height: 1;
+    font-family: 'Cormorant Garamond', serif; }
+  .comp-name { font-size: 20px; color: var(--pearl); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 12px; }
+  .comp-func { font-size: 13px; color: var(--gold); letter-spacing: 0.1em;
+    margin-bottom: 14px; font-style: italic; }
+  .comp-example { font-size: 13px; color: var(--pearl-mid); line-height: 1.6;
+    border-top: 1px solid rgba(201,169,97,0.2); padding-top: 12px; }
+  .pyramid { display: flex; flex-direction: column; align-items: center;
+    margin: 40px auto; max-width: 900px; }
+  .layer { width: 100%; margin-bottom: 4px; padding: 36px 50px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
+    border-left: 5px solid var(--col); border-right: 5px solid var(--col);
+    position: relative; box-shadow: 0 4px 30px rgba(0,0,0,0.4); }
+  .layer-3 { width: 100%; --col: var(--c1); }
+  .layer-2 { width: 80%; --col: var(--gold); }
+  .layer-1 { width: 60%; --col: var(--c1-bright); }
+  .layer-num { color: var(--col); font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; letter-spacing: 0.4em; margin-bottom: 8px; }
+  .layer-title { color: var(--pearl); font-size: 24px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 8px; }
+  .layer-role { color: var(--col); font-size: 14px; letter-spacing: 0.15em;
+    font-style: italic; margin-bottom: 12px; }
+  .layer-detail { color: var(--pearl-mid); font-size: 14px; letter-spacing: 0.05em; }
+  .pyramid-arrow { color: var(--gold); font-size: 24px; margin: 4px 0; }
+  .pyramid-note { margin-top: 30px; padding: 24px 30px;
+    background: rgba(201,169,97,0.06); border-left: 3px solid var(--gold);
+    color: var(--pearl-mid); font-size: 14px; line-height: 1.8;
+    letter-spacing: 0.05em; max-width: 800px; }
+  .pyramid-note strong { color: var(--gold); }
+  .timeline-wrap { margin: 60px auto; max-width: 1100px; overflow: hidden; }
+  .timeline-svg { width: 100%; height: auto; display: block; }
+  .paths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .path-card { background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(44,95,122,0.08));
+    border: 1px solid rgba(44,95,122,0.3); border-radius: 4px;
+    padding: 36px 32px; position: relative; }
+  .path-letter { position: absolute; top: 24px; right: 30px;
+    font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 600;
+    color: var(--c1); opacity: 0.4; line-height: 1; }
+  .path-label { color: var(--c1); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 10px; font-family: 'Cormorant Garamond', serif; }
+  .path-title { color: var(--pearl); font-size: 22px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 16px; line-height: 1.4; }
+  .path-period { color: var(--gold); font-size: 13px; letter-spacing: 0.2em; margin-bottom: 14px; }
+  .path-events { list-style: none; padding: 0; }
+  .path-events li { color: var(--pearl-mid); font-size: 14px; line-height: 1.7;
+    letter-spacing: 0.03em; padding: 4px 0 4px 20px; position: relative; }
+  .path-events li::before { content: '▶'; color: var(--c1); position: absolute;
+    left: 0; font-size: 10px; top: 7px; }
+  .cascade { max-width: 880px; margin: 40px auto; }
+  .cas-level { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.25));
+    border-left: 5px solid var(--col); padding: 28px 36px 28px 130px;
+    position: relative; margin-bottom: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .cas-circle { position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+    width: 70px; height: 70px; border-radius: 50%; background: var(--col);
+    color: var(--pearl); text-align: center; line-height: 70px;
+    font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600;
+    box-shadow: 0 0 25px var(--col); }
+  .cas-stage { color: var(--col); font-size: 12px; letter-spacing: 0.4em;
+    margin-bottom: 6px; font-family: 'Cormorant Garamond', serif; }
+  .cas-title { color: var(--pearl); font-size: 22px; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 10px; }
+  .cas-mech { color: var(--pearl-mid); font-size: 14px; margin-bottom: 10px; line-height: 1.7; }
+  .cas-symptom { background: rgba(0,0,0,0.4); border-left: 2px solid var(--gold);
+    padding: 10px 14px; color: var(--gold-soft); font-size: 13px;
+    letter-spacing: 0.05em; line-height: 1.6; }
+  .cas-symptom::before { content: '症状  '; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.3em; font-size: 11px; }
+  .cas-arrow-mid { text-align: center; color: var(--gold-deep); font-size: 18px;
+    margin: 0 0 6px; line-height: 1; }
+  .losses-wrap { margin: 60px auto; max-width: 1100px; position: relative; }
+  .losses-svg { width: 100%; height: auto; display: block; }
+  .synthesis { margin: 60px auto; max-width: 1100px; }
+  .synthesis-svg { width: 100%; height: auto; display: block; }
+  .footer { text-align: center; color: var(--muted); font-size: 12px;
+    letter-spacing: 0.3em; margin-top: 100px; padding-top: 40px;
+    border-top: 1px solid rgba(201,169,97,0.15); font-family: 'Cormorant Garamond', serif; }
+  @media (max-width: 760px) { .components-grid, .paths-grid { grid-template-columns: 1fr; }
+    .main-title { font-size: 36px; } .section-title { font-size: 28px; }
+    .layer-1, .layer-2 { width: 100%; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="crumb">CLUSTER · Ⅰ · ⅠⅠ · <span class="active">Ⅲ</span> · ⅠⅤ · Ⅴ · ⅥⅠ · ⅥⅠⅠ</div>
+    <div class="cluster-num">Ⅲ</div>
+    <div class="eyebrow">AMPLIFIER · 増幅・媒介層・全クラスターを歪める「触媒」</div>
+    <h1 class="main-title">情 報 ・ 認 知 構 造 の<br><span class="accent">汚 染</span></h1>
+    <div class="main-sub">成り立ち · 崩壊メカニズム · 社会問題化のカスケード</div>
+    <div class="deco-line"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅰ</div>
+      <h2 class="section-title">構 造 の 本 質 ─ 六 つ の 構 成 要 素</h2>
+      <p class="section-desc">情報・認知構造は、個人の認知と社会の集合的判断を成立させる「情報の生成・流通・選別・評価」の総体。あらゆる議論の前提条件を提供するインフラ。</p>
+    </div>
+    <div class="components-grid">
+      <div class="comp-card"><div class="comp-icon">i</div><div class="comp-name">情 報 生 成</div><div class="comp-func">誰が情報を作るか</div><div class="comp-example">専門家・記者・市民<br>国家のバランス</div></div>
+      <div class="comp-card"><div class="comp-icon">ii</div><div class="comp-name">媒 体 ・ チ ャ ネ ル</div><div class="comp-func">流れる経路</div><div class="comp-example">新聞・TV・SNS<br>多様な媒体の共存</div></div>
+      <div class="comp-card"><div class="comp-icon">iii</div><div class="comp-name">編 集 ・ 選 別</div><div class="comp-func">何が重要かを判断</div><div class="comp-example">訓練された編集者<br>職業倫理</div></div>
+      <div class="comp-card"><div class="comp-icon">iv</div><div class="comp-name">共 通 言 語 ・ 教 養</div><div class="comp-func">議論の土台</div><div class="comp-example">国民が一定の共有知<br>リテラシー</div></div>
+      <div class="comp-card"><div class="comp-icon">v</div><div class="comp-name">真 偽 判 定</div><div class="comp-func">何が事実か</div><div class="comp-example">専門性に裏打ちされた<br>権威・ファクトチェック</div></div>
+      <div class="comp-card"><div class="comp-icon">vi</div><div class="comp-name">公 共 空 間</div><div class="comp-func">議論の場</div><div class="comp-example">議会・メディア<br>多様な立場が交差</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅱ</div>
+      <h2 class="section-title">成 り 立 ち ─ 三 層 の 構 築 原 理</h2>
+      <p class="section-desc">①根源層が「神話」、②が「生物学」だったのに対し、③の根源層は「人々の頭の中の共有OS」。見えにくく、最も操作可能で、最も壊れやすい。</p>
+    </div>
+    <div class="pyramid">
+      <div class="layer layer-3">
+        <div class="layer-num">LAYER Ⅲ ─ 表現層</div>
+        <div class="layer-title">記 事 ・ 投 稿 ・ 番 組 ・ 動 画 ・ A I 生 成 物</div>
+        <div class="layer-role">出力 · 個別のコンテンツ</div>
+        <div class="layer-detail">新聞記事、テレビ番組、YouTube動画、SNS投稿、ChatGPT出力 — 全て同じ情報空間で混在</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-2">
+        <div class="layer-num">LAYER Ⅱ ─ 機構層</div>
+        <div class="layer-title">編 集 ・ 配 信 ・ プ ラ ッ ト フ ォ ー ム ・ ア ル ゴ リ ズ ム</div>
+        <div class="layer-role">媒介 · 何を見せるかの仕組み</div>
+        <div class="layer-detail">新聞社・テレビ局・出版社・GAFAM・アルゴリズム。誰が編集権を握っているかが決定的</div>
+      </div>
+      <div class="pyramid-arrow">▲</div>
+      <div class="layer layer-1">
+        <div class="layer-num">LAYER Ⅰ ─ 認知層</div>
+        <div class="layer-title">共 通 言 語 ・ 共 有 知 ・ リ テ ラ シ ー ・ 注 意</div>
+        <div class="layer-role">認知のOS · 受け取り側の能力</div>
+        <div class="layer-detail">言語・概念・教養・注意力・批判的思考 — 情報を理解し評価する能力そのもの</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <div class="pyramid-note">
+        <strong>触媒としての特殊性 ─</strong> クラスター③は氷山モデルの「増幅層」に位置する。直接的に問題を作るというより、<strong>他のすべての問題を歪めて加速させる</strong>。①物語崩壊×③情報汚染、②人口減少×③情報汚染、④経済停滞×③情報汚染 ─ すべての組合せで負の相互作用を起こす。
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅲ</div>
+      <h2 class="section-title">日 本 の 情 報 構 築 史 ─ 六 つ の 時 代</h2>
+      <p class="section-desc">江戸期の高識字率社会から戦後マスメディア期の「共通の情報基盤」を経て、2010年代のプラットフォーム期で急速崩壊。生成AIで真偽判定そのものが揺らぐ。</p>
+    </div>
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tlGrad3" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#15323e"/>
+            <stop offset="50%" stop-color="#2c5f7a"/>
+            <stop offset="100%" stop-color="#4a7d98"/>
+          </linearGradient>
+        </defs>
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="#3a3f4f" stroke-width="1" stroke-dasharray="3,4"/>
+        <line x1="60" y1="280" x2="1140" y2="280" stroke="url(#tlGrad3)" stroke-width="3"/>
+
+        <g><circle cx="120" cy="280" r="12" fill="#15323e" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="120" y="287" font-size="12" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅰ</text>
+          <text x="120" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">江 戸</text>
+          <text x="120" y="155" font-size="20" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">瓦 版 ・ 寺 子 屋</text>
+          <text x="120" y="132" font-size="11" fill="#c9a961" text-anchor="middle">~1867</text>
+          <text x="120" y="110" font-size="11" fill="#c8c0b0" text-anchor="middle">識字率70-80%</text>
+          <text x="120" y="92" font-size="11" fill="#c8c0b0" text-anchor="middle">講談・落語・出版</text>
+          <text x="120" y="320" font-size="11" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">高度に発達した町人文化</text></g>
+
+        <g><circle cx="320" cy="280" r="12" fill="#1d4255" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="320" y="287" font-size="12" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅱ</text>
+          <text x="320" y="380" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">明 治 - 大 正</text>
+          <text x="320" y="404" font-size="20" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">新 聞 創 刊</text>
+          <text x="320" y="426" font-size="11" fill="#c9a961" text-anchor="middle">1872 東京日日</text>
+          <text x="320" y="448" font-size="11" fill="#c8c0b0" text-anchor="middle">雑誌・出版業・近代教育</text>
+          <text x="320" y="252" font-size="11" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">マス紙の登場</text></g>
+
+        <g><circle cx="490" cy="280" r="12" fill="#22526a" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="490" y="287" font-size="12" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅲ</text>
+          <text x="490" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">戦 前 昭 和</text>
+          <text x="490" y="155" font-size="20" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">ラ ジ オ 時 代</text>
+          <text x="490" y="132" font-size="11" fill="#c9a961" text-anchor="middle">1925-1945</text>
+          <text x="490" y="110" font-size="11" fill="#c8c0b0" text-anchor="middle">国策報道・大本営発表</text>
+          <text x="490" y="320" font-size="11" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">国家による情報統制</text></g>
+
+        <g><circle cx="690" cy="280" r="16" fill="#2c5f7a" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="690" y="287" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅳ</text>
+          <text x="690" y="380" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">戦 後 マ ス メ デ ィ ア 期</text>
+          <text x="690" y="408" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">共 通 の 情 報 基 盤</text>
+          <text x="690" y="430" font-size="11" fill="#c9a961" text-anchor="middle">1945-2000</text>
+          <text x="690" y="452" font-size="11" fill="#c8c0b0" text-anchor="middle">5紙体制・民放6系列・NHK</text>
+          <text x="690" y="252" font-size="12" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">共通議論基盤の成立 ─ 50年間</text></g>
+
+        <g><circle cx="900" cy="280" r="14" fill="#3a7290" stroke="#f5f0e8" stroke-width="2"/>
+          <text x="900" y="287" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅴ</text>
+          <text x="900" y="178" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">イ ン タ ー ネ ッ ト</text>
+          <text x="900" y="155" font-size="20" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">個 人 発 信 開 始</text>
+          <text x="900" y="132" font-size="11" fill="#c9a961" text-anchor="middle">1995-2010</text>
+          <text x="900" y="110" font-size="11" fill="#c8c0b0" text-anchor="middle">2ちゃんねる・ブログ・mixi</text>
+          <text x="900" y="320" font-size="11" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">分散の萌芽</text></g>
+
+        <g><circle cx="1080" cy="280" r="20" fill="#4a7d98" stroke="#f5f0e8" stroke-width="3"/>
+          <text x="1080" y="288" font-size="15" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">Ⅵ</text>
+          <text x="1080" y="380" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-family="Cormorant Garamond, serif">プ ラ ッ ト フ ォ ー ム</text>
+          <text x="1080" y="408" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="900" letter-spacing="2">汚 染 期</text>
+          <text x="1080" y="430" font-size="11" fill="#c9a961" text-anchor="middle">2010-現在</text>
+          <text x="1080" y="452" font-size="11" fill="#c8c0b0" text-anchor="middle">X・YouTube・TikTok・生成AI</text>
+          <text x="1080" y="252" font-size="11" fill="#4a7d98" text-anchor="middle" font-weight="700" letter-spacing="2">米国プラットフォーム支配</text></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅳ</div>
+      <h2 class="section-title">崩 壊 の メ カ ニ ズ ム ─ 四 つ の 経 路</h2>
+      <p class="section-desc">情報・認知構造はどう汚染されるか。<span style="color:var(--c1)"><strong>4経路がすべて2010年代以降同時進行</strong></span> し、わずか15年で50年蓄積した共通基盤を破壊した。</p>
+    </div>
+    <div class="paths-grid">
+      <div class="path-card"><div class="path-letter">A</div>
+        <div class="path-label">ATTENTION EXTRACTION</div>
+        <div class="path-title">ア テ ン シ ョ ン の 収 奪</div>
+        <div class="path-period">2010 – 現在</div>
+        <ul class="path-events">
+          <li>スマートフォン常時接続化</li>
+          <li>通知・無限スクロール・ドーパミン駆動UI</li>
+          <li>平均アテンションスパン 2000年12秒→2015年8秒</li>
+          <li>「深く考える時間」が物理的に消失</li>
+          <li>個人の認知能力そのものの摩耗</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">B</div>
+        <div class="path-label">PLATFORM MONOPOLY</div>
+        <div class="path-title">媒 介 機 構 の 独 占 と 暴 走</div>
+        <div class="path-period">2008 – 現在</div>
+        <ul class="path-events">
+          <li>米国GAFAM・中国BATへの完全依存</li>
+          <li>アルゴリズムが怒り・恐怖を増幅</li>
+          <li>編集者・ジャーナリストの権威崩壊</li>
+          <li>日本のネット広告費5割超が海外流出</li>
+          <li>「誰でも発信できる」が裏目に</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">C</div>
+        <div class="path-label">POST-TRUTH</div>
+        <div class="path-title">真 偽 判 定 の 不 能 化</div>
+        <div class="path-period">2016 – 現在</div>
+        <ul class="path-events">
+          <li>2016年米大統領選でフェイクニュース問題化</li>
+          <li>ディープフェイク動画（2018-）</li>
+          <li>生成AI登場（ChatGPT 2022年11月）</li>
+          <li>「ポストトゥルース」が辞書に</li>
+          <li>事実自体が党派性に飲み込まれる</li>
+        </ul></div>
+      <div class="path-card"><div class="path-letter">D</div>
+        <div class="path-label">COMMON GROUND LOSS</div>
+        <div class="path-title">共 通 基 盤 の 消 失</div>
+        <div class="path-period">2010 – 現在</div>
+        <ul class="path-events">
+          <li>フィルターバブル（Eli Pariser, 2011）</li>
+          <li>エコーチェンバー</li>
+          <li>世代別メディアの完全断絶</li>
+          <li>高齢層TV、中高年新聞、若年層YouTube/TikTok</li>
+          <li>議論の土台となる共有知の枯渇</li>
+        </ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅴ</div>
+      <h2 class="section-title">社 会 問 題 化 の カ ス ケ ー ド</h2>
+      <p class="section-desc">情報汚染は「個人 → 共同体 → 公共空間 → 国家 → 国際」へ波及。最終的に認知戦・情報戦の主戦場となる。</p>
+    </div>
+    <div class="cascade">
+      <div class="cas-level" style="--col:#4a7d98"><div class="cas-circle">Ⅰ</div>
+        <div class="cas-stage">STAGE Ⅰ ─ INDIVIDUAL</div>
+        <div class="cas-title">個 人 ─ 認 知 能 力 そ の も の の 摩 耗</div>
+        <div class="cas-mech">注意力・読書時間が激減。「ながら見」「タイパ」「2倍速視聴」の常態化。深い思考が物理的に困難。</div>
+        <div class="cas-symptom">スマホ利用時間：日本人平均約3時間（10代5時間超）／月1冊以上本を読まない47.3%（2018文化庁）／うつ・不安障害・睡眠障害の若年層急増</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#3a7290"><div class="cas-circle">Ⅱ</div>
+        <div class="cas-stage">STAGE Ⅱ ─ COMMUNITY</div>
+        <div class="cas-title">共 同 体 ─ 信 頼 資 本 の 枯 渇</div>
+        <div class="cas-mech">炎上・誹謗中傷で信頼が崩壊。キャンセルカルチャーで本音を言わない文化が強化。</div>
+        <div class="cas-symptom">「人を信頼できる」と答える日本人：先進国で低水準／2020年木村花さん事件／キャンセルカルチャーの常態化／本音を言えない空気</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#2c5f7a"><div class="cas-circle">Ⅲ</div>
+        <div class="cas-stage">STAGE Ⅲ ─ PUBLIC SPACE</div>
+        <div class="cas-title">公 共 空 間 ─ 議 論 の 質 的 劣 化</div>
+        <div class="cas-mech">政治がスローガン化・短文化。「保守」「リベラル」が中身を伴わず党派ラベル化。互いを罵倒する語彙の発達。</div>
+        <div class="cas-symptom">ワイドショーの政策議論をエンタメ化／「反ワク」「ネトウヨ」「パヨク」の語彙／反知性主義の常態化</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#1d4255"><div class="cas-circle">Ⅳ</div>
+        <div class="cas-stage">STAGE Ⅳ ─ NATION</div>
+        <div class="cas-title">国 家 ─ 政 策 議 論 の 機 能 不 全</div>
+        <div class="cas-mech">選挙がワンイシュー化。100年戦略を語る政治家がメディア時間を確保できない。ポピュリズムへの傾斜。</div>
+        <div class="cas-symptom">エビデンスベース議論の不可能化／専門用語難解 vs 短文SNS の壁／長期政策の不可能化</div></div>
+      <div class="cas-arrow-mid">▼</div>
+      <div class="cas-level" style="--col:#15323e"><div class="cas-circle">Ⅴ</div>
+        <div class="cas-stage">STAGE Ⅴ ─ INTERNATIONAL</div>
+        <div class="cas-title">国 際 ─ 認 知 戦 ・ 情 報 戦 の 主 戦 場</div>
+        <div class="cas-mech">中国・ロシアによるSNS経由の影響工作が常態化。情報戦が戦場と並ぶ第二の戦線に。</div>
+        <div class="cas-symptom">2016米選挙、2022ウクライナで情報戦顕在化／日本は対応制度未整備／経済安保（半導体・データ）と直結</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅵ</div>
+      <h2 class="section-title">日 本 固 有 の 三 重 苦 ─ 30年で3度の構造変化</h2>
+      <p class="section-desc">第一は「紙」、第二は「マス」、第三は「真偽」。<span style="color:var(--c1)"><strong>段階的に失う対象が抽象化</strong></span> している。最後の「真偽」を失うと、議論の土台そのものが崩壊する。</p>
+    </div>
+    <div class="losses-wrap">
+      <svg class="losses-svg" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="500" x2="1140" y2="500" stroke="#5a5a6a" stroke-width="2"/>
+        <text x="60" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">1990</text>
+        <text x="320" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2000</text>
+        <text x="580" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2010</text>
+        <text x="840" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2020</text>
+        <text x="1130" y="535" font-size="11" fill="#6b6f80" font-family="Cormorant Garamond, serif">2026</text>
+
+        <rect x="60" y="380" width="350" height="120" fill="#3a7570" opacity="0.4" rx="2"/>
+        <text x="235" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">マ ス メ デ ィ ア 期</text>
+        <text x="235" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">5紙・民放6系列・NHK</text>
+        <text x="235" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">共通の情報基盤</text>
+
+        <rect x="430" y="380" width="280" height="120" fill="#22526a" opacity="0.5" rx="2"/>
+        <text x="570" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">紙 衰 退 ・ 個 人 発 信</text>
+        <text x="570" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">2ch・ブログ・初期SNS</text>
+        <text x="570" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">マスの信頼低下</text>
+
+        <rect x="730" y="380" width="270" height="120" fill="#2c5f7a" opacity="0.55" rx="2"/>
+        <text x="865" y="420" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">プ ラ ッ ト フ ォ ー ム</text>
+        <text x="865" y="445" font-size="11" fill="#c8c0b0" text-anchor="middle">X・YouTube・TikTok</text>
+        <text x="865" y="463" font-size="11" fill="#c8c0b0" text-anchor="middle">アルゴリズム支配</text>
+
+        <rect x="1020" y="450" width="130" height="50" fill="none" stroke="#c5292a" stroke-width="1.5" stroke-dasharray="6,4" rx="2"/>
+        <text x="1085" y="475" font-size="12" fill="#c5292a" text-anchor="middle" letter-spacing="2" font-weight="700">A I 時 代</text>
+        <text x="1085" y="492" font-size="9" fill="#6b6f80" text-anchor="middle">真偽判定の不能化</text>
+
+        <line x1="320" y1="60" x2="320" y2="500" stroke="#4a7d98" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="320" cy="60" r="32" fill="#15323e" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="320" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">①</text>
+        <text x="320" y="120" font-size="14" fill="#4a7d98" text-anchor="middle" letter-spacing="3" font-weight="700">第 一 の 喪 失</text>
+        <text x="320" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">1995-2010</text>
+        <text x="320" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">紙 媒 体 の 権 威</text>
+        <text x="320" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">新聞・雑誌の衰退</text>
+        <text x="320" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">五大紙の影響力低下</text>
+
+        <line x1="730" y1="60" x2="730" y2="500" stroke="#4a7d98" stroke-width="4" stroke-dasharray="8,4" opacity="1"/>
+        <circle cx="730" cy="60" r="38" fill="#2c5f7a" stroke="#f5f0e8" stroke-width="3"/>
+        <text x="730" y="70" font-family="Cormorant Garamond, serif" font-size="32" fill="#f5f0e8" text-anchor="middle" font-weight="700">②</text>
+        <text x="730" y="125" font-size="14" fill="#4a7d98" text-anchor="middle" letter-spacing="3" font-weight="700">第 二 の 喪 失</text>
+        <text x="730" y="147" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">2010-2020</text>
+        <text x="730" y="167" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">マ ス の 一 極 支 配</text>
+        <text x="730" y="189" font-size="11" fill="#c8c0b0" text-anchor="middle">TV・新聞の権威崩壊</text>
+        <text x="730" y="205" font-size="11" fill="#c8c0b0" text-anchor="middle">SNS優位へ</text>
+
+        <line x1="1020" y1="60" x2="1020" y2="500" stroke="#4a7d98" stroke-width="3" stroke-dasharray="8,4" opacity="0.9"/>
+        <circle cx="1020" cy="60" r="32" fill="#15323e" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="1020" y="68" font-family="Cormorant Garamond, serif" font-size="28" fill="#f5f0e8" text-anchor="middle" font-weight="700">③</text>
+        <text x="1020" y="120" font-size="14" fill="#4a7d98" text-anchor="middle" letter-spacing="3" font-weight="700">第 三 の 喪 失</text>
+        <text x="1020" y="142" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-family="Cormorant Garamond, serif">2020 ─</text>
+        <text x="1020" y="162" font-size="13" fill="#f5f0e8" text-anchor="middle" font-weight="700">真 偽 判 定 そ の も の</text>
+        <text x="1020" y="184" font-size="11" fill="#c8c0b0" text-anchor="middle">生成AIで「事実」が崩壊</text>
+        <text x="1020" y="200" font-size="11" fill="#c8c0b0" text-anchor="middle">議論の土台が消失</text>
+
+        <text x="600" y="565" font-size="13" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">─ 段階的に失う対象が抽象化 ─</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">FIGURE Ⅶ</div>
+      <h2 class="section-title">統 合 ダ イ ア グ ラ ム ─ 触 媒 と し て の 機 能</h2>
+      <p class="section-desc">クラスター③は単独に問題を作るというより、<span style="color:var(--c1)"><strong>他全クラスターの問題を歪めて加速させる「触媒」</strong></span>。介入なくして他クラスターは治らない。</p>
+    </div>
+    <div class="synthesis">
+      <svg class="synthesis-svg" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="synBuild3" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#3a7570"/><stop offset="100%" stop-color="#5a8a85"/>
+          </linearGradient>
+          <linearGradient id="synDestroy3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2c5f7a"/><stop offset="100%" stop-color="#15323e"/>
+          </linearGradient>
+          <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#2c5f7a"/></marker>
+        </defs>
+
+        <rect x="40" y="60" width="320" height="680" fill="url(#synBuild3)" opacity="0.15" rx="6" stroke="#3a7570" stroke-width="1.5"/>
+        <text x="200" y="100" font-size="13" fill="#3a7570" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 1 · BUILD</text>
+        <text x="200" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">成 り 立 ち</text>
+
+        <rect x="80" y="180" width="240" height="60" fill="#3a7570" opacity="0.4" rx="3"/>
+        <text x="200" y="205" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅰ</text>
+        <text x="200" y="226" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">認 知 層</text>
+
+        <rect x="80" y="260" width="240" height="60" fill="#3a7570" opacity="0.5" rx="3"/>
+        <text x="200" y="285" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅱ</text>
+        <text x="200" y="306" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">機 構 層</text>
+
+        <rect x="80" y="340" width="240" height="60" fill="#3a7570" opacity="0.6" rx="3"/>
+        <text x="200" y="365" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="2">LAYER Ⅲ</text>
+        <text x="200" y="386" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700">表 現 層</text>
+
+        <text x="200" y="450" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="3">~ 1,200 YEARS ~</text>
+        <text x="200" y="470" font-size="13" fill="#c8c0b0" text-anchor="middle">江戸期に世界最高水準の</text>
+        <text x="200" y="488" font-size="13" fill="#c8c0b0" text-anchor="middle">識字率（70-80%）</text>
+
+        <text x="200" y="540" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2">SIX COMPONENTS</text>
+        <text x="200" y="565" font-size="11" fill="#c8c0b0" text-anchor="middle">情報生成 · 媒体</text>
+        <text x="200" y="583" font-size="11" fill="#c8c0b0" text-anchor="middle">編集 · 共通言語</text>
+        <text x="200" y="601" font-size="11" fill="#c8c0b0" text-anchor="middle">真偽判定 · 公共空間</text>
+
+        <text x="200" y="660" font-size="13" fill="#3a7570" text-anchor="middle" font-weight="700" letter-spacing="2">↓</text>
+        <text x="200" y="690" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="2">戦 後 マ ス 期 完 成 形</text>
+        <text x="200" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">5紙＋民放＋NHK 50年</text>
+
+        <path d="M 360 400 L 440 400" stroke="#2c5f7a" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+
+        <rect x="440" y="60" width="320" height="680" fill="url(#synDestroy3)" opacity="0.18" rx="6" stroke="#2c5f7a" stroke-width="1.5"/>
+        <text x="600" y="100" font-size="13" fill="#2c5f7a" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 2 · CONTAMINATE</text>
+        <text x="600" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">汚 染</text>
+
+        <rect x="475" y="170" width="115" height="80" fill="#15323e" rx="3"/>
+        <text x="532" y="195" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">A</text>
+        <text x="532" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">注 意 収 奪</text>
+        <text x="532" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">2010-現在</text>
+
+        <rect x="610" y="170" width="115" height="80" fill="#15323e" rx="3"/>
+        <text x="667" y="195" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">B</text>
+        <text x="667" y="216" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">媒 介 独 占</text>
+        <text x="667" y="234" font-size="9" fill="#c8c0b0" text-anchor="middle">2008-現在</text>
+
+        <rect x="475" y="270" width="115" height="80" fill="#15323e" rx="3"/>
+        <text x="532" y="295" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">C</text>
+        <text x="532" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">真 偽 不 能</text>
+        <text x="532" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">2016-現在</text>
+
+        <rect x="610" y="270" width="115" height="80" fill="#15323e" rx="3"/>
+        <text x="667" y="295" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">D</text>
+        <text x="667" y="316" font-size="11" fill="#f5f0e8" text-anchor="middle" font-weight="700">基 盤 消 失</text>
+        <text x="667" y="334" font-size="9" fill="#c8c0b0" text-anchor="middle">2010-現在</text>
+
+        <text x="600" y="400" font-size="12" fill="#2c5f7a" text-anchor="middle" letter-spacing="3">▼ 同時並行 ▼</text>
+
+        <circle cx="510" cy="450" r="20" fill="#15323e" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="510" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">①</text>
+        <text x="510" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">1995-2010</text>
+
+        <circle cx="600" cy="450" r="22" fill="#2c5f7a" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="600" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">②</text>
+        <text x="600" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">2010-2020</text>
+
+        <circle cx="690" cy="450" r="20" fill="#15323e" stroke="#f5f0e8" stroke-width="2"/>
+        <text x="690" y="457" font-size="14" fill="#f5f0e8" text-anchor="middle" font-weight="700" font-family="Cormorant Garamond, serif">③</text>
+        <text x="690" y="490" font-size="10" fill="#c8c0b0" text-anchor="middle">2020-</text>
+
+        <text x="600" y="525" font-size="11" fill="#4a7d98" text-anchor="middle" letter-spacing="2" font-weight="700">紙 → マス → 真偽</text>
+
+        <text x="600" y="580" font-size="12" fill="#c9a961" text-anchor="middle" letter-spacing="3" font-style="italic">触 媒 効 果</text>
+        <text x="600" y="603" font-size="10" fill="#c8c0b0" text-anchor="middle">単独で問題を作るのではなく</text>
+        <text x="600" y="618" font-size="10" fill="#c8c0b0" text-anchor="middle">他全クラスターを歪めて加速</text>
+        <text x="600" y="638" font-size="10" fill="#c8c0b0" text-anchor="middle">→ 介入優先度が高い</text>
+
+        <text x="600" y="690" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" letter-spacing="2">議 論 の 土 台 崩 壊</text>
+        <text x="600" y="710" font-size="11" fill="#c8c0b0" text-anchor="middle">「事実」自体が党派化</text>
+
+        <path d="M 760 400 L 840 400" stroke="#2c5f7a" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+
+        <rect x="840" y="60" width="320" height="680" fill="#1a1620" opacity="0.5" rx="6" stroke="#1d4255" stroke-width="1.5"/>
+        <text x="1000" y="100" font-size="13" fill="#4a7d98" text-anchor="middle" letter-spacing="4" font-family="Cormorant Garamond, serif" font-weight="600">PHASE 3 · AMPLIFY ALL</text>
+        <text x="1000" y="130" font-size="22" fill="#f5f0e8" text-anchor="middle" font-weight="700" letter-spacing="3">全 層 増 幅</text>
+
+        <rect x="880" y="170" width="240" height="50" fill="#4a7d98" opacity="0.5" rx="3"/>
+        <text x="900" y="200" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">①</text>
+        <text x="930" y="195" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">物 語 崩 壊 ×</text>
+        <text x="930" y="213" font-size="10" fill="#c8c0b0">物語の供給源が消失</text>
+
+        <rect x="880" y="240" width="240" height="50" fill="#3a7290" opacity="0.55" rx="3"/>
+        <text x="900" y="270" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">②</text>
+        <text x="930" y="265" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">人 口 減 ×</text>
+        <text x="930" y="283" font-size="10" fill="#c8c0b0">婚活SNS化・育児不安増幅</text>
+
+        <rect x="880" y="310" width="240" height="50" fill="#2c5f7a" opacity="0.6" rx="3"/>
+        <text x="900" y="340" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">④</text>
+        <text x="930" y="335" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">経 済 ×</text>
+        <text x="930" y="353" font-size="10" fill="#c8c0b0">短期株価変動への過剰反応</text>
+
+        <rect x="880" y="380" width="240" height="50" fill="#1d4255" opacity="0.65" rx="3"/>
+        <text x="900" y="410" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">⑤</text>
+        <text x="930" y="405" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">政 治 ×</text>
+        <text x="930" y="423" font-size="10" fill="#c8c0b0">ポピュリズム・長期議論不能</text>
+
+        <rect x="880" y="450" width="240" height="50" fill="#15323e" opacity="0.7" rx="3"/>
+        <text x="900" y="480" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">⑥</text>
+        <text x="930" y="475" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">自 然 ×</text>
+        <text x="930" y="493" font-size="10" fill="#c8c0b0">環境問題が陰謀論化</text>
+
+        <rect x="880" y="520" width="240" height="50" fill="#0c1d23" opacity="0.7" rx="3"/>
+        <text x="900" y="550" font-size="14" fill="#f5f0e8" font-weight="700" font-family="Cormorant Garamond, serif">⑦</text>
+        <text x="930" y="545" font-size="13" fill="#f5f0e8" font-weight="700" letter-spacing="2">知 識 ×</text>
+        <text x="930" y="563" font-size="10" fill="#c8c0b0">浅薄化・深い学習動機減</text>
+
+        <text x="1000" y="630" font-size="13" fill="#2c5f7a" text-anchor="middle" font-weight="700" letter-spacing="2">↓ 触媒として ↓</text>
+
+        <text x="1000" y="680" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" letter-spacing="3">他 全 ク ラ ス タ ー の</text>
+        <text x="1000" y="700" font-size="14" fill="#4a7d98" text-anchor="middle" font-weight="700" letter-spacing="3">問 題 を 増 幅</text>
+        <text x="1000" y="725" font-size="11" fill="#c9a961" text-anchor="middle" letter-spacing="2" font-style="italic">介入なくして他は治らない</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="footer">CLAUDE CODE COO · 2026.04.26 · CLUSTER Ⅲ STRUCTURAL ANALYSIS</div>
+</div>
+</body>
+</html>
