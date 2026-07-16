@@ -386,6 +386,8 @@
   .wl-name{ font-size:12.5px; color:var(--pearl); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wl-badge{ flex:none; font-size:9px; font-weight:700; padding:1px 6px; border-radius:9px;
     border:1px solid rgba(201,169,97,0.4); color:var(--gold-soft); letter-spacing:0.06em; }
+  .wl-nbadge{ flex:none; font-size:9px; padding:1px 5px; border-radius:8px; letter-spacing:0.02em;
+    background:rgba(74,138,181,0.18); border:1px solid rgba(74,138,181,0.45); color:#8fc3e8; }
   .wl-row.flash{ animation:wlflash 1.4s ease-out; }
   @keyframes wlflash{ 0%{background:rgba(201,169,97,0.34);} 100%{background:transparent;} }
   /* 展開される詳細 */
@@ -406,6 +408,20 @@
   @media(max-width:760px){
     .wl-left{ width:62px; } .wl-det{ margin-left:0; } .wl-name{ font-size:11.5px; }
   }
+
+  /* ===== ver.5.0: 関連ニュース ===== */
+  .nw-list{ display:flex; flex-direction:column; gap:9px; }
+  .nw-item{ padding:8px 10px; border-radius:6px; background:rgba(255,255,255,0.035);
+    border-left:2px solid rgba(120,170,210,0.5); }
+  .nw-kind{ display:inline-block; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px;
+    margin-bottom:4px; letter-spacing:0.04em; }
+  .nw-kind.ev{ background:rgba(74,138,181,0.2); color:#8fc3e8; border:1px solid rgba(74,138,181,0.5); }
+  .nw-kind.pg{ background:rgba(120,190,130,0.16); color:#9fd8a8; border:1px solid rgba(120,190,130,0.45); }
+  .nw-ttl{ display:block; font-size:12px; font-weight:700; color:var(--pearl); text-decoration:none;
+    line-height:1.6; margin-bottom:3px; }
+  .nw-ttl:hover{ color:var(--gold-soft); text-decoration:underline; }
+  .nw-sum{ font-size:11px; color:var(--pearl-mid); line-height:1.75; }
+  .nw-meta{ font-size:9.5px; color:var(--muted); margin-top:4px; letter-spacing:0.03em; }
 </style>
 </head>
 <body>
@@ -415,7 +431,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.9</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.0</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -2592,6 +2608,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">原因の根 · ROOT CAUSE</div><div class="d-txt">'+p.cluster.cause+'</div></div>';
     h+='<div class="d-sec"><div class="d-lbl">解決仮説 · HYPOTHESIS</div><div class="d-txt">'+p.sub.hy+'</div></div>';
     if(sp&&sp.st)h+='<div class="d-sec"><div class="d-lbl">この課題の物語 · STORY</div><div class="d-story">'+sp.st+'</div></div>';
+    { const nh=newsHtml(p); if(nh) h+='<div class="d-sec">'+nh+'</div>'; }   // ver.5.0
     h+='<div class="d-sec">'
       +'<span class="d-jump" onclick="jumpTo('+p.rootNode.i+')">↓ 根（原因）へ</span>'
       +'<span class="d-jump" onclick="jumpTo('+p.leafNode.i+')">↑ 葉（未来）へ</span>'
@@ -2697,6 +2714,49 @@ $('hmvTree').onclick=enterTree;
 $('hmvResults').onclick=()=>{ $('hmView').classList.remove('show'); gotoStep('step2'); };
 
 /* ================================================================
+   ver.5.0: エビデンス補強ニュース〔鈴木様指示・項目1〕
+   Claude Codeがバッチで収集・選別した news.json を読み込む。
+   ・収集/選別はローカルのパイプライン（世界樹_tools_*.js）で実施＝ブラウザからは
+     Google/Yahooニュースを直接取得できず（CORS・公開APIなし）、PR記事や実現性の
+     判定にもAIが要るがAPIキーを公開サイトに置けないため
+   ・全URLの到達性を機械検証済み（verified: true / "blocked"=政府系のボット遮断で自動検証不可）
+   ・公開画面には status:'adopted' のみ表示。'pending'（要判断）はローカル管理画面用
+   ・読み込み失敗（file://直開き等）でもアプリは通常どおり動く
+================================================================ */
+const NEWS={loaded:false, items:[], byProblem:new Map(), counts:null};
+function newsFor(name){ return NEWS.byProblem.get(name)||[]; }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function newsHtml(p){
+  const ns=newsFor(p.name);
+  if(!ns.length)return '';
+  let h='<div class="dlbl">関連ニュース · EVIDENCE '+ns.length+'件</div>';
+  h+='<div class="nw-list">'+ns.map(n=>{
+    const kind=n.kind==='progress'?'<span class="nw-kind pg">解決の前進</span>':'<span class="nw-kind ev">現状の裏付け</span>';
+    const meta=[n.source,n.date].filter(Boolean).map(esc).join(' · ');
+    return '<div class="nw-item">'+kind
+      +'<a class="nw-ttl" href="'+esc(n.url)+'" target="_blank" rel="noopener noreferrer">'+esc(n.title)+'</a>'
+      +'<div class="nw-sum">'+esc(n.summary)+'</div>'
+      +'<div class="nw-meta">'+meta+(n.verified==='blocked'?' <span title="政府系サイトのボット遮断により自動リンク検証ができませんでした">⚠ 自動検証不可</span>':'')+'</div></div>';
+  }).join('')+'</div>';
+  return h;
+}
+(function loadNews(){
+  // 本番(世界樹_web/)では同階層。マスターを 01_strategy/ から開いた時は 世界樹_web/ に退避する
+  const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
+  grab('news.json').catch(()=>grab('世界樹_web/news.json')).then(j=>{
+    NEWS.items=(j.items||[]).filter(n=>n.status==='adopted');
+    NEWS.counts=j.counts||null; NEWS.generated=j.generated||'';
+    NEWS.items.forEach(n=>(n.problems||[]).forEach(nm=>{
+      if(!NEWS.byProblem.has(nm))NEWS.byProblem.set(nm,[]);
+      NEWS.byProblem.get(nm).push(n); }));
+    NEWS.loaded=true;
+    // 非同期で届くので、既に開いている画面は描き直す（ニュース有無バッジ・詳細に反映）
+    if($('wlView').classList.contains('show')){ const nm=wlOpenName; wlBuild(); if(nm)wlToggle(nm,true); }
+    if(state.sel)refreshDetail();
+  }).catch(()=>{ NEWS.loaded=false; });   // file://直開き等では読めない＝ニュース無しで通常動作
+})();
+
+/* ================================================================
    ver.4.9: 世界線 -WORLD LINE-
    一本の縦の道に、未来に解決される250課題を年順にプロット。
    ・点の明瞭度＝エビデンス確度（CONF）。高いほど濃く大きくくっきり（色はクラスター色を保持）
@@ -2742,11 +2802,14 @@ function wlBuild(){
     let dom='';
     if(domain.active&&p._dom5>0){ const a=0.28+0.72*(p._domRel||0);
       dom='<span class="wl-dom" style="opacity:'+a.toFixed(2)+';box-shadow:0 0 '+(2+6*(p._domRel||0)).toFixed(1)+'px #e8c977"></span>'; }
+    const nn=newsFor(p.name).length;
     html+='<div class="wl-row'+(state.year>=p.yr?' done':'')+'" data-n="'+encodeURIComponent(p.name)+'">'
       +'<div class="wl-left">'+dom+'<span class="wl-yr">'+p.yr+'</span></div>'
       +'<div class="wl-node"><span class="wl-dot" style="'+dotStyle+'"></span></div>'
       +'<div class="wl-main"><span class="wl-name">'+p.name+'</span>'
-      +'<span class="wl-badge" style="opacity:'+Math.max(0.5,cs.op)+'">'+cs.n+'</span></div></div>'
+      +'<span class="wl-badge" style="opacity:'+Math.max(0.5,cs.op)+'">'+cs.n+'</span>'
+      +(nn?'<span class="wl-nbadge" title="関連ニュース'+nn+'件">📰'+nn+'</span>':'')
+      +'</div></div>'
       +'<div class="wl-det" data-d="'+encodeURIComponent(p.name)+'"></div>';
   });
   track.innerHTML=html;
@@ -2765,6 +2828,7 @@ function wlDetHtml(p){
   h+='<div class="dlbl">現状 · CURRENT STATE</div><div class="dtxt">'+p.detail+'</div>';
   h+='<div class="dlbl">解決仮説 · HYPOTHESIS</div><div class="dtxt">'+p.sub.hy+'</div>';
   if(sp&&sp.st) h+='<div class="dlbl">この課題の物語 · STORY</div><div class="dtxt">'+sp.st+'</div>';
+  h+=newsHtml(p);   // ver.5.0
   const aff=wlAffected(p);
   if(aff.length){
     const chip=a=>'<span class="wl-jump" data-j="'+encodeURIComponent(a.q.name)+'" title="解決シナジー 3/3（'+p.sub.id+' '+p.sub.n+' → '+a.q.sub.id+' '+a.q.sub.n+'）">'
