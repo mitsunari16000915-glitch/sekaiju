@@ -354,6 +354,58 @@
   .hm-full{ flex:1; margin:0; min-height:0; }
   .hm-full #hmcv{ height:100%; }
   .hmv-note{ text-align:center; font-size:10.5px; color:var(--muted); padding-top:7px; letter-spacing:0.06em; }
+
+  /* ===== ver.4.9: 世界線 -WORLD LINE- ===== */
+  .wlview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:60; display:none; flex-direction:column;
+    background:radial-gradient(ellipse at top, #12151f 0%, #06070d 78%); padding:12px 16px 8px; }
+  .wlview.show{ display:flex; }
+  .wl-legend{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; font-size:10.5px;
+    color:var(--muted); padding:6px 0 8px; border-bottom:1px solid rgba(201,169,97,0.18); }
+  .wl-legend .lg{ display:flex; align-items:center; gap:5px; }
+  .wl-legend .lgd{ width:11px; height:11px; border-radius:50%; background:#c9a961; flex:none; }
+  .wl-body{ flex:1; overflow-y:auto; overflow-x:hidden; padding:14px 0 40px; }
+  .wl-track{ max-width:840px; margin:0 auto; }
+  .wl-era{ display:flex; align-items:center; gap:10px; margin:18px 0 8px; padding-left:6px; }
+  .wl-era .ttl{ font-size:11px; letter-spacing:0.2em; color:var(--gold); font-family:'Cormorant Garamond',serif; }
+  .wl-era .ln{ flex:1; height:1px; background:rgba(201,169,97,0.2); }
+  .wl-row{ display:flex; align-items:stretch; cursor:pointer; }
+  .wl-left{ width:96px; flex:none; display:flex; align-items:center; justify-content:flex-end; gap:7px;
+    padding:7px 0; }
+  .wl-dom{ width:10px; height:10px; border-radius:50%; flex:none; background:#e8c977; }
+  .wl-yr{ font-family:'Cormorant Garamond',serif; font-size:14px; font-weight:600; color:var(--pearl-mid);
+    letter-spacing:0.04em; }
+  .wl-row.done .wl-yr{ color:var(--gold-soft); }
+  .wl-node{ width:26px; flex:none; position:relative; display:flex; align-items:center; justify-content:center; }
+  .wl-node::before{ content:''; position:absolute; top:0; bottom:0; left:50%; width:2px;
+    transform:translateX(-50%); background:rgba(201,169,97,0.22); }
+  .wl-row:first-child .wl-node::before{ top:50%; }
+  .wl-row:last-child .wl-node::before{ bottom:50%; }
+  .wl-dot{ position:relative; z-index:1; border-radius:50%; transition:transform .15s; }
+  .wl-row:hover .wl-dot{ transform:scale(1.35); }
+  .wl-main{ flex:1; min-width:0; padding:7px 0 7px 12px; display:flex; align-items:center; gap:8px; }
+  .wl-name{ font-size:12.5px; color:var(--pearl); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .wl-badge{ flex:none; font-size:9px; font-weight:700; padding:1px 6px; border-radius:9px;
+    border:1px solid rgba(201,169,97,0.4); color:var(--gold-soft); letter-spacing:0.06em; }
+  .wl-row.flash{ animation:wlflash 1.4s ease-out; }
+  @keyframes wlflash{ 0%{background:rgba(201,169,97,0.34);} 100%{background:transparent;} }
+  /* 展開される詳細 */
+  .wl-det{ display:none; margin:0 0 10px 122px; padding:14px 16px; border-radius:8px;
+    background:rgba(201,169,97,0.06); border-left:2px solid rgba(201,169,97,0.5); }
+  .wl-det.open{ display:block; }
+  .wl-det .dt{ font-size:14px; font-weight:700; color:var(--gold-soft); margin-bottom:8px; }
+  .wl-det .dtxt{ font-size:11.5px; line-height:1.85; color:var(--pearl-mid); margin-bottom:8px; }
+  .wl-det .dlbl{ font-size:9.5px; letter-spacing:0.16em; color:var(--gold); margin:10px 0 4px;
+    font-family:'Cormorant Garamond',serif; }
+  .wl-conf{ font-size:11px; color:var(--pearl-mid); margin-bottom:6px; }
+  .wl-jumps{ display:flex; flex-wrap:wrap; gap:6px; }
+  .wl-jump{ font-size:10.5px; padding:4px 9px; border-radius:12px; cursor:pointer;
+    background:rgba(201,169,97,0.08); border:1px solid rgba(201,169,97,0.35); color:var(--pearl);
+    transition:all .15s; }
+  .wl-jump:hover{ background:rgba(201,169,97,0.22); border-color:var(--gold); }
+  .wl-jump .jy{ color:var(--gold-soft); font-family:'Cormorant Garamond',serif; margin-right:4px; }
+  @media(max-width:760px){
+    .wl-left{ width:62px; } .wl-det{ margin-left:0; } .wl-name{ font-size:11.5px; }
+  }
 </style>
 </head>
 <body>
@@ -363,7 +415,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.8</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.4.9</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -373,6 +425,9 @@
 <div class="panel" id="panel">
   <div class="btnrow" style="margin-bottom:7px;">
     <div class="vbtn pres-cta" id="presBtn">🎬 自動プレゼン</div>
+  </div>
+  <div class="btnrow" style="margin-bottom:7px;">
+    <div class="vbtn" id="wlBtn">⋮ 世 界 線</div>
   </div>
   <h3 style="margin-top:0">ROOTS · 7クラスター</h3>
   <div class="chiprow" id="clusterChips"></div>
@@ -456,6 +511,19 @@
     <div class="hm-tip" id="hmTip"></div>
   </div>
   <div class="hmv-note">ドラッグ＝回転｜ホイール／2本指ピンチ＝拡大（拡大すると項目名表示）｜ホバー・<b>タップ</b>＝数値詳細</div>
+</div>
+
+<!-- ===== ver.4.9: 世界線 -WORLD LINE- ===== -->
+<div class="wlview" id="wlView">
+  <div class="hmv-top">
+    <div><span class="hmv-ttl">世 界 線 <span style="font-size:11px;color:var(--muted)">-WORLD LINE-</span></span>
+      <span class="hmv-kw" id="wlKw"></span></div>
+    <div class="hmv-btns">
+      <span class="hm-btn" id="wlTree">❦ 世界樹へ戻る</span>
+    </div>
+  </div>
+  <div class="wl-legend" id="wlLegend"></div>
+  <div class="wl-body" id="wlBody"><div class="wl-track" id="wlTrack"></div></div>
 </div>
 
 <div class="timeline">
@@ -1172,6 +1240,25 @@ let birdPt=null;
 { const nbg=boughs.find(b=>b.ti===3&&b.elemK==='mind')||boughs.find(b=>b.ti===3)||boughs[0];
   if(nbg){ const bp=nbg.q(0.46); birdPt={x:bp.x,y:bp.y+2,z:bp.z}; } }
 
+/* ver.4.9: エビデンス監査台帳v1.0 由来の確度（信頼度）。世界線ビューの明瞭度と詳細バッジに使用。
+   A=複数の一次・公的資料で確認 ／ B=一次資料1件で確認 ／ C=裏付けなし・要再調査 ／ －=検証可能な数値主張なし（定性・判定対象外）
+   ver.2.9の改名5件は監査結果を現行名の実態に補正済み（出生率1.15・限界集落40%・読書62.6%=A／化石燃料約8割=B／ソフトパワー内実不足=－）
+   更新時は scratchpad/gen_conf.js を再実行して差し替える */
+const CONF_RAW={
+  'A':'空き家の景観破壊|大企業の品質偽装|官僚の文書改ざん|政治家不祥事の常態化|SNS誹謗中傷|いじめ・ハラスメント|首都の象徴の不在|生涯未婚率の上昇|合計特殊出生率1.15|晩産化の固定|単身世帯38.0%|家業継承の困難|ヤングケアラー|老老介護|ダブルケア|育休取得率の男女差|限界集落40%|消滅可能性都市896|耕作放棄地|外国人労働者の増加と摩擦|婚外子の社会的排除|高齢者のSNS被害|ディープフェイク動画|月1冊も本を読まない62.6%|内部留保600兆円超の塩漬け|従業員賃金の停滞|転嫁拒否|実質賃金の30年停滞|非正規雇用37%|老後2000万円問題|人材投資の停滞|教育投資の削減|内部留保の塩漬け|半導体産業の衰退|時価総額ランキング後退|東京一極集中|地方交付税依存|食料安全保障の不在|裏金問題|食料自給率38%|農業の高齢化|生物多様性の喪失|海洋プラスチック汚染|鹿・猪の獣害|首都直下地震|インフラ老朽化|熱中症死者|特許出願の減少|任期付ポストの激増|博士課程進学率低下|教員の長時間労働',
+  'B':'皇室・天皇制への希薄化|都市景観の混沌|京都の景観論争|美術・芸術教育の衰退|神社祭祀の担い手不足|神輿担ぎ手の物理的不足|通過儀礼の簡略化|神道・仏教離れ|30代未婚率の高さ|パラサイト・シングル|婚活疲れ|「子無し選択」の増加|祖父母世代の孤立|保育所不足|介護離職|産後うつ|小学校統廃合|公共サービス維持困難|道路・橋・上下水道の老朽化|LGBTQ+の社会的位置づけ|フェイクニュース拡散|陰謀論の浸透|リテラシー教育の遅れ|広告料の海外流出|海外アプリの影響工作リスク|クラウド依存|ファクトチェック機関の未整備|ヘイト・誹謗中傷の蔓延|記者クラブ制度の硬直|大学生の学習時間|2倍速視聴・要約文化|集中時間の短縮|自社株買いの常態化|株主還元優先で投資不足|HFT・超高速取引|金融資産と実体経済の乖離|単価切り下げ圧力|役員報酬の高騰|中間層の崩壊|ワーキングプア|商店街のシャッター化|貯蓄ゼロ世帯|設備投資の不足|スタートアップ育成の遅れ|バイオ産業の遅れ|AI開発での遅れ|脱炭素技術の遅れ|DX対応の遅れ|地方議員のなり手不足|道州制議論の停滞|平成の大合併の限界|エネルギー政策の場当たり化|政治家の不祥事|官僚の忖度|政治資金透明性の欠如|投票率低下|国連での発言力|国際貢献の縮小|独立シンクタンクの不在|官庁エリートの専門性低下|化石燃料約8割依存|原発再稼働の停滞|電気代上昇|種子・肥料の輸入依存|農地の荒廃拡大|漁業の衰退|絶滅危惧種3,772種|サンゴ礁・藻場の消失|南海トラフ地震|廃棄物処理問題|リサイクル率の停滞|資源安全保障|伝統工芸の事業所4分の1|宮大工の不足|古文・漢文離れ|ユニコーン企業数|ベンチャーキャピタル不足|大学運営費交付金削減|論文シェア9%→3%|記録対象の高齢化',
+  'C':'ふるさと意識の喪失|伝統的街並みの消失|信頼資本の枯渇|民俗芸能の継承不能|「日本」ブランドの弱体化|三世代同居の激減|移民政策の不在|真偽判定能力の欠如|GAFAMへの完全依存|日本独自プラットフォーム不在|データ主権の喪失|R&D投資の伸び悩み|既存産業の延命|無投票当選の常態化|地方財政の硬直|国家ビジョンの不在|長期計画機構の不在|ジャパン・パッシング|外交での後追い|経済安保の遅れ|無形文化財保持者の高齢化|後継者不在|哲学・歴史教育の軽視|大学世界ランキング後退',
+  '－':'国家アイデンティティの希薄化|経済成長物語の失効|戦後史観の左右分断|県民意識・郷土愛の低下|建国神話への態度|公共建築の凡庸化|ロードサイドの均質化|公共マナーの劣化|「バレなければ良い」文化|年中行事の家庭からの消失|氏神・檀那寺との切断|国旗国歌への複雑感情|クールジャパンの内容希薄化|公共建築の象徴性欠如|国家的コモン・グラウンドの不在|ナショナルブランドの座標軸不在|親ガチャ言説|親戚関係の希薄化|盆暮の帰省離れ|「家」概念の消失|育児ノイローゼ|商店街シャッター化|人口減少の心理的影響|多文化共生の表層化|「日本人」の定義の揺らぎ|観光客との文化摩擦|子供のスマホ依存|専門家への不信|アルゴリズムによる思考誘導|生成AIによる虚偽情報|専門家の権威崩壊|ポストトゥルース現象|AI生成コンテンツの判別不能|真偽判定の党派化|国会の質疑時間浪費|政治の人気投票化|政策議論のエンタメ化|分断・極化|市民広場の不在|タイパ志向の蔓延|「論破」文化|古典離れ|四半期決算プレッシャー|ROE至上主義|「お客様第一」の形骸化|地域への還元不足|ESG投資の表層化|地方経済の縮小|四半期資本主義|防衛戦略の対外依存|政策の連続性消失|短期的バラマキの常態化|政官の倫理低下|利権政治の継続|G7内での影響力低下|ソフトパワーの内実不足|政策立案能力の脆弱化|官邸主導の偏り|政策ブレーンの不足|大学と政策の断絶|EBPMの遅れ|再エネのコスト高|エネルギー安全保障リスク|送電網の老朽化|分散型への移行遅れ|円安での食料価格上昇|フードマイレージの長距離化|里山・里海の荒廃|森林の管理放棄|気候災害の頻発|防災予算の不足|復興の遅れ|カーボンニュートラル困難|循環型経済への移行遅れ|地産地消の不徹底|江戸期循環知の消失|修行の経済的不可能化|暗黙知の消失|道具・素材の供給途絶|教養層の薄さ|文理分断|大学の就職予備校化|国際教養人材の不足|英語偏重・他言語軽視|エコシステムの薄さ|大企業の硬直|リスクテイクの不足|基礎研究の枯死|若手研究者の海外流出|技能のマニュアル化困難|AI記録の体系化不足|職人の知のロスト|製造現場のノウハウ消失|農業・漁業の知の消失|芸道の身体知',
+};
+const CONF=(()=>{const m={};for(const k in CONF_RAW)CONF_RAW[k].split("|").forEach(n=>{if(n)m[n]=k;});return m;})();
+/* 信頼度の表示仕様: 高いほど濃く・大きく・くっきり（cluster色は保持し明瞭度だけを変える） */
+const CONF_STYLE={
+  'A':{op:1.00,r:12,glow:1,n:'A',d:'複数の一次・公的資料で確認'},
+  'B':{op:0.74,r:10,glow:0,n:'B',d:'一次資料1件で確認'},
+  '－':{op:0.46,r:9, glow:0,n:'－',d:'数値主張なし（定性・判定対象外）'},
+  'C':{op:0.28,r:8, glow:0,n:'C',d:'裏付けなし・要再調査'}
+};
+
 /* --- 解決年の割当て（西暦） --- */
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
 problems.forEach((p,pi)=>{
@@ -1185,6 +1272,7 @@ problems.forEach((p,pi)=>{
   p.yr=Math.round(lo+span*frac+(rnd2()-0.5)*1.2);
   if(p.yr<lo)p.yr=lo; if(p.yr>hi)p.yr=hi;
 });
+problems.forEach(p=>{ p.conf=CONF[p.name]||'－'; });   // ver.4.9: 監査台帳の確度を付与
 
 /* --- 果実（規範の枝の曲線上に吊るす） --- */
 const fruitNodes=[];
@@ -2607,6 +2695,126 @@ $('toTreeBtn').onclick=enterTree;
 $('hmShowBtn').onclick=showHeatmap;
 $('hmvTree').onclick=enterTree;
 $('hmvResults').onclick=()=>{ $('hmView').classList.remove('show'); gotoStep('step2'); };
+
+/* ================================================================
+   ver.4.9: 世界線 -WORLD LINE-
+   一本の縦の道に、未来に解決される250課題を年順にプロット。
+   ・点の明瞭度＝エビデンス確度（CONF）。高いほど濃く大きくくっきり（色はクラスター色を保持）
+   ・事業領域を設定済みなら、関係する課題の左に●（関係が深いほど明るい）
+   ・行クリックで内容を展開。「影響を受ける課題解決」＝解決シナジー2以上のサブ要素に属し、
+     この解決以降に解決する課題（＝この解決が後押しし得るもの）へジャンプ
+================================================================ */
+let wlBuilt=false, wlOpenName=null;
+const WL_JUMP_SHOW=12;   // 初期表示件数（超過分は「他N件」で展開＝全件に到達できる）
+/* 影響先＝解決シナジーが最強(3/3)のサブ要素に属し、この解決以降に解決する課題。
+   syn>=2まで含めると中央値48件・最大176件とノイズが多く因果として弱いため3/3に限定
+   （実測: 3/3なら中央値8件・最大49件・該当なし60件） */
+function wlAffected(p){
+  const i=p.sub._eidx, out=[];
+  problems.forEach(q=>{
+    if(q===p||q.sub===p.sub)return;
+    if(synVal(i,q.sub._eidx)===3 && q.yr>=p.yr) out.push({q,sv:3});
+  });
+  out.sort((a,b)=> a.q.yr-b.q.yr || a.q.name.localeCompare(b.q.name,'ja'));
+  return out;
+}
+function wlRenderLegend(){
+  const L=$('wlLegend');
+  let h='<span style="color:var(--pearl-mid)">信頼度（エビデンス確度）:</span>';
+  ['A','B','－','C'].forEach(k=>{ const s=CONF_STYLE[k];
+    h+='<span class="lg"><span class="lgd" style="width:'+s.r+'px;height:'+s.r+'px;opacity:'+s.op+'"></span>'
+      +'<b style="color:var(--gold-soft)">'+s.n+'</b> '+s.d+'</span>'; });
+  if(domain.active) h+='<span class="lg" style="margin-left:auto"><span class="lgd" style="background:#e8c977"></span>'
+    +'左の●＝あなたの事業領域と関係（明るいほど関係が深い）</span>';
+  L.innerHTML=h;
+}
+function wlBuild(){
+  const track=$('wlTrack'); track.innerHTML='';
+  const list=problems.slice().sort((a,b)=> a.yr-b.yr || a.name.localeCompare(b.name,'ja'));
+  let curTier=null, html='';
+  list.forEach(p=>{
+    if(p.tier!==curTier){ curTier=p.tier; const tr=TIERS[p.tier];
+      html+='<div class="wl-era"><span class="ttl">'+tr.n+' · '+tr.s+'</span><span class="ln"></span></div>'; }
+    const cs=CONF_STYLE[p.conf]||CONF_STYLE['－'];
+    const col=p.cluster.c;
+    const dotStyle='width:'+cs.r+'px;height:'+cs.r+'px;background:'+col+';opacity:'+cs.op
+      +(cs.glow?';box-shadow:0 0 9px '+col+',0 0 3px #fff8':'');
+    let dom='';
+    if(domain.active&&p._dom5>0){ const a=0.28+0.72*(p._domRel||0);
+      dom='<span class="wl-dom" style="opacity:'+a.toFixed(2)+';box-shadow:0 0 '+(2+6*(p._domRel||0)).toFixed(1)+'px #e8c977"></span>'; }
+    html+='<div class="wl-row'+(state.year>=p.yr?' done':'')+'" data-n="'+encodeURIComponent(p.name)+'">'
+      +'<div class="wl-left">'+dom+'<span class="wl-yr">'+p.yr+'</span></div>'
+      +'<div class="wl-node"><span class="wl-dot" style="'+dotStyle+'"></span></div>'
+      +'<div class="wl-main"><span class="wl-name">'+p.name+'</span>'
+      +'<span class="wl-badge" style="opacity:'+Math.max(0.5,cs.op)+'">'+cs.n+'</span></div></div>'
+      +'<div class="wl-det" data-d="'+encodeURIComponent(p.name)+'"></div>';
+  });
+  track.innerHTML=html;
+  track.querySelectorAll('.wl-row').forEach(r=>{
+    r.onclick=()=>wlToggle(decodeURIComponent(r.dataset.n));
+  });
+  wlBuilt=true;
+}
+function wlDetHtml(p){
+  const cs=CONF_STYLE[p.conf]||CONF_STYLE['－'];
+  const sp=SPECIAL[p.name];
+  let h='<div class="dt">'+p.name+'</div>';
+  h+='<div class="wl-conf"><b style="color:var(--gold-soft)">信頼度 '+cs.n+'</b> ── '+cs.d+'</div>';
+  h+='<div class="d-tags" style="margin-bottom:8px">'+tag(p.cluster.r+' '+p.cluster.name,p.cluster.c)
+    +tag(p.sub.id+' '+p.sub.n,'#c8c0b0')+tag(p.yr+'年 解決見込み','#e8c977')+'</div>';
+  h+='<div class="dlbl">現状 · CURRENT STATE</div><div class="dtxt">'+p.detail+'</div>';
+  h+='<div class="dlbl">解決仮説 · HYPOTHESIS</div><div class="dtxt">'+p.sub.hy+'</div>';
+  if(sp&&sp.st) h+='<div class="dlbl">この課題の物語 · STORY</div><div class="dtxt">'+sp.st+'</div>';
+  const aff=wlAffected(p);
+  if(aff.length){
+    const chip=a=>'<span class="wl-jump" data-j="'+encodeURIComponent(a.q.name)+'" title="解決シナジー 3/3（'+p.sub.id+' '+p.sub.n+' → '+a.q.sub.id+' '+a.q.sub.n+'）">'
+      +'<span class="jy">'+a.q.yr+'</span>'+a.q.name+'</span>';
+    h+='<div class="dlbl">この解決が後押しする課題解決 · '+aff.length+'件 <span style="letter-spacing:0;font-family:inherit;color:var(--muted)">（解決シナジー3/3・この解決以降）</span></div>';
+    h+='<div class="wl-jumps">'+aff.slice(0,WL_JUMP_SHOW).map(chip).join('')
+      +(aff.length>WL_JUMP_SHOW
+        ? '<span class="wl-jump wl-more" style="border-style:dashed">＋ 他'+(aff.length-WL_JUMP_SHOW)+'件を表示</span>'
+          +'<span class="wl-rest" style="display:none">'+aff.slice(WL_JUMP_SHOW).map(chip).join('')+'</span>'
+        : '')+'</div>';
+  }
+  return h;
+}
+function wlToggle(name,forceOpen){
+  const track=$('wlTrack');
+  const det=track.querySelector('.wl-det[data-d="'+encodeURIComponent(name)+'"]');
+  if(!det)return;
+  const isOpen=det.classList.contains('open');
+  if(isOpen&&!forceOpen){ det.classList.remove('open'); det.innerHTML=''; wlOpenName=null; return; }
+  // 既に開いている他の行を閉じる（一度に1件）
+  track.querySelectorAll('.wl-det.open').forEach(d=>{ d.classList.remove('open'); d.innerHTML=''; });
+  const p=problems.find(x=>x.name===name); if(!p)return;
+  det.innerHTML=wlDetHtml(p); det.classList.add('open'); wlOpenName=name;
+  det.onclick=e=>e.stopPropagation();   // 詳細内のクリックで行トグルが走らないように
+  const bindJumps=()=>det.querySelectorAll('.wl-jump[data-j]').forEach(b=>{
+    b.onclick=()=>wlJump(decodeURIComponent(b.dataset.j)); });
+  bindJumps();
+  const more=det.querySelector('.wl-more');
+  if(more) more.onclick=()=>{
+    const rest=det.querySelector('.wl-rest');
+    if(rest) rest.style.display='contents';
+    more.remove(); bindJumps();
+  };
+}
+function wlJump(name){
+  wlToggle(name,true);
+  const row=$('wlTrack').querySelector('.wl-row[data-n="'+encodeURIComponent(name)+'"]');
+  if(!row)return;
+  row.scrollIntoView({behavior:'smooth',block:'center'});
+  row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
+}
+function showWorldLine(){
+  introEl.style.display='none'; $('hmView').classList.remove('show');
+  $('wlView').classList.add('show');
+  $('wlKw').textContent=domain.active&&domain.kw?('── '+domain.kw.slice(0,44)):'';
+  wlRenderLegend(); wlBuild();
+}
+function closeWorldLine(){ $('wlView').classList.remove('show'); }
+$('wlBtn').onclick=showWorldLine;
+$('wlTree').onclick=closeWorldLine;
 
 /* 結果レンダリング */
 function renderResults(){
