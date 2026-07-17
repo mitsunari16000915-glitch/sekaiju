@@ -455,6 +455,44 @@
   .nw-sum{ font-size:11px; color:var(--pearl-mid); line-height:1.75; }
   .nw-meta{ font-size:9.5px; color:var(--muted); margin-top:4px; letter-spacing:0.03em; }
 
+
+  /* ===== ver.5.4: 学習モード ===== */
+  .lrn-hud{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:28; display:none;
+    pointer-events:none; }
+  .lrn-hud.show{ display:block; }
+  .lrn-ttl{ position:absolute; top:78px; left:50%; transform:translateX(-50%); text-align:center; }
+  .lrn-ttl .t1{ font-size:12px; letter-spacing:0.42em; color:var(--gold);
+    font-family:'Cormorant Garamond',serif; }
+  .lrn-ttl .t2{ font-size:10.5px; color:var(--muted); letter-spacing:0.1em; margin-top:4px; }
+  .lrn-ttl .dots span{ display:inline-block; width:4px; height:4px; border-radius:50%;
+    background:var(--gold-soft); margin:0 3px; opacity:0.3; animation:lrnDot 1.4s infinite; }
+  .lrn-ttl .dots span:nth-child(2){ animation-delay:.2s } .lrn-ttl .dots span:nth-child(3){ animation-delay:.4s }
+  @keyframes lrnDot{ 0%,100%{opacity:0.25;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
+  /* ニュースカード（1件ずつ現れて消える） */
+  .lrn-card{ position:absolute; left:50%; bottom:118px; transform:translateX(-50%) translateY(14px);
+    width:min(620px, calc(100vw - 44px)); padding:16px 20px; border-radius:10px;
+    background:rgba(12,10,18,0.93); border:1px solid rgba(201,169,97,0.45);
+    box-shadow:0 10px 40px rgba(0,0,0,0.6); opacity:0; transition:opacity .8s, transform .8s; }
+  .lrn-card.in{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .lrn-kind{ display:inline-block; font-size:9px; font-weight:700; padding:2px 7px; border-radius:9px;
+    letter-spacing:0.04em; margin-bottom:7px; }
+  .lrn-kind.ev{ background:rgba(74,138,181,0.2); color:#8fc3e8; border:1px solid rgba(74,138,181,0.5); }
+  .lrn-kind.pg{ background:rgba(120,190,130,0.16); color:#9fd8a8; border:1px solid rgba(120,190,130,0.45); }
+  .lrn-t{ font-size:15px; font-weight:700; color:var(--pearl); line-height:1.6; margin-bottom:6px; }
+  .lrn-s{ font-size:11.5px; color:var(--pearl-mid); line-height:1.85; }
+  .lrn-m{ font-size:9.5px; color:var(--muted); margin-top:7px; letter-spacing:0.03em; }
+  .lrn-m .pl{ color:var(--gold-soft); }
+  .lrn-cnt{ position:absolute; bottom:96px; left:50%; transform:translateX(-50%);
+    font-size:9.5px; color:var(--muted); letter-spacing:0.1em; font-family:'Cormorant Garamond',serif; }
+  .lrn-exit{ position:fixed; top:14px; right:14px; z-index:29; display:none;
+    font-size:10.5px; padding:5px 12px; border-radius:14px; cursor:pointer; font-family:inherit;
+    background:rgba(22,17,9,0.9); border:1px solid rgba(201,169,97,0.5); color:var(--gold-soft); }
+  .lrn-exit.show{ display:block; }
+  @media(max-width:760px){
+    .lrn-card{ bottom:104px; padding:13px 15px; } .lrn-t{ font-size:13px; } .lrn-s{ font-size:11px; }
+    .lrn-ttl{ top:64px; }
+  }
+
   /* ===== ver.5.1: 未来知のブレ ===== */
   .rev-notice{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:8px 0 10px;
     padding:7px 10px; border-radius:6px; background:rgba(224,72,74,0.10);
@@ -513,7 +551,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.3</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.4</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -527,6 +565,9 @@
   <div class="btnrow" style="margin-bottom:7px;">
     <div class="vbtn" id="wlBtn" style="flex:1 1 48%">⋮ 世 界 線</div>
     <div class="vbtn" id="dfBtn" style="flex:1 1 48%">⚠ 未来知のブレ</div>
+  </div>
+  <div class="btnrow" style="margin-bottom:7px;">
+    <div class="vbtn" id="lrnBtn">◈ 学習モード</div>
   </div>
   <h3 style="margin-top:0">ROOTS · 7クラスター</h3>
   <div class="chiprow" id="clusterChips"></div>
@@ -637,6 +678,18 @@
   </div>
   <div class="df-body"><div class="df-track" id="dfTrack"></div></div>
 </div>
+
+<!-- ===== ver.5.4: 学習モード ===== -->
+<div class="lrn-hud" id="lrnHud">
+  <div class="lrn-ttl">
+    <div class="t1">L E A R N I N G</div>
+    <div class="t2">取り込まれたエビデンスを読み込んでいます<span class="dots"><span></span><span></span><span></span></span></div>
+  </div>
+  <div class="lrn-card" id="lrnCard"></div>
+  <div class="lrn-cnt" id="lrnCnt"></div>
+</div>
+<button class="lrn-exit" id="lrnExit">✕ 学習モードを終える</button>
+
 
 <div class="timeline">
   <div class="tl-play" id="tlPlay">▶</div>
@@ -2041,6 +2094,7 @@ function frame(t){
     if(camAnim.t>=1)camAnim=null; }
   else if(autoRot) cam.yaw+=0.00018*dt;
   camGlue();   // ver.3.4: 自己修復カメラ（モバイル・カメラ未操作時のみ全景へ吸着）
+  try{ learnTick(dt); learnIdleTick(); }catch(e){ if(!window.__drawErr)window.__drawErr='lrn:'+String(e&&e.message||e).slice(0,120); }   // ver.5.4
 
   /* 自動プレゼン: 1年＝約3.8秒でゆっくり進み、カメラは回転・角度・遠近を漂う */
   if(pres.on){
@@ -3482,8 +3536,93 @@ function presStop(){
   $('presBtn').textContent='🎬 自動プレゼン';
   autoRot=true; updateRotBtn();
 }
-$('presBtn').onclick=()=>{ pres.on?presStop():presStart(); };
+$('presBtn').onclick=()=>{ if(learn.on)learnStop(); pres.on?presStop():presStart(); };
 function presWake(){ if(!pres.on)return; document.body.classList.remove('pres-hide'); pres.hideAt=time+3000; }
+
+/* ================================================================
+   ver.5.4: 学習モード -LEARNING-〔鈴木様指示〕
+   ボタン、または樹の画面を放置（IDLE_MS）で自動開始。
+   世界樹がゆっくり回りながら、取り込み済みのエビデンス・ニュース
+   （news.json＝Claude Codeがバッチで収集・選別したもの）を
+   タイトルと要約で1件ずつ提示する。
+   ※ライブでニュースを取得しているのではなく、取り込み済みのプールを読み上げる。
+     ブラウザからGoogle/Yahooニュースは直接取得できないため（CORS・公開APIなし）。
+   操作（ポインタ/キー/ホイール）で即終了。プレゼンとは排他。
+================================================================ */
+const learn={on:false, i:0, nextAt:0, order:[], phase:'in'};
+const LEARN_HOLD=7000;        // 1件を表示している時間
+const LEARN_GAP=900;          // 次のカードまでの間
+const LEARN_IDLE_MS=90000;    // 樹の画面を90秒放置したら自動で学習モードへ
+let lastActAt=0;
+
+function learnPool(){
+  // 取り込み済み（採用）ニュース。新しい日付を優先しつつ全件を巡回する
+  return NEWS.items.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+}
+function learnStart(auto){
+  if(learn.on)return;
+  const pool=learnPool();
+  if(!pool.length){ if(!auto)toast('取り込み済みのニュースがまだありません'); return; }
+  if(pres.on)presStop();
+  learn.on=true; learn.order=pool; learn.i=0; learn.nextAt=0; learn.phase='in';
+  $('lrnHud').classList.add('show'); $('lrnExit').classList.add('show');
+  $('lrnBtn').textContent='■ 学習を停止';
+  document.body.classList.add('pres-hide');   // 操作パネルを退場（プレゼンと同じ演出を流用）
+  camTouched=true; autoRot=false; updateRotBtn();
+  learnShow(0);
+  if(auto)toast('◈ 学習モード ── 取り込み済みのエビデンスを読み込みます（操作で終了）');
+}
+function learnStop(){
+  if(!learn.on)return;
+  learn.on=false;
+  $('lrnHud').classList.remove('show'); $('lrnExit').classList.remove('show');
+  $('lrnCard').classList.remove('in');
+  $('lrnBtn').textContent='◈ 学習モード';
+  document.body.classList.remove('pres-hide');
+  autoRot=true; updateRotBtn();
+  lastActAt=time;
+}
+function learnShow(i){
+  const n=learn.order[i]; if(!n)return;
+  const kind=n.kind==='progress'?'<span class="lrn-kind pg">解決の前進</span>':'<span class="lrn-kind ev">現状の裏付け</span>';
+  const pl=(n.problems||[]).slice(0,3).map(esc).join(' / ');
+  const meta=[n.source,n.date].filter(Boolean).map(esc).join(' · ');
+  $('lrnCard').innerHTML=kind
+    +'<div class="lrn-t">'+esc(n.title)+'</div>'
+    +'<div class="lrn-s">'+esc(n.summary)+'</div>'
+    +'<div class="lrn-m">'+meta+(pl?' 　→ <span class="pl">'+pl+'</span>':'')+'</div>';
+  $('lrnCard').classList.add('in');
+  $('lrnCnt').textContent=(i+1)+' / '+learn.order.length;
+}
+function learnTick(dt){
+  if(!learn.on)return;
+  cam.yaw+=0.00009*dt;                                   // ゆっくり回り続ける
+  if(!learn.nextAt){ learn.nextAt=time+LEARN_HOLD; return; }
+  /* タブ復帰・rAF停止明けで time が大きく飛ぶと、溜まった分だけカードが一気に送られてしまう。
+     予定時刻を大幅に過ぎていたら「今」を起点に取り直す（バースト防止） */
+  if(time-learn.nextAt>4000){ learn.nextAt=time+(learn.phase==='in'?LEARN_HOLD:LEARN_GAP); return; }
+  if(time<learn.nextAt)return;
+  if(learn.phase==='in'){                                // 表示時間が終わった→伏せる
+    $('lrnCard').classList.remove('in');
+    learn.phase='out'; learn.nextAt=time+LEARN_GAP; return;
+  }
+  learn.i=(learn.i+1)%learn.order.length;                 // 次の1件へ（末尾で最初に戻る）
+  learnShow(learn.i);
+  learn.phase='in'; learn.nextAt=time+LEARN_HOLD;
+}
+function learnIdleTick(){
+  // 樹の画面を見ているとき（intro/全画面ビューが閉じている）だけ放置判定する
+  if(learn.on||pres.on||playing)return;
+  if(introEl.style.display!=='none')return;
+  if($('hmView').classList.contains('show')||$('wlView').classList.contains('show')||$('dfView').classList.contains('show'))return;
+  if(!lastActAt){ lastActAt=time; return; }
+  if(time-lastActAt>LEARN_IDLE_MS) learnStart(true);
+}
+function learnAct(){ lastActAt=time; if(learn.on)learnStop(); }
+['pointerdown','wheel','keydown'].forEach(ev=>addEventListener(ev,learnAct,{passive:true}));
+$('lrnBtn').onclick=()=>{ learn.on?learnStop():learnStart(false); };
+$('lrnExit').onclick=learnStop;
+
 addEventListener('pointermove',presWake);
 addEventListener('keydown',e=>{ if(pres.on&&e.key==='Escape'){ presStop(); return; } presWake(); });
 function spawnPresText(p){
