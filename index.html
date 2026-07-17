@@ -551,7 +551,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.4</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.5</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -592,12 +592,6 @@
   <div class="btnrow">
     <div class="vbtn" id="lblMinus">－ 減らす</div>
     <div class="vbtn" id="lblPlus">＋ 増やす</div>
-  </div>
-  <h3>ART · 点描画</h3>
-  <div class="btnrow">
-    <div class="vbtn" id="dotBtn" style="flex:1 1 46%">◦ 点描 OFF</div>
-    <div class="vbtn" id="dotMinus" style="flex:1 1 20%">－</div>
-    <div class="vbtn" id="dotPlus" style="flex:1 1 20%">＋</div>
   </div>
   <h3>MOVE · 画面移動</h3>
   <div class="dpad">
@@ -1648,18 +1642,9 @@ function analyzeDomain(input){
    カメラ・描画
 ================================================================ */
 const cv=document.getElementById('cv'), bctx=cv.getContext('2d');
-let ctx=bctx;                      // 点描モード時のみオフスクリーンに切替わる
+let ctx=bctx;                      // frame()冒頭で毎回bctxに戻す（ver.5.5で点描モードを廃止し、以後この付け替えは無い）
 let W=0,H=0,DPR=1,bgCanvas=null,CX=0.435;   // CX=投影中心（モバイルは0.5=中央、デスクトップは左寄せ）
 let SOX=0,SOY=0;   // ver.3.6: スクリーン座標の実測センタリング補正（モバイル・未操作時のみ変化）
-let sceneCv=null,sctx=null;        // 点描用オフスクリーン（等倍）
-let stippleCv=null,stCtx=null,stippleTick=0;   // 点描結果のキャッシュ（1フレームおきに再生成）
-function ensureScene(){
-  if(!sceneCv||sceneCv.width!==W||sceneCv.height!==H){
-    sceneCv=document.createElement('canvas');
-    sceneCv.width=Math.max(2,W); sceneCv.height=Math.max(2,H);
-    sctx=sceneCv.getContext('2d',{willReadFrequently:true});
-  }
-}
 function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; bctx.setTransform(DPR,0,0,DPR,0,0);
   cv.style.width=W+'px'; cv.style.height=H+'px';   // ver.3.9: JSでもCSSサイズを強制（CSS任せにしない最終保証）
@@ -1887,7 +1872,7 @@ function project(p,sway){
 const BG_VIDEO_ONLY=true;   // ver.4.3: 背景を地球動画のみに（宇宙canvas・太陽を停止）〔鈴木様指示〕。falseで旧宇宙背景に戻る
 const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','norm','mind']),
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
-  pointMode:false,pointSize:5};
+  };
 if(W/H>=1.05) state.labelBias=3.0;   // ver.4.2: PC（横長）は既定の文字表示を300%に〔鈴木様指示〕。スマホは従来どおり
 function visibleP(p){
   if(!state.clusters.has(p.ci))return false;
@@ -2053,36 +2038,6 @@ function drawSun(dt){
   ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
 }
 
-/* --- 点描画（スーラ風）: オフスクリーンに描いた樹を、色を汲んだ無数の点で再構成 --- */
-function stipple(){
-  const Wp=sceneCv.width, Hp=sceneCv.height;
-  if(!stippleCv||stippleCv.width!==Wp||stippleCv.height!==Hp){
-    stippleCv=document.createElement('canvas');
-    stippleCv.width=Wp; stippleCv.height=Hp;
-    stCtx=stippleCv.getContext('2d');
-  }
-  stCtx.clearRect(0,0,Wp,Hp);
-  const s=Math.max(3,Math.round(state.pointSize));
-  const data=sctx.getImageData(0,0,Wp,Hp).data;
-  const rad=s*0.40;                             // 粒は細かく
-  for(let gy=0;gy<Hp;gy+=s){
-    for(let gx=0;gx<Wp;gx+=s){
-      /* 格子ごとに決まった揺らぎ（ちらつかない点描） */
-      const h=((gx*73856093)^(gy*19349663))>>>0;
-      if(((h>>>13)%100)<30)continue;            // 3割を間引き＝軽く・空気感のある点描
-      const jx=(h%97)/97-0.5, jy=(((h>>>7)%89)/89)-0.5;
-      const sx2=Math.min(Wp-1,Math.max(0,(gx+s*0.5+jx*s*0.9)|0));
-      const sy2=Math.min(Hp-1,Math.max(0,(gy+s*0.5+jy*s*0.9)|0));
-      const i=(sy2*Wp+sx2)*4;
-      const a=data[i+3];
-      if(a<30)continue;
-      stCtx.fillStyle='rgba('+data[i]+','+data[i+1]+','+data[i+2]+','+(a>=250?'1':(a/255).toFixed(2))+')';
-      const rr=rad*(0.65+((h>>>10)%100)/220);   // 点の大きさにも揺らぎ
-      stCtx.beginPath();stCtx.arc(sx2,sy2,rr,0,6.29);stCtx.fill();
-    }
-  }
-}
-
 /* --- 描画ループ --- */
 let time=0,lastT=0,rafId=0;
 function frame(t){
@@ -2147,8 +2102,6 @@ function frame(t){
   }
   /* 太陽（樹の背後を巡る）— 動画のみモードでは描かない */
   if(!BG_VIDEO_ONLY){ try{ drawSun(dt); }catch(e){ if(!window.__drawErr)window.__drawErr='sun:'+String(e&&e.message||e).slice(0,180); } }   // ver.3.8
-  /* 点描モード: 樹の描画をオフスクリーンへ（宇宙と太陽はそのまま） */
-  if(state.pointMode){ ensureScene(); sctx.clearRect(0,0,sceneCv.width,sceneCv.height); ctx=sctx; }
 
   /* 地面ディスク */
   (function(){
@@ -2492,14 +2445,6 @@ function frame(t){
     }
   });
 
-  /* 点描モード: 1フレームおきに点を打ち直し、キャッシュを合成（負荷半減） */
-  if(state.pointMode){
-    ctx=bctx;
-    stippleTick=(stippleTick+1)%2;
-    if(stippleTick===0||!stippleCv){ try{ stipple(); }catch(e){ if(!window.__drawErr)window.__drawErr='stp:'+String(e&&e.message||e).slice(0,180); } }   // ver.3.8
-    if(stippleCv) ctx.drawImage(stippleCv,0,0,W,H);
-  }
-
   /* 自動プレゼン: 解決された課題の文字が薄く明滅する */
   if(pres.on&&pres.texts.length){
     for(let i2=pres.texts.length-1;i2>=0;i2--){
@@ -2685,14 +2630,6 @@ $('reloadBtn').onclick=()=>{
   const v=1000+Math.floor(Math.random()*9000);
   location.replace(location.pathname+'?v='+v);
 };
-/* 点描画モード */
-function updateDotBtn(){ $('dotBtn').textContent='◦ 点描 '+(state.pointMode?'ON':'OFF'); }
-$('dotBtn').onclick=()=>{ state.pointMode=!state.pointMode; updateDotBtn();
-  toast(state.pointMode?'◦ 点描モード ── 世界が柔らかな点で描かれます':'通常描画に戻りました'); };
-$('dotPlus').onclick=()=>{ if(!state.pointMode){ state.pointMode=true; updateDotBtn(); }
-  state.pointSize=Math.min(14,state.pointSize+1); toast('点の大きさ '+state.pointSize); };
-$('dotMinus').onclick=()=>{ if(!state.pointMode){ state.pointMode=true; updateDotBtn(); }
-  state.pointSize=Math.max(3,state.pointSize-1); toast('点の大きさ '+state.pointSize); };
 function updateRotBtn(){$('rotBtn').textContent='⟳ 回転 '+(autoRot?'ON':'OFF');}
 $('helpBtn').onclick=()=>{$('intro').style.display='flex';};
 
