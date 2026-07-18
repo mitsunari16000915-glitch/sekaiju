@@ -611,7 +611,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.8</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.9</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -635,7 +635,8 @@
   <div class="chiprow" id="elemChips"></div>
   <h3>TIERS · 解決時期</h3>
   <div class="chiprow" id="tierChips"></div>
-  <input class="searchbox" id="search" placeholder="課題検索: 核家族 / 空き家 …" style="margin-top:7px">
+  <input class="searchbox" id="search" placeholder="課題検索: 空き家 / 少子高齢化 …" style="margin-top:7px">
+  <div id="searchHit" style="font-size:9.5px;letter-spacing:0.04em;margin:3px 2px 0;min-height:12px;line-height:1.4"></div>
   <h3>VIEW · 視点</h3>
   <div class="btnrow">
     <div class="vbtn" data-v="all">全 景</div>
@@ -2000,7 +2001,8 @@ function visibleP(p){
   if(!state.clusters.has(p.ci))return false;
   if(!state.elems.has(p.elem))return false;
   if(!state.tiers.has(p.tier))return false;
-  if(state.search && !p.name.includes(state.search) && !p.sub.n.includes(state.search))return false;
+  if(state.search && !p.name.includes(state.search) && !p.sub.n.includes(state.search)
+    && !(state._searchSubs&&state._searchSubs.has(p.sub.id)))return false;   // ver.5.9: 社会課題辞書経由の一致
   return true;
 }
 function nodeAlpha(n){
@@ -2672,7 +2674,32 @@ Object.keys(ELEMS).forEach(k=>chip($('elemChips'),ELEM_SHORT[k],ELEMS[k].c,true,
   on?state.elems.add(k):state.elems.delete(k);updateStats();}));
 [1,2,3,4].forEach(ti=>chip($('tierChips'),TIERS[ti].n,TIERS[ti].c,true,on=>{
   on?state.tiers.add(ti):state.tiers.delete(ti);updateStats();}));
-$('search').addEventListener('input',e=>{state.search=e.target.value.trim();updateStats();});
+/* ver.5.9: 検索に社会課題辞書を接続〔鈴木様指摘「少子高齢化で検索しても動かないように見える」〕
+   従来は課題名/サブ要素名の文字部分一致のみ＝「少子高齢化」は0件で葉が全消え・無反応に見えた。
+   → ISSUE_LEXの語に双方向で当たり（検索語⊇kw または kw⊇検索語）、該当サブ要素の課題も可視に。
+   ヒット件数を検索欄の下に常時表示（0件でも「一致なし」と告げる） */
+function updateSearchSubs(){
+  const q=(state.search||'').toLowerCase();
+  state._searchSubs=new Set();
+  if(q.length<2)return;
+  ISSUE_LEX.forEach(en=>{
+    if(en.kw.some(k=>q.includes(k)||k.includes(q))) en.el.forEach(id=>state._searchSubs.add(id));
+  });
+}
+$('search').addEventListener('input',e=>{
+  state.search=e.target.value.trim();
+  updateSearchSubs();
+  const hint=$('searchHit');
+  if(hint){
+    if(!state.search){ hint.textContent=''; }
+    else{
+      const n=problems.filter(p=>visibleP(p)).length;
+      hint.textContent = n ? '⌕ '+n+'件の課題が一致' : '⌕ 一致なし ── 課題名の一部（例: 空き家）や課題語（例: 少子高齢化）で';
+      hint.style.color = n ? 'var(--gold-soft)' : '#ff8a8b';
+    }
+  }
+  updateStats();
+});
 document.querySelectorAll('.vbtn[data-v]').forEach(b=>b.onclick=()=>flyTo(b.dataset.v));
 $('rotBtn').onclick=()=>{autoRot=!autoRot;updateRotBtn();};
 $('lblPlus').onclick=()=>{ state.labelBias=Math.min(3.2,state.labelBias*1.3);
