@@ -456,6 +456,66 @@
   .nw-meta{ font-size:9.5px; color:var(--muted); margin-top:4px; letter-spacing:0.03em; }
 
 
+  /* ===== ver.5.6: 解決への推論 ===== */
+  .inf-cta{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:9px 0 4px; }
+  .if-btn{ font-size:12px; font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer;
+    font-family:inherit; color:#171106; border:none;
+    background:linear-gradient(135deg,#c9a961,#8a6f2a); box-shadow:0 3px 12px rgba(201,169,97,0.35); }
+  .if-btn:hover{ transform:translateY(-1px); }
+  .if-hint{ font-size:9.5px; color:var(--muted); letter-spacing:0.03em; }
+
+  .ifview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:62; display:none; flex-direction:column;
+    background:radial-gradient(ellipse at top, #14130c 0%, #07060a 78%); padding:12px 16px 8px; }
+  .ifview.show{ display:flex; }
+  .if-body{ flex:1; overflow-y:auto; overflow-x:hidden; padding:12px 0 40px; }
+  .if-track{ max-width:860px; margin:0 auto; }
+  .if-lead{ font-size:11px; color:var(--pearl-mid); line-height:1.9; margin-bottom:16px;
+    padding:10px 12px; border-radius:6px; background:rgba(201,169,97,0.06);
+    border-left:2px solid rgba(201,169,97,0.5); }
+  .if-lead b{ color:var(--gold-soft); }
+  .if-sub{ font-size:12px; color:var(--muted); margin-bottom:4px; letter-spacing:0.06em; }
+  .if-h{ font-size:19px; font-weight:900; color:var(--gold-soft); letter-spacing:0.06em; margin-bottom:12px; }
+  .if-sec{ margin-bottom:16px; }
+  .if-lbl{ font-size:9.5px; letter-spacing:0.16em; color:var(--gold); margin-bottom:6px;
+    font-family:'Cormorant Garamond',serif; }
+  .if-goal{ font-size:12.5px; line-height:1.9; color:var(--pearl); padding:11px 13px; border-radius:7px;
+    background:rgba(201,169,97,0.07); border:1px solid rgba(201,169,97,0.28); }
+  .if-lev{ font-size:12.5px; line-height:1.9; color:var(--pearl); padding:11px 13px; border-radius:7px;
+    background:rgba(224,140,60,0.09); border:1px solid rgba(224,140,60,0.4); }
+  .if-lev b{ color:#f0b978; }
+  /* バックキャストの時間軸 */
+  .if-bc{ display:flex; flex-direction:column; gap:0; }
+  .if-step{ display:grid; grid-template-columns:118px 1fr; gap:12px; position:relative; padding:0 0 14px; }
+  .if-step:last-child{ padding-bottom:0; }
+  .if-step .when{ font-size:11px; font-weight:700; color:var(--gold-soft); text-align:right;
+    letter-spacing:0.02em; padding-top:1px; }
+  .if-step .node{ position:absolute; left:118px; top:4px; width:9px; height:9px; border-radius:50%;
+    background:var(--gold-soft); transform:translateX(-50%); box-shadow:0 0 8px rgba(201,169,97,0.6); }
+  .if-step .body{ font-size:12px; line-height:1.85; color:var(--pearl-mid); padding-left:16px;
+    border-left:1px solid rgba(201,169,97,0.25); margin-left:0; }
+  .if-step:last-child .body{ border-left-color:transparent; }
+  /* 5軸リソース */
+  .if-res{ display:grid; grid-template-columns:84px 1fr; gap:6px 12px; font-size:11.5px; line-height:1.75; }
+  .if-res .k{ color:var(--gold); font-weight:700; letter-spacing:0.04em; }
+  .if-res .v{ color:var(--pearl-mid); }
+  .if-vps{ display:flex; flex-direction:column; gap:5px; }
+  .if-vp{ font-size:11px; color:var(--pearl-mid); line-height:1.7; }
+  .if-vp b{ color:var(--gold-soft); }
+  .if-evs{ display:flex; flex-direction:column; gap:3px; }
+  .if-ev{ font-size:10.5px; color:var(--muted); }
+  .if-ev a{ color:#8fc3e8; text-decoration:none; } .if-ev a:hover{ text-decoration:underline; color:var(--gold-soft); }
+  .if-cav{ font-size:11px; line-height:1.8; color:var(--pearl-mid); padding:9px 12px; border-radius:6px;
+    background:rgba(0,0,0,0.25); border-left:2px solid rgba(150,150,150,0.35); }
+  .if-probs{ font-size:10.5px; color:var(--muted); line-height:1.7; }
+  .if-probs b{ color:var(--pearl-mid); }
+  .wl-ibadge{ flex:none; font-size:9px; padding:1px 5px; border-radius:8px;
+    background:rgba(201,169,97,0.16); border:1px solid rgba(201,169,97,0.5); color:var(--gold-soft); }
+  @media(max-width:760px){
+    .if-step{ grid-template-columns:1fr; gap:2px; } .if-step .when{ text-align:left; }
+    .if-step .node{ display:none; } .if-step .body{ border-left:none; padding-left:0; }
+    .if-res{ grid-template-columns:1fr; gap:2px 0; } .if-res .k{ margin-top:6px; }
+  }
+
   /* ===== ver.5.4: 学習モード ===== */
   .lrn-hud{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:28; display:none;
     pointer-events:none; }
@@ -551,7 +611,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.6</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -671,6 +731,18 @@
     </div>
   </div>
   <div class="df-body"><div class="df-track" id="dfTrack"></div></div>
+</div>
+
+<!-- ===== ver.5.6: 解決への推論 -INFERENCE- ===== -->
+<div class="ifview" id="ifView">
+  <div class="hmv-top">
+    <div><span class="hmv-ttl">解 決 へ の 推 論 <span style="font-size:11px;color:var(--muted)">-INFERENCE-</span></span>
+      <span class="hmv-kw" id="ifKw"></span></div>
+    <div class="hmv-btns">
+      <span class="hm-btn" id="ifClose">✕ 閉じる</span>
+    </div>
+  </div>
+  <div class="if-body"><div class="if-track" id="ifTrack"></div></div>
 </div>
 
 <!-- ===== ver.5.4: 学習モード ===== -->
@@ -2708,6 +2780,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">原因の根 · ROOT CAUSE</div><div class="d-txt">'+p.cluster.cause+'</div></div>';
     h+='<div class="d-sec"><div class="d-lbl">解決仮説 · HYPOTHESIS</div><div class="d-txt">'+p.sub.hy+'</div></div>';
     if(sp&&sp.st)h+='<div class="d-sec"><div class="d-lbl">この課題の物語 · STORY</div><div class="d-story">'+sp.st+'</div></div>';
+    { const ib=infBtnHtml(p); if(ib) h+='<div class="d-sec">'+ib+'</div>'; }   // ver.5.6: 解決への推論
     { const nh=newsHtml(p); if(nh) h+='<div class="d-sec">'+nh+'</div>'; }   // ver.5.0
     h+='<div class="d-sec">'
       +'<span class="d-jump" onclick="jumpTo('+p.rootNode.i+')">↓ 根（原因）へ</span>'
@@ -2747,7 +2820,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">この枝の小枝（サブ要素）</div><div class="d-txt">'+n.binfo.subs.join('<br>')+'</div></div>';
     if(n.elem==='norm')h+='<div class="d-sec"><div class="d-story">規範の枝は30年より下の層にはほとんど生えない。規範は一世代かけてしか変わらない──この枝にだけ、果実が実る。</div></div>';
   }
-  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b);   // ver.5.1
+  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b); bindInfButtons(b);   // ver.5.1/5.6
 }
 window.jumpTo=function(i){ const n=nodes[i];
   camAnim={from:{...cam},to:{...cam,tx:0,ty:n.y,dist:Math.max(330,cam.dist*0.6)},t:0};
@@ -2901,6 +2974,37 @@ function bindRevButtons(root){
   }).catch(()=>{ REV.loaded=false; });
 })();
 
+/* ================================================================
+   ver.5.6: 解決への推論 -INFERENCE-〔鈴木様指示〕
+   バックキャスティング方法論（黒木マーケティング室）× 35サブ要素リソースマップ
+   × エビデンス（news.json）を Claude Code が事前に突き合わせて生成した推論。
+   ・ブラウザからライブAI推論はできない（静的サイト・APIキーを置けない）ため、
+     取り込み済みの推論（inference.json）を提示する方式。
+   ・サブ要素単位（35）。各課題は自分の属するサブ要素の推論を参照する。
+   ・「検証された予測」ではなく「明示された推論」——方法論と事実にもとづく思考の提案。
+================================================================ */
+const INF={loaded:false, items:{}, vps:{}, scope:''};
+function infFor(p){ return INF.items[p.sub.id]||null; }
+function infBtnHtml(p){
+  if(!infFor(p))return '';
+  return '<div class="inf-cta"><button class="if-btn" data-inf-open="'+encodeURIComponent(p.name)+'">◈ 解決への推論を読む</button>'
+    +'<span class="if-hint">バックキャスティング × リソースマップ × エビデンス</span></div>';
+}
+function bindInfButtons(root){
+  (root||document).querySelectorAll('[data-inf-open]').forEach(b=>{
+    b.onclick=e=>{ e.stopPropagation(); showInference(decodeURIComponent(b.dataset.infOpen)); };
+  });
+}
+(function loadInference(){
+  const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
+  grab('inference.json').catch(()=>grab('世界樹_web/inference.json')).then(j=>{
+    INF.items=j.items||{}; INF.vps=j.viewpoints_legend||{}; INF.scope=j.scope||''; INF.generated=j.generated||''; INF.method=j.method||'';
+    INF.loaded=true;
+    if($('wlView').classList.contains('show')){ const nm=wlOpenName; wlBuild(); if(nm)wlToggle(nm,true); }
+    if(state.sel)refreshDetail();
+  }).catch(()=>{ INF.loaded=false; });
+})();
+
 (function loadNews(){
   // 本番(世界樹_web/)では同階層。マスターを 01_strategy/ から開いた時は 世界樹_web/ に退避する
   const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
@@ -2971,6 +3075,7 @@ function wlBuild(){
       +'<span class="wl-badge" style="opacity:'+Math.max(0.5,cs.op)+'">'+cs.n+'</span>'
       +(nn?'<span class="wl-nbadge" title="関連ニュース'+nn+'件">📰'+nn+'</span>':'')
       +(revFor(p).length?'<span class="wl-rbadge" title="再検証により新たな知を獲得しました">⚠ブレ</span>':'')
+      +(infFor(p)?'<span class="wl-ibadge" title="解決への推論あり">◈推論</span>':'')
       +'</div></div>'
       +'<div class="wl-det" data-d="'+encodeURIComponent(p.name)+'"></div>';
   });
@@ -2985,6 +3090,7 @@ function wlDetHtml(p){
   const sp=SPECIAL[p.name];
   let h='<div class="dt">'+p.name+'</div>';
   h+=revNoticeHtml(p);   // ver.5.1: 再検証の赤字メッセージ＋【未来知のブレ】
+  h+=infBtnHtml(p);      // ver.5.6: 解決への推論
   h+='<div class="wl-conf"><b style="color:var(--gold-soft)">信頼度 '+cs.n+'</b> ── '+cs.d+'</div>';
   h+='<div class="d-tags" style="margin-bottom:8px">'+tag(p.cluster.r+' '+p.cluster.name,p.cluster.c)
     +tag(p.sub.id+' '+p.sub.n,'#c8c0b0')+tag(p.yr+'年 解決見込み','#e8c977')+'</div>';
@@ -3017,6 +3123,7 @@ function wlToggle(name,forceOpen){
   det.innerHTML=wlDetHtml(p); det.classList.add('open'); wlOpenName=name;
   det.onclick=e=>e.stopPropagation();   // 詳細内のクリックで行トグルが走らないように
   bindRevButtons(det);   // ver.5.1
+  bindInfButtons(det);   // ver.5.6
   const bindJumps=()=>det.querySelectorAll('.wl-jump[data-j]').forEach(b=>{
     b.onclick=()=>wlJump(decodeURIComponent(b.dataset.j)); });
   bindJumps();
@@ -3088,6 +3195,58 @@ function showDrift(focusName){ $('dfView').classList.add('show'); dfRender(focus
 function closeDrift(){ $('dfView').classList.remove('show'); }
 $('dfClose').onclick=closeDrift;
 $('dfAll').onclick=()=>dfRender(null);
+
+/* ver.5.6: 解決への推論を全画面で表示（focusName＝起点の課題） */
+function ifRender(focusName){
+  const t=$('ifTrack');
+  const p=focusName?problems.find(x=>x.name===focusName):null;
+  const inf=p?infFor(p):null;
+  if(!inf){ t.innerHTML='<div class="if-lead">この課題の推論はまだ生成されていません。</div>'; $('ifKw').textContent=''; return; }
+  let h='<div class="if-lead">これは<b>「検証された予測」ではなく「明示された推論」</b>です。'
+    +'バックキャスティング方法論（望ましい未来像＝大目的から逆算して、いま為すべきこと＝中目的を組み立てる）に、'
+    +'35サブ要素のリソースマップと取り込み済みのエビデンスを突き合わせて生成しました。断定ではなく、思考のたたき台です。'
+    +(INF.scope==='pilot-cluster-1'?'<br><span style="color:var(--muted)">※ 現在はクラスターⅠのみ試作。残りは順次追加します。</span>':'')+'</div>';
+  h+='<div class="if-sub">◈ '+esc(p.sub.id)+' のサブ要素推論　起点の課題: <b style="color:var(--pearl)">'+esc(p.name)+'</b>（'+p.yr+'年 解決見込み）</div>';
+  h+='<div class="if-h">'+esc(inf.sub)+'</div>';
+
+  h+='<div class="if-sec"><div class="if-lbl">大目的 · 望ましい未来像</div><div class="if-goal">'+esc(inf.daimokuteki)+'</div></div>';
+
+  h+='<div class="if-sec"><div class="if-lbl">バックキャスト · 未来から逆算した中目的</div><div class="if-bc">'
+    +(inf.backcast||[]).map(b=>'<div class="if-step"><div class="when">'+esc(b.h)+'</div><div class="node"></div><div class="body">'+esc(b.t)+'</div></div>').join('')
+    +'</div></div>';
+
+  h+='<div class="if-sec"><div class="if-lbl">テコ · どこに力を入れると連鎖が起きるか</div><div class="if-lev">'+esc(inf.leverage)+'</div></div>';
+
+  if(inf.viewpoints&&inf.viewpoints.length){
+    h+='<div class="if-sec"><div class="if-lbl">7視点との接続</div><div class="if-vps">'
+      +inf.viewpoints.map(v=>'<div class="if-vp"><b>'+esc(v)+'</b> '+esc(INF.vps[v]||'')+'</div>').join('')+'</div></div>';
+  }
+
+  if(inf.resources){
+    const R=inf.resources, row=(k,v)=>v?'<span class="k">'+k+'</span><span class="v">'+esc(v)+'</span>':'';
+    h+='<div class="if-sec"><div class="if-lbl">リソース · 5軸（スキル×視点×学び×人脈×資金源）</div><div class="if-res">'
+      +row('スキル',R.skills)+row('視点',R.perspective)+row('学び',R.learning)+row('人脈',R.network)+row('資金源',R.funding)+'</div></div>';
+  }
+
+  if(inf.evidence&&inf.evidence.length){
+    h+='<div class="if-sec"><div class="if-lbl">エビデンス · この推論が踏まえた事実</div><div class="if-evs">'
+      +inf.evidence.map(e=>'<span class="if-ev">▸ <a href="'+esc(e.url)+'" target="_blank" rel="noopener noreferrer">'+esc(e.title)+'</a> <span style="color:var(--muted)">— '+esc(e.source)+'</span></span>').join('')+'</div></div>';
+  }
+
+  if(inf.caveat){ h+='<div class="if-sec"><div class="if-lbl">留意点 · この推論の前提と弱点</div><div class="if-cav">'+esc(inf.caveat)+'</div></div>'; }
+
+  const sameSub=problems.filter(x=>x.sub.id===p.sub.id);
+  h+='<div class="if-sec"><div class="if-lbl">このサブ要素に属する課題（'+sameSub.length+'件）</div>'
+    +'<div class="if-probs">'+sameSub.map(x=>'<b>'+esc(x.name)+'</b>').join(' ／ ')+'</div></div>';
+
+  t.innerHTML=h;
+  t.querySelectorAll('.if-ev a').forEach(a=>a.onclick=e=>e.stopPropagation());
+  $('ifKw').textContent='── '+p.sub.id+' '+inf.sub;
+  $('ifView').querySelector('.if-body').scrollTop=0;
+}
+function showInference(focusName){ $('ifView').classList.add('show'); ifRender(focusName); }
+function closeInference(){ $('ifView').classList.remove('show'); }
+$('ifClose').onclick=closeInference;
 
 function showWorldLine(){
   introEl.style.display='none'; $('hmView').classList.remove('show');
