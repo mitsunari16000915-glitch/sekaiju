@@ -611,7 +611,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.7</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.8</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -797,12 +797,14 @@
     <div class="istep" id="step1" style="display:none">
       <div class="back-link" data-to="step0">‹ 戻る</div>
       <div class="eyebrow">STEP 1 · YOUR DOMAIN</div>
-      <h2 class="istep-h">あなたの仕事を、言葉で教えてください</h2>
-      <div class="istep-desc">事業・職種・扱うテーマなどを自由に。単語でも文章でも構いません。<br>
+      <h2 class="istep-h">あなたの仕事、または気になる社会課題を教えてください</h2>
+      <div class="istep-desc">事業・職種でも、<b>気になる社会課題（例：少子高齢化）</b>でも構いません。単語でも文章でも。<br>
         端末内蔵のAI解析エンジンが、<b>7クラスター・35エレメント・240課題</b>に照らして関係度を1〜5で採点します。</div>
       <textarea id="domInput" class="dom-input" placeholder="例：地方都市で工務店を経営。空き家のリフォームと介護向け改修が主力。若手職人の育成にも取り組んでいる。"></textarea>
-      <div class="ex-lbl">クリックで例を挿入 ▾</div>
+      <div class="ex-lbl">仕事の例 ▾</div>
       <div class="ex-chips" id="exChips"></div>
+      <div class="ex-lbl">社会課題から考える ▾</div>
+      <div class="ex-chips" id="issueChips"></div>
       <div class="an-note">🔒 入力は<b>この端末内だけ</b>で解析されます（外部送信なし）。</div>
       <button class="intro-btn" id="analyzeBtn">◈ Ａ Ｉ で 解 析 す る</button>
     </div>
@@ -1628,6 +1630,45 @@ const DOMAIN_LEX=[
  {kw:['本','読書','書店','ライター','文章','知','教養','古典'],el:['3-5','7-2','1-1'],w:2},
  {kw:['ロボット','自動化','自動運転','ドローン','iot'],el:['4-5','7-5','2-4','6-4'],w:3}
 ];
+/* ver.5.8: 社会課題辞書〔鈴木様指摘「少子高齢化を入れるとスコアが出ない」〕
+   従来の解析は「業種辞書（仕事の語彙）＋文字面N-gram」のため、課題語を入れると
+   文字の一致する課題（例:「高齢化」→農業の高齢化・職人の高齢化）だけが光り、
+   意味的な本丸（少子化→2-1結婚・出産動機）に届かなかった。
+   → 社会課題の語彙を意味的に正しいサブ要素へ橋渡しする辞書。
+   仕組みはDOMAIN_LEXと同一（ヒットで該当サブ要素をブースト）だが、
+   シナジー事業の候補には使わない（課題は共創相手ではないため別配列）。 */
+const ISSUE_LEX=[
+ {name:'少子高齢化・人口減少',kw:['少子高齢化','少子化','高齢化','人口減少','人口問題','出生率','出生数','超高齢'],el:['2-1','2-3','2-2','2-4'],w:3},
+ {name:'未婚化・晩婚化',kw:['未婚','晩婚','晩産','婚姻数','結婚しない'],el:['2-1','2-2'],w:3},
+ {name:'孤独・孤立',kw:['孤独','孤立','無縁','ひきこもり','引きこもり','8050'],el:['2-2','2-3','1-4'],w:3},
+ {name:'保育・子育て',kw:['待機児童','保育所不足','子育て支援','ワンオペ'],el:['2-3','2-1'],w:3},
+ {name:'過疎・地方消滅',kw:['限界集落','消滅可能性','過疎化','地方消滅','シャッター通り','空き家'],el:['2-4','5-1','1-2'],w:3},
+ {name:'東京一極集中',kw:['一極集中','東京集中','地方衰退'],el:['5-1','2-4','4-3'],w:3},
+ {name:'移民・多文化共生',kw:['移民','外国人労働','多文化','共生社会'],el:['2-5'],w:3},
+ {name:'偽情報・フェイクニュース',kw:['フェイクニュース','偽情報','誤情報','デマ','陰謀論','ディープフェイク'],el:['3-1','3-3'],w:3},
+ {name:'SNSの病理',kw:['誹謗中傷','ネットいじめ','炎上','スマホ依存','sns依存'],el:['3-1','3-4','1-3'],w:3},
+ {name:'デジタル主権',kw:['gafam','プラットフォーム依存','デジタル主権','データ主権','デジタル赤字'],el:['3-2'],w:3},
+ {name:'読書離れ・タイパ',kw:['読書離れ','活字離れ','タイパ','思考力低下'],el:['3-5','7-2','3-1'],w:3},
+ {name:'賃金・格差・貧困',kw:['実質賃金','賃金停滞','賃上げ','格差','貧困','ワーキングプア','非正規','中間層','低賃金'],el:['4-3','4-2','2-3'],w:3},
+ {name:'株主偏重・内部留保',kw:['内部留保','自社株買い','株主至上','四半期主義'],el:['4-1','4-2'],w:3},
+ {name:'投資不足',kw:['研究開発費','設備投資不足','人材投資','教育投資'],el:['4-4','7-4'],w:3},
+ {name:'産業競争力の低下',kw:['産業競争力','国際競争力','dxの遅れ','デジタル競争力','半導体不足'],el:['4-5','7-3'],w:3},
+ {name:'社会保障・財政',kw:['年金','社会保障','医療費','国民負担','財政赤字','国債','世代間格差'],el:['5-2','2-3','4-3'],w:3},
+ {name:'政治不信',kw:['政治不信','投票率','裏金','政治とカネ','無投票'],el:['5-3','5-1','3-4'],w:3},
+ {name:'国家戦略の不在',kw:['安全保障','国家戦略','経済安保','国家ビジョン'],el:['5-2','5-4'],w:3},
+ {name:'エネルギー・気候変動',kw:['エネルギー問題','電気代','電力不足','原発','再エネ','脱炭素','気候変動','温暖化','カーボン'],el:['6-1','6-5','6-4'],w:3},
+ {name:'食料問題',kw:['食料自給','食料危機','食料価格','フードロス','耕作放棄'],el:['6-2'],w:3},
+ {name:'生態系・環境',kw:['生物多様性','絶滅危惧','海洋プラ','里山','獣害','鳥獣被害'],el:['6-3','6-2'],w:3},
+ {name:'災害・インフラ',kw:['南海トラフ','首都直下','地震','豪雨','水害','インフラ老朽','老朽化'],el:['6-4','2-4'],w:3},
+ {name:'技能・後継者',kw:['後継者','継承問題','技能継承','伝統工芸','職人不足','事業承継','技術流出'],el:['7-1','7-5','2-2'],w:3},
+ {name:'教育・研究力の危機',kw:['教育格差','学力低下','研究力','論文数','博士離れ','ポスドク','理系離れ','大学淘汰'],el:['7-4','7-2','4-4'],w:3},
+ {name:'いじめ・ハラスメント',kw:['いじめ','ハラスメント','パワハラ','セクハラ'],el:['1-3','3-4'],w:3},
+ {name:'不祥事・倫理',kw:['不祥事','偽装','改ざん','コンプライアンス','信頼低下','モラル低下'],el:['1-3','5-3'],w:3},
+ {name:'祭り・伝統行事の衰退',kw:['祭りの消滅','担い手不足','氏子','檀家','寺離れ','神社離れ','行事離れ'],el:['1-4','7-1'],w:3},
+ {name:'アイデンティティの揺らぎ',kw:['アイデンティティ','郷土愛','国家観','日本らしさ','誇りの喪失'],el:['1-1','1-5'],w:3},
+ {name:'イノベーション不足',kw:['イノベーション','起業率','ユニコーン不足','挑戦しない'],el:['7-3','4-4'],w:3}
+];
+
 /* ver.4.4: DOMAIN_LEXと同順の業種表示名（シナジー事業・スコア理由の表示に使用） */
 const LEX_NAMES=['建築・伝統建築','不動産・まちづくり','教育','農林水産','IT・AI・DX','金融','医療・介護・福祉',
  'メディア・広告','飲食','物流','観光・ホスピタリティ','製造・ものづくり','エネルギー','行政・地域創生',
@@ -1660,6 +1701,15 @@ function analyzeDomain(input){
     if(hit>0){
       entry.el.forEach(id=>{ const i=idOf(id); if(i>=0) raw[i]+=(entry.w||2)*(1+Math.log2(hit)); });
       domain._lexHits.push({li,words,els:entry.el});
+    }
+  });
+  /* ①' 社会課題辞書ブースト（ver.5.8: 課題語→意味的に正しいサブ要素へ橋渡し。理由表示にはname直載せ） */
+  ISSUE_LEX.forEach(entry=>{
+    let hit=0; const words=[];
+    entry.kw.forEach(k=>{ if(input.toLowerCase().includes(k)){ hit++; words.push(k); } });
+    if(hit>0){
+      entry.el.forEach(id=>{ const i=idOf(id); if(i>=0) raw[i]+=(entry.w||3)*(1+Math.log2(hit)); });
+      domain._lexHits.push({name:'社会課題:'+entry.name,words,els:entry.el});
     }
   });
   /* ② 課題テキストとの語彙一致（240課題を精査。ver.4.4: 一致語を要素ごとに記録） */
@@ -2882,6 +2932,14 @@ const EXAMPLES=['介護・福祉','保育・子育て支援','学校・教育・
   c.className='ex-chip'; c.textContent=x; c.onclick=()=>{ const t=$('domInput');
     t.value=(t.value.trim()?t.value.trim()+'、':'')+x; t.focus(); }; box.appendChild(c); }); }
 
+/* ver.5.8: 社会課題チップ〔鈴木様指摘対応〕— 課題語からも解析に入れる */
+const ISSUE_EXAMPLES=['少子高齢化','空き家問題','限界集落・過疎化','フェイクニュース','読書離れ・タイパ',
+ '賃金停滞・格差','政治不信','エネルギー・気候変動','食料自給','災害・インフラ老朽化',
+ '後継者・技能継承','研究力の低下','いじめ・ハラスメント','孤独・孤立','移民・多文化共生'];
+{ const box=$('issueChips'); if(box) ISSUE_EXAMPLES.forEach(x=>{ const c=document.createElement('div');
+  c.className='ex-chip'; c.textContent=x; c.onclick=()=>{ const t=$('domInput');
+    t.value=(t.value.trim()?t.value.trim()+'、':'')+x; t.focus(); }; box.appendChild(c); }); }
+
 /* 解析実行 */
 $('analyzeBtn').onclick=()=>{
   const v=$('domInput').value.trim();
@@ -3321,8 +3379,8 @@ function clusterWhy(ci){
       return '『'+o.e.id+' '+o.e.n+'』(関係度'+Math.round(o.r*100)+'%)'+tk;
     }).join('／')+'</div>';
     const lexNames=(domain._lexHits||[]).filter(hh=>hh.els.some(id=>{const i=idOf(id);return i>=0&&ELEM_LIST[i].ci===ci;}))
-      .map(hh=>LEX_NAMES[hh.li]+'（'+hh.words.slice(0,3).join('・')+'）');
-    if(lexNames.length) h+='<div class="why-line">◆ 業種辞書：'+lexNames.slice(0,2).join('、')+' がこのクラスターの要素を加点</div>';
+      .map(hh=>(hh.name||LEX_NAMES[hh.li])+'（'+hh.words.slice(0,3).join('・')+'）');   // ver.5.8: 社会課題辞書はname直載せ
+    if(lexNames.length) h+='<div class="why-line">◆ 辞書一致：'+lexNames.slice(0,2).join('、')+' がこのクラスターの要素を加点</div>';
   } else {
     h+='<div class="why-line">◆ 入力語との直接の一致はほぼ検出されませんでした</div>';
   }
