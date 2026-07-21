@@ -611,7 +611,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.5.9</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.0</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -3857,6 +3857,25 @@ function showAskGuide(){
     ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       // 挨拶の後に2問目
   ),1400);
 }
+
+/* ver.6.0: ?q= 課題検索ディープリンク〔天之瓊矛カルテ等から検索語つきURLでワンクリック来訪〕
+   例: sekaiju.pages.dev/?q=少子高齢化 → タイトル画面を飛ばし、その語を課題検索した
+   状態のツリーを表示（検索欄への手入力が不要になる）。既存の検索入力ハンドラを再利用する。 */
+(function qDeepLink(){
+  let q; try{ q=new URLSearchParams(location.search).get('q'); }catch(_){ return; }
+  if(!q) return; q=q.trim(); if(!q) return;
+  askShown=true;   // タイトル後の説明ダイアログ（showAskGuide）を抑止＝検索目的の来訪
+  let toasted=false;
+  const apply=function(){
+    introEl.style.display='none';                    // 「そのまま観る」と同じくイントロを閉じる
+    $('hmView').classList.remove('show');
+    const sb=$('search');
+    if(sb){ sb.value=q; sb.dispatchEvent(new Event('input')); }   // state.search 設定→フィルタ→統計更新
+    if(!toasted){ toast('「'+q+'」で関連課題を検索しました'); toasted=true; }
+  };
+  apply();                                 // 同期適用（rAFはタブ非表示時に凍結するため依存しない）
+  window.addEventListener('load',apply);   // フォント・レイアウト確定後にも再適用（保険）
+})();
 </script>
 </body>
 </html>
