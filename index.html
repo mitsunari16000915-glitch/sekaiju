@@ -538,6 +538,7 @@
     letter-spacing:0.04em; margin-bottom:7px; }
   .lrn-kind.ev{ background:rgba(74,138,181,0.2); color:#8fc3e8; border:1px solid rgba(74,138,181,0.5); }
   .lrn-kind.pg{ background:rgba(120,190,130,0.16); color:#9fd8a8; border:1px solid rgba(120,190,130,0.45); }
+  .lrn-kind.nw{ background:rgba(224,72,74,0.2); color:#ff8a8b; border:1px solid rgba(224,72,74,0.55); margin-left:5px; }
   .lrn-t{ font-size:15px; font-weight:700; color:var(--pearl); line-height:1.6; margin-bottom:6px; }
   .lrn-s{ font-size:11.5px; color:var(--pearl-mid); line-height:1.85; }
   .lrn-m{ font-size:9.5px; color:var(--muted); margin-top:7px; letter-spacing:0.03em; }
@@ -750,7 +751,7 @@
 <div class="lrn-hud" id="lrnHud">
   <div class="lrn-ttl">
     <div class="t1">L E A R N I N G</div>
-    <div class="t2">取り込まれたエビデンスを読み込んでいます<span class="dots"><span></span><span></span><span></span></span></div>
+    <div class="t2" id="lrnSub">取り込まれたエビデンスを読み込んでいます<span class="dots"><span></span><span></span><span></span></span></div>
   </div>
   <div class="lrn-card" id="lrnCard"></div>
   <div class="lrn-cnt" id="lrnCnt"></div>
@@ -3096,6 +3097,10 @@ function bindInfButtons(root){
   grab('news.json').catch(()=>grab('世界樹_web/news.json')).then(j=>{
     NEWS.items=(j.items||[]).filter(n=>n.status==='adopted');
     NEWS.counts=j.counts||null; NEWS.generated=j.generated||'';
+    /* ver.6.0: 「新着」＝最新の蓄積バッチのみ。初出日が2種類以上あるときだけ、最も新しい日を新着とする
+       （初回＝全件同日なら新着マーク無し。蓄積で新しい日が加わると、その分だけ新着になる） */
+    const seenDates=[...new Set(NEWS.items.map(n=>n.first_seen).filter(Boolean))].sort();
+    NEWS.freshDate=(seenDates.length>1)?seenDates[seenDates.length-1]:null;
     NEWS.items.forEach(n=>(n.problems||[]).forEach(nm=>{
       if(!NEWS.byProblem.has(nm))NEWS.byProblem.set(nm,[]);
       NEWS.byProblem.get(nm).push(n); }));
@@ -3737,8 +3742,9 @@ const LEARN_IDLE_MS=90000;    // 樹の画面を90秒放置したら自動で学
 let lastActAt=0;
 
 function learnPool(){
-  // 取り込み済み（採用）ニュース。新しい日付を優先しつつ全件を巡回する
-  return NEWS.items.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  // 取り込み済み（採用）ニュース。ver.6.0: 新着（first_seenが最近）を先頭に、次いで記事日付の新しい順
+  return NEWS.items.slice().sort((a,b)=>
+    (isFresh(b)-isFresh(a)) || (b.first_seen||'').localeCompare(a.first_seen||'') || (b.date||'').localeCompare(a.date||''));
 }
 function learnStart(auto){
   if(learn.on)return;
@@ -3746,6 +3752,10 @@ function learnStart(auto){
   if(!pool.length){ if(!auto)toast('取り込み済みのニュースがまだありません'); return; }
   if(pres.on)presStop();
   learn.on=true; learn.order=pool; learn.i=0; learn.nextAt=0; learn.phase='in';
+  { const nf=pool.filter(isFresh).length; const sub=$('lrnSub');   // ver.6.0: 累計と新着を表示
+    if(sub) sub.innerHTML='取り込み済みのエビデンス <b style="color:#e8c977">'+pool.length+'件</b>'
+      +(nf?'（うち<b style="color:#ff8a8b">新着 '+nf+'件</b>）':'')+' を読み込んでいます'
+      +'<span class="dots"><span></span><span></span><span></span></span>'; }
   $('lrnHud').classList.add('show'); $('lrnExit').classList.add('show');
   $('lrnBtn').textContent='■ 学習を停止';
   document.body.classList.add('pres-hide');   // 操作パネルを退場（プレゼンと同じ演出を流用）
@@ -3763,12 +3773,18 @@ function learnStop(){
   autoRot=true; updateRotBtn();
   lastActAt=time;
 }
+/* ver.6.0: 最近プールに入ったニュースか（first_seenが14日以内）＝「新着」判定。
+   TODAY_STR は起動時に固定（Date系はrAF環境で使えるが軽く1回だけ） */
+/* ver.6.0: 新着＝最新の蓄積バッチ（NEWS.freshDate）と初出日が一致するもの。
+   freshDateは初出日が2種類以上あるときだけ設定される（初回全件同日なら新着なし） */
+function isFresh(n){ return !!(NEWS.freshDate && n.first_seen===NEWS.freshDate); }
 function learnShow(i){
   const n=learn.order[i]; if(!n)return;
   const kind=n.kind==='progress'?'<span class="lrn-kind pg">解決の前進</span>':'<span class="lrn-kind ev">現状の裏付け</span>';
+  const fresh=isFresh(n)?'<span class="lrn-kind nw">新着</span>':'';
   const pl=(n.problems||[]).slice(0,3).map(esc).join(' / ');
   const meta=[n.source,n.date].filter(Boolean).map(esc).join(' · ');
-  $('lrnCard').innerHTML=kind
+  $('lrnCard').innerHTML=kind+fresh
     +'<div class="lrn-t">'+esc(n.title)+'</div>'
     +'<div class="lrn-s">'+esc(n.summary)+'</div>'
     +'<div class="lrn-m">'+meta+(pl?' 　→ <span class="pl">'+pl+'</span>':'')+'</div>';
