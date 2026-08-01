@@ -64,6 +64,38 @@
   /* ver.3.0: 自動プレゼン中は西暦バーを半透明に（触れると戻る） */
   body.pres-on .timeline{ opacity:0.28; transition:opacity .8s; }
   body.pres-on .timeline:hover, body.pres-on .timeline:active{ opacity:1; }
+  /* ver.6.2: 自動プレゼンの下部テロップ〔鈴木様指示「視認性が悪い・全面のウィンドウで」〕
+     旧＝画面に散らばる明滅テキスト（ピークα0.55・17〜28px・縁取りなし）は樹と背景映像に沈んで読めなかった。
+     下部に横一杯の帯を敷き、その年に解決した課題をまとめて大きく出す。
+     1年＝3.8秒に対し最大15件/年（2034年）あるため1件ずつ送る方式では追いつかない＝「年ごとに束ねる」設計。 */
+  .pres-cap{ position:fixed; left:0; right:0; bottom:0; z-index:21; pointer-events:none;
+    /* 下余白は年表バー（高さ約80px・bottom:14px）を必ず避ける値にする */
+    padding:34px 4vw 112px; display:flex; justify-content:center;
+    background:linear-gradient(to top, rgba(5,7,16,0.94) 0%, rgba(5,7,16,0.88) 40%,
+      rgba(5,7,16,0.58) 72%, rgba(5,7,16,0) 100%);
+    opacity:0; transition:opacity .55s ease; }
+  .pres-cap.on{ opacity:1; }
+  .pc-in{ display:flex; align-items:baseline; gap:clamp(14px,2.2vw,34px);
+    max-width:1240px; width:100%; flex-wrap:wrap; }
+  .pc-head{ display:flex; align-items:baseline; gap:12px; flex:none; }
+  .pc-year{ font-family:'Cormorant Garamond',serif; font-weight:700; letter-spacing:0.04em;
+    font-size:clamp(34px,5.2vw,62px); line-height:1; color:#f0dfae;
+    text-shadow:0 2px 18px rgba(0,0,0,0.9), 0 0 34px rgba(201,169,97,0.35); }
+  .pc-cnt{ font-size:clamp(13px,1.5vw,19px); color:var(--gold); letter-spacing:0.12em;
+    white-space:nowrap; text-shadow:0 2px 10px rgba(0,0,0,0.9); }
+  .pc-items{ display:flex; flex-wrap:wrap; gap:6px clamp(12px,1.8vw,26px); flex:1; min-width:0; }
+  .pc-item{ display:flex; align-items:center; gap:9px; opacity:0;
+    font-size:clamp(19px,2.3vw,34px); font-weight:600; color:#f5efe3; letter-spacing:0.03em;
+    text-shadow:0 2px 12px rgba(0,0,0,0.95); animation:pcIn .62s ease forwards; }
+  .pc-item i{ width:5px; height:1.05em; border-radius:2px; flex:none; }
+  .pc-more{ font-size:clamp(12px,1.35vw,17px); color:var(--pearl-mid); letter-spacing:0.1em;
+    align-self:center; text-shadow:0 2px 10px rgba(0,0,0,0.9); }
+  @keyframes pcIn{ from{ opacity:0; transform:translateY(9px); } to{ opacity:1; transform:none; } }
+  @media(max-width:700px){
+    .pres-cap{ padding:26px 14px 106px; }   /* スマホの年表バー（bottom:10px・高さ約80px）を避ける */
+    .pc-in{ gap:6px 12px; }
+    .pc-items{ gap:4px 14px; }
+  }
   .panel h3 { font-size:9.5px; letter-spacing:0.3em; color:var(--gold); margin:5px 0 3px;
     font-family:'Cormorant Garamond',serif; font-weight:600; }
   #clusterChips,#elemChips,#tierChips{ display:grid; grid-template-columns:1fr 1fr; }
@@ -612,7 +644,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.1</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.2</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -758,6 +790,17 @@
 </div>
 <button class="lrn-exit" id="lrnExit">✕ 学習モードを終える</button>
 
+
+<!-- ver.6.2: 自動プレゼンの下部テロップ（その年に解決した課題を束ねて大きく出す） -->
+<div class="pres-cap" id="presCap">
+  <div class="pc-in">
+    <div class="pc-head">
+      <span class="pc-year" id="pcYear">2026</span>
+      <span class="pc-cnt" id="pcCnt"></span>
+    </div>
+    <div class="pc-items" id="pcItems"></div>
+  </div>
+</div>
 
 <div class="timeline">
   <div class="tl-play" id="tlPlay">▶</div>
@@ -2183,13 +2226,9 @@ function frame(t){
     /* ver.4.1: 年送りを壁時計アンカー方式に（累積会計より頑健・スマホの高リフレッシュ環境でも厳密に3.8秒/年） */
     if(!pres.nextYearAt) pres.nextYearAt=time+3800;
     if(time>=pres.nextYearAt){ pres.nextYearAt=time+3800;
-      if(state.year>=2080){ setYear(2026); pres.texts.length=0; }
-      else { setYear(state.year+1);
-        problems.filter(p=>p.yr===state.year).slice(0,6).forEach(spawnPresText); }
-    }
-    if(pres.texts.length<3&&Math.random()<dt*0.0012){   // ver.4.1: 出現率をdt基準に（120Hz端末で2倍出ていた）
-      const sv=problems.filter(p=>p.yr<=state.year);
-      if(sv.length)spawnPresText(sv[(Math.random()*sv.length)|0]);
+      /* ver.6.2: 年が進むたびに下部テロップを差し替える（旧＝散布する明滅テキストは廃止） */
+      if(state.year>=2080){ setYear(2026); presCaptionHide(); }
+      else { setYear(state.year+1); presCaptionShow(state.year); }
     }
     cam.yaw+=0.000115*dt;                        // 常に少しずつ回転し続ける
     if(!pres.target||pres.camT<=0){
@@ -2572,21 +2611,9 @@ function frame(t){
     }
   });
 
-  /* 自動プレゼン: 解決された課題の文字が薄く明滅する */
-  if(pres.on&&pres.texts.length){
-    for(let i2=pres.texts.length-1;i2>=0;i2--){
-      const tx2=pres.texts[i2]; tx2.t+=dt;
-      if(tx2.t>=tx2.dur){ pres.texts.splice(i2,1); continue; }
-      const k2=tx2.t/tx2.dur;
-      /* 白い文字で現れ、金色に移ろいながら薄れて消える */
-      const a2=(k2<0.12?k2/0.12:(k2>0.55?Math.max(0,(1-k2)/0.45):1))*0.55;
-      const gm=Math.min(1,Math.max(0,(k2-0.30)/0.45));
-      const cr=Math.round(255-23*gm), cg=Math.round(255-54*gm), cb=Math.round(255-136*gm);
-      ctx.font='600 '+tx2.s.toFixed(0)+'px "Noto Serif JP",serif';
-      ctx.fillStyle='rgba('+cr+','+cg+','+cb+','+a2.toFixed(3)+')';
-      ctx.fillText(tx2.yr+'　'+tx2.name, tx2.x*W, tx2.y*H);
-    }
-  }
+  /* ver.6.2: 旧「画面に散らばる明滅テキスト」はここで描いていたが廃止した。
+     読ませたい文字を canvas に薄く描くと樹・背景映像に沈む＝視認性が上がらない。
+     現在は下部テロップ（DOMの #presCap）で見せる＝背景に暗幕を敷けるので確実に読める。 */
 
   screenCenterGlue();   // ver.3.6: 描画済み実座標で画面センターへ直接補正（モバイル・未操作時）
   rafId=requestAnimationFrame(frame);
@@ -3708,11 +3735,11 @@ addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });
 
 /* ================================================================
    自動プレゼン: カメラが漂い、時代が1年ずつゆっくり進み、
-   解決された課題の文字が画面のあちこちに明滅する
+   その年に解決した課題が下部のテロップに大きく出る〔ver.6.2で散布明滅から変更〕
 ================================================================ */
-const pres={on:false,yearMs:0,camT:0,target:null,texts:[],hideAt:0};
+const pres={on:false,yearMs:0,camT:0,target:null,hideAt:0};
 function presStart(){
-  pres.on=true; pres.yearMs=0; pres.nextYearAt=0; pres.target=null; pres.texts.length=0;
+  pres.on=true; pres.yearMs=0; pres.nextYearAt=0; pres.target=null; presCaptionHide();
   document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
   pres.savedBias=state.labelBias; state.labelBias=3.2;   // ver.3.3: プレゼン中は文字表示を最大増に〔鈴木様指示〕
   camTouched=true;   // ver.3.4: プレゼンのカメラ漂いと吸着の競合を防ぐ
@@ -3725,6 +3752,7 @@ function presStart(){
 }
 function presStop(){
   pres.on=false; document.body.classList.remove('pres-hide'); document.body.classList.remove('pres-on');
+  presCaptionHide();   // ver.6.2: 終了時にテロップも引っ込める
   if(pres.savedBias!==undefined){ state.labelBias=pres.savedBias; pres.savedBias=undefined; }   // 文字表示を元へ
   $('presBtn').textContent='🎬 自動プレゼン';
   autoRot=true; updateRotBtn();
@@ -3829,23 +3857,36 @@ $('lrnExit').onclick=learnStop;
 
 addEventListener('pointermove',presWake);
 addEventListener('keydown',e=>{ if(pres.on&&e.key==='Escape'){ presStop(); return; } presWake(); });
-function spawnPresText(p){
-  if(pres.texts.length>10)pres.texts.shift();
-  /* ver.3.5〔鈴木様指示〕: 比較的中央を中心に上下左右へ散らし、必ず画面内に収める。
-     文字幅を概算し（CJK≒1em・数字≒0.62em）、はみ出すなら縮小＆座標クランプ */
-  let fs=17+Math.random()*11;
-  const unit=String(p.yr).length*0.62+1.2+p.name.length;
-  if(fs*unit>W*0.94) fs=Math.max(12,(W*0.94)/unit);   // 幅狭端末では長い課題名を自動縮小
-  const est=fs*unit;
-  const cx=0.5+(Math.random()-0.5)*0.66;              // 中央±33%に散らす
-  const cy=0.5+(Math.random()-0.5)*0.58;              // 中央±29%
-  let x=cx*W-est/2;
-  x=Math.max(10,Math.min(W-est-10,x));
-  let y=cy*H;
-  y=Math.max(H*0.10,Math.min(H*0.86,y));              // topbar・年表バーを避ける
-  pres.texts.push({name:p.name,yr:p.yr,x:x/W,y:y/H,
-    t:0,dur:5600+Math.random()*3000,s:fs});
+/* ================================================================
+   ver.6.2: 自動プレゼンの下部テロップ〔鈴木様指示「視認性が悪い・全面のウィンドウで」〕
+
+   旧実装（ver.2.0〜4.1）は解決課題名を canvas に薄く散布していたが、
+   ピークα0.55・縁取りなしのため樹と背景映像に埋もれて読めなかった。
+   → 下部に暗幕つきの帯を敷き、その年に解決した課題を**まとめて**大きく出す。
+
+   なぜ「1件ずつ送る」ではなく「年ごとに束ねる」のか:
+     1年＝3.8秒に対し、同じ年に解決する課題は最大15件（2034年）・平均5.4件。
+     1件ずつ読ませる速度（1.5秒以上）では年送りに追いつかず、
+     テロップが何年も遅れて別の年の話を映すことになるため。
+================================================================ */
+/* 名前を出す上限。画面幅で加減する——狭い画面で6件出すと折り返しが増えて
+   1件あたりの文字が小さくなり、かえって読めなくなるため（超過分は「ほか N件」に畳む）。
+   件数そのものは「N件が解決」で伝わるので、名前は少なく大きくが正解。 */
+function pcMax(){ return W>=1180?4:(W>=820?3:2); }
+function presCaptionShow(year){
+  const cap=$('presCap'); if(!cap)return;
+  const list=problems.filter(p=>p.yr===year);
+  if(!list.length){ cap.classList.remove('on'); return; }   // 解決ゼロの年は帯ごと引っ込める
+  const shown=list.slice(0,pcMax()), rest=list.length-shown.length;
+  $('pcYear').textContent=year;
+  $('pcCnt').textContent=list.length+'件が解決';
+  $('pcItems').innerHTML=shown.map((p,i)=>
+      '<span class="pc-item" style="animation-delay:'+(i*0.11).toFixed(2)+'s">'
+      +'<i style="background:'+p.cluster.c+'"></i>'+esc(p.name)+'</span>').join('')
+    +(rest>0?'<span class="pc-more">ほか '+rest+' 件</span>':'');
+  cap.classList.add('on');
 }
+function presCaptionHide(){ const cap=$('presCap'); if(cap)cap.classList.remove('on'); }
 
 /* ver.3.7: 表示時の説明ガイド〔鈴木様指示〕──旧「▶を押すと…」自動トーストはガイドに置換 */
 const GUIDE=[
