@@ -7,10 +7,11 @@
 <meta name="description" content="日本が抱える250の社会課題を、一本の世界樹として3Dで可視化。根は原因、幹は時間、葉は解決された未来。あなたの仕事が世界のどこに効くのか、黄金の光で見えてきます。">
 <!-- OGP / SNSシェア -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://sekaiju.pages.dev/">
+<meta property="og:url" content="https://www.sengokudama.com/sekaiju/">
+<link rel="canonical" href="https://www.sengokudama.com/sekaiju/">
 <meta property="og:title" content="世界樹 -YGGDRASIL- 世界の構造樹">
 <meta property="og:description" content="日本が抱える250の社会課題を、一本の世界樹として3Dで可視化。根は原因、幹は時間、葉は解決された未来。あなたの仕事が世界のどこに効くのか、黄金の光で見えてきます。">
-<meta property="og:image" content="https://sekaiju.pages.dev/og.jpg">
+<meta property="og:image" content="https://www.sengokudama.com/sekaiju/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:site_name" content="世界樹 -YGGDRASIL-">
@@ -644,7 +645,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.3</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.5</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -3934,7 +3935,7 @@ function showAskGuide(){
 }
 
 /* ver.6.0: ?q= 課題検索ディープリンク〔天之瓊矛カルテ等から検索語つきURLでワンクリック来訪〕
-   例: sekaiju.pages.dev/?q=少子高齢化 → タイトル画面を飛ばし、その語を課題検索した
+   例: www.sengokudama.com/sekaiju/?q=少子高齢化 → タイトル画面を飛ばし、その語を課題検索した
    状態のツリーを表示（検索欄への手入力が不要になる）。既存の検索入力ハンドラを再利用する。 */
 (function qDeepLink(){
   let q; try{ q=new URLSearchParams(location.search).get('q'); }catch(_){ return; }
@@ -3950,6 +3951,41 @@ function showAskGuide(){
   };
   apply();                                 // 同期適用（rAFはタブ非表示時に凍結するため依存しない）
   window.addEventListener('load',apply);   // フォント・レイアウト確定後にも再適用（保険）
+})();
+</script>
+
+<script>
+/* ver.6.5: 旧URL（sekaiju.pages.dev）に来た方へ「移転のお知らせ」を出す。
+   新URL www.sengokudama.com では hostname が一致しないので要素そのものが生成されない＝本番に影響しない。
+   （301転送ではなく本体にお知らせを持たせた理由は開発メモの §10 と ver.6.5 の節） */
+(function(){
+  if(!/(^|\.)pages\.dev$/i.test(location.hostname)) return;   // 旧ドメイン以外では何もしない
+  const NEW = 'https://www.sengokudama.com/sekaiju/';
+  const dest = NEW + location.search + location.hash;         // ?q=少子高齢化 などのディープリンクを引き継ぐ
+  const box = document.createElement('div');
+  box.id = 'movedNotice';
+  box.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:95;display:flex;'
+    + 'align-items:center;justify-content:center;background:rgba(14,11,5,0.94);padding:20px;'
+    + 'font-family:"Yu Mincho","Hiragino Mincho ProN",serif;color:#e8ddc8';
+  box.innerHTML =
+      '<div style="max-width:520px;text-align:center;line-height:1.9">'
+    +   '<div style="font-size:13px;letter-spacing:.3em;color:#c7a45a">MOVED</div>'
+    +   '<h1 style="margin:.6rem 0 1.2rem;font-size:clamp(20px,5vw,30px);font-weight:400;color:#f5f0e8">'
+    +     '世界樹は引っ越しました</h1>'
+    +   '<p style="margin:0 0 1.6rem;font-size:15px;color:#bdb096">'
+    +     'こちらは旧い住所です。新しい世界樹は<br>SENGOKUDAMA の中で公開しています。</p>'
+    +   '<p style="margin:0 0 1.4rem"><a id="mvGo" href="' + dest + '" '
+    +     'style="display:inline-block;padding:.85rem 2rem;border:1px solid #c7a45a;border-radius:2px;'
+    +     'color:#f0e2bd;text-decoration:none;font-size:16px;letter-spacing:.08em">新しい世界樹へ　→</a></p>'
+    +   '<p style="margin:0;font-size:12px;color:#8f816b;word-break:break-all">' + NEW + '</p>'
+    +   '<p style="margin:1.8rem 0 0"><a href="#" id="mvStay" '
+    +     'style="color:#8f816b;font-size:12px;text-decoration:underline">このまま旧い版を見る</a></p>'
+    + '</div>';
+  const put = function(){
+    document.body.appendChild(box);
+    box.querySelector('#mvStay').addEventListener('click', function(e){ e.preventDefault(); box.remove(); });
+  };
+  if(document.body) put(); else window.addEventListener('DOMContentLoaded', put);
 })();
 </script>
 </body>
