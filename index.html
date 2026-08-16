@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>世界樹 -YGGDRASIL- 世界の構造樹</title>
 <meta name="description" content="日本が抱える250の社会課題を、一本の世界樹として3Dで可視化。根は原因、幹は時間、葉は解決された未来。あなたの仕事が世界のどこに効くのか、黄金の光で見えてきます。">
-<!-- OGP / SNSシェア -->
+
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.sengokudama.com/sekaiju/">
 <link rel="canonical" href="https://www.sengokudama.com/sekaiju/">
@@ -26,12 +26,12 @@
     --c1:#c5292a; --c2:#c9974a; --c3:#2c5f7a; --c4:#b8923f; --c5:#6b4878; --c6:#5a7048; --c7:#3a7570;
   }
   html,body { height:100%; overflow:hidden; background:#05070d; }
-  /* ver.3.2: 最奥の地球レイヤー（星・太陽・樹はこの上に重なる） */
-  #bgVideo{ position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; object-fit:cover; z-index:0;   /* ver.3.9: inset非対応環境対策でロングハンド */
-    pointer-events:none; filter:brightness(0.95) saturate(0.96); }   /* ver.3.5: 地球の動きが見えるよう明るく */
+   
+  #bgVideo{ position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; object-fit:cover; z-index:0;    
+    pointer-events:none; filter:brightness(0.95) saturate(0.96); }    
   body { font-family:'Noto Serif JP','Yu Mincho',serif; color:var(--pearl); font-feature-settings:"palt"; }
   #cv { position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; display:block;
-    touch-action:none; cursor:grab; background:transparent; z-index:1; }   /* ver.3.9: inset非対応環境ではcanvasがビットマップ実寸(DPR倍)で表示され右下ズレの原因になっていた */
+    touch-action:none; cursor:grab; background:transparent; z-index:1; }    
   #cv.drag { cursor:grabbing; }
 
   .topbar { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center;
@@ -43,7 +43,7 @@
     font-family:'Cormorant Garamond',serif; }
   .topbar .stats { margin-left:auto; margin-right:86px; font-size:10.5px; color:var(--pearl-mid); letter-spacing:0.08em; text-align:right; line-height:1.5; }
 
-  /* ver.2.8: キャッシュ回避リロード（F5が使えない環境向け）。introの上にも出るよう z-index:52 */
+   
   .reload-btn{ position:fixed; top:11px; right:14px; z-index:52; padding:6px 12px;
     background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:16px;
     color:var(--gold-soft); font-size:11px; letter-spacing:0.08em; cursor:pointer; user-select:none; }
@@ -57,20 +57,17 @@
   .panel::-webkit-scrollbar { display:none; }
   body.pres-hide .panel{ opacity:0; pointer-events:none; }
 
-  /* モバイル用メニュートグル（760px以下でのみ表示） */
+   
   .panel-toggle{ display:none; position:fixed; left:12px; top:64px; z-index:21; padding:8px 14px;
     background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:5px;
     color:var(--gold-soft); font-size:12px; letter-spacing:0.1em; cursor:pointer; user-select:none; }
   body.pres-hide .panel-toggle{ opacity:0; pointer-events:none; }
-  /* ver.3.0: 自動プレゼン中は西暦バーを半透明に（触れると戻る） */
+   
   body.pres-on .timeline{ opacity:0.28; transition:opacity .8s; }
   body.pres-on .timeline:hover, body.pres-on .timeline:active{ opacity:1; }
-  /* ver.6.2: 自動プレゼンの下部テロップ〔鈴木様指示「視認性が悪い・全面のウィンドウで」〕
-     旧＝画面に散らばる明滅テキスト（ピークα0.55・17〜28px・縁取りなし）は樹と背景映像に沈んで読めなかった。
-     下部に横一杯の帯を敷き、その年に解決した課題をまとめて大きく出す。
-     1年＝3.8秒に対し最大15件/年（2034年）あるため1件ずつ送る方式では追いつかない＝「年ごとに束ねる」設計。 */
+   
   .pres-cap{ position:fixed; left:0; right:0; bottom:0; z-index:21; pointer-events:none;
-    /* 下余白は年表バー（高さ約80px・bottom:14px）を必ず避ける値にする */
+     
     padding:34px 4vw 112px; display:flex; justify-content:center;
     background:linear-gradient(to top, rgba(5,7,16,0.94) 0%, rgba(5,7,16,0.88) 40%,
       rgba(5,7,16,0.58) 72%, rgba(5,7,16,0) 100%);
@@ -93,7 +90,7 @@
     align-self:center; text-shadow:0 2px 10px rgba(0,0,0,0.9); }
   @keyframes pcIn{ from{ opacity:0; transform:translateY(9px); } to{ opacity:1; transform:none; } }
   @media(max-width:700px){
-    .pres-cap{ padding:26px 14px 106px; }   /* スマホの年表バー（bottom:10px・高さ約80px）を避ける */
+    .pres-cap{ padding:26px 14px 106px; }    
     .pc-in{ gap:6px 12px; }
     .pc-items{ gap:4px 14px; }
   }
@@ -118,7 +115,7 @@
     background:rgba(201,169,97,0.14); border:1px solid rgba(201,169,97,0.5); border-radius:3px;
     color:var(--pearl); cursor:pointer; transition:all .15s; user-select:none; }
   .vbtn:hover { background:rgba(201,169,97,0.35); }
-  /* ver.3.3: 自動プレゼンの赤枠CTA（パネル最上部・目立たせる）〔鈴木様指示〕 */
+   
   .pres-cta{ flex:1 1 100%; border:2px solid #e0484a; background:rgba(190,60,60,0.18);
     color:#ffd9d0; font-weight:700; padding:8px 4px; font-size:12.5px; letter-spacing:0.12em;
     box-shadow:0 0 12px rgba(224,72,74,0.35); }
@@ -126,7 +123,7 @@
   .hint { font-size:9.5px; color:var(--muted); line-height:1.6; margin-top:8px;
     border-top:1px dashed rgba(201,169,97,0.25); padding-top:6px; }
 
-  /* 解決ログ（右コンソール） */
+   
   .feed{ position:fixed; right:12px; top:64px; z-index:19; width:236px;
     max-height:calc(100% - 170px); overflow:hidden;
     background:rgba(22,17,9,0.88); border:1px solid rgba(201,169,97,0.3); border-radius:6px;
@@ -168,7 +165,7 @@
   .d-year { font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--gold-soft);
     font-weight:600; line-height:1; }
 
-  /* ===== timeline ===== */
+   
   .timeline { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); z-index:22;
     display:flex; align-items:center; gap:16px;
     background:rgba(22,17,9,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:34px;
@@ -214,7 +211,7 @@
     opacity:0; transition:opacity .6s; pointer-events:none; }
   .toast.show { opacity:1; }
 
-  /* ver.3.7: 表示時の説明ガイド提案（はい／いいえ）〔鈴木様指示〕 */
+   
   .ask{ position:fixed; bottom:132px; left:50%; transform:translateX(-50%); z-index:31;
     background:rgba(22,17,9,0.95); border:1px solid rgba(201,169,97,0.55); border-radius:10px;
     padding:13px 18px 11px; text-align:center; display:none; box-shadow:0 6px 24px rgba(0,0,0,0.5);
@@ -224,7 +221,7 @@
   .ask .vbtn{ display:inline-block; flex:none; padding:7px 26px; margin:0 7px; font-size:12.5px; }
 
   @media (max-width:760px){
-    /* パネルは折りたたみ既定（☰で開閉）。開いた時は細スクロールバーを見せる */
+     
     .panel-toggle{ display:block; }
     .panel { display:none; width:186px; top:104px; padding:10px; max-height:calc(100% - 220px);
       scrollbar-width:thin; }
@@ -243,7 +240,7 @@
     .path-btn{ padding:14px 12px; }
   }
 
-  /* ===== 事業領域フロー ===== */
+   
   .intro-card.wide{ max-width:1080px; }
   .istep-h{ text-align:center; font-size:24px; font-weight:900; letter-spacing:0.12em;
     color:var(--gold-soft); margin-bottom:10px; }
@@ -266,7 +263,7 @@
   .path-btn .pb-sub{ font-size:10.5px; color:var(--pearl-mid); letter-spacing:0.03em; text-align:center; }
   .mini-link{ text-align:center; font-size:11.5px; color:var(--muted); cursor:pointer;
     letter-spacing:0.06em; padding:8px; } .mini-link:hover{ color:var(--gold-soft); }
-  /* ver.4.8: タイトル画面の「世界樹とは」を分かりやすいボタンに */
+   
   .what-btn{ display:flex; align-items:center; justify-content:center; gap:9px; width:100%;
     margin-top:4px; padding:13px 16px; cursor:pointer; font-family:inherit; text-decoration:none;
     background:rgba(201,169,97,0.05); border:1px solid rgba(201,169,97,0.3); border-radius:6px;
@@ -275,7 +272,7 @@
     transform:translateY(-1px); }
   .what-btn .wb-ic{ font-size:17px; color:var(--gold-soft); line-height:1; }
   .what-btn .wb-ttl{ font-weight:700; }
-  /* ver.5.3: 7クラスターを読む */
+   
   .cl-list{ display:flex; flex-direction:column; gap:8px; }
   .cl-card{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:7px;
     text-decoration:none; cursor:pointer; transition:all .16s;
@@ -290,7 +287,7 @@
   .cl-go{ flex:none; font-size:10px; color:var(--gold-soft); letter-spacing:0.08em; white-space:nowrap; }
   .cl-card:hover .cl-go{ color:#fff; }
 
-  /* ver.4.8: 世界樹の物語（エッセイ）ブロック */
+   
   .tree-essay{ border:1px solid rgba(201,169,97,0.3); border-radius:8px; padding:20px 22px;
     background:rgba(201,169,97,0.05); margin-bottom:20px; }
   .tree-essay .te-h{ font-size:18px; font-weight:900; letter-spacing:0.14em; color:var(--gold-soft);
@@ -315,7 +312,7 @@
   .an-note{ font-size:10.5px; color:var(--muted); margin:16px 0 6px; text-align:center; letter-spacing:0.04em; }
   .an-note b{ color:var(--pearl-mid); }
 
-  /* 解析結果 */
+   
   .res-kw{ font-size:12px; color:var(--pearl-mid); background:rgba(0,0,0,0.3);
     border-left:3px solid var(--copper); padding:9px 13px; border-radius:3px;
     margin-bottom:22px; line-height:1.7; word-break:break-word; }
@@ -329,7 +326,7 @@
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .clbar .cb-track{ flex:1; height:9px; background:rgba(255,255,255,0.05); border-radius:5px; overflow:hidden; position:relative; }
   .clbar .cb-eff{ position:absolute; left:0; top:0; height:100%; border-radius:5px; opacity:0.30;
-    transition:width .8s cubic-bezier(.2,.8,.2,1); }   /* 淡＝解決シナジーの波及込み */
+    transition:width .8s cubic-bezier(.2,.8,.2,1); }    
   .clbar .cb-fill{ position:relative; height:100%; border-radius:5px; transition:width .8s cubic-bezier(.2,.8,.2,1); }
   .clbar .cb-val{ font-size:10px; color:var(--gold-soft); width:30px; text-align:right;
     font-family:'Cormorant Garamond',serif; }
@@ -342,7 +339,7 @@
   .elbar .eb-fill{ height:100%; background:linear-gradient(90deg,#8a6f2a,#e8c977); border-radius:5px;
     transition:width .8s cubic-bezier(.2,.8,.2,1); }
   .elbar .eb-dots{ width:64px; flex:none; letter-spacing:1px; font-size:12px; color:var(--gold-soft); text-align:right; }
-  /* ver.4.4: スコア理由（▶）・解決の時間軸・シナジー事業 */
+   
   .cb-play{ flex:none; width:22px; height:22px; border-radius:50%; border:1px solid rgba(201,169,97,0.5);
     background:rgba(201,169,97,0.10); color:var(--gold-soft); font-size:9px; cursor:pointer; padding:0; line-height:1; }
   .cb-play:hover{ background:rgba(201,169,97,0.28); }
@@ -366,7 +363,7 @@
     color:var(--gold-soft); text-align:center; line-height:17px; font-size:10px; margin-right:7px; }
   .syn-why{ font-size:11px; color:var(--pearl-mid); line-height:1.7; margin:2px 0 0 24px; }
 
-  /* 立体ヒートマップ */
+   
   .hm-wrap{ position:relative; margin:6px 0 8px; background:rgba(0,0,0,0.28);
     border:1px solid rgba(201,169,97,0.22); border-radius:6px; overflow:hidden; }
   #hmcv{ width:100%; height:440px; display:block; touch-action:none; cursor:grab; }
@@ -376,7 +373,7 @@
   .hm-btn{ font-size:10.5px; padding:4px 10px; border-radius:14px; cursor:pointer;
     background:rgba(22,17,9,0.85); border:1px solid rgba(201,169,97,0.4); color:var(--pearl-mid);
     letter-spacing:0.04em; } .hm-btn:hover{ color:var(--pearl); border-color:var(--gold); }
-  /* ver.5.3: 文字が小さすぎたので大型パネル化〔鈴木様指示〕。ヒートマップに被ってよい */
+   
   .hm-tip{ position:absolute; left:14px; bottom:14px; z-index:5;
     background:rgba(14,11,5,0.96); border:1px solid rgba(201,169,97,0.55); border-radius:8px;
     padding:14px 18px; min-width:300px; max-width:min(440px,calc(100% - 28px));
@@ -398,15 +395,15 @@
     .hmt-el{ font-size:13.5px; } .hmt-v{ font-size:14px; }
   }
 
-  /* 樹画面の領域ボタン */
+   
   .dom-panel{ margin-top:8px; border-top:1px dashed rgba(201,169,97,0.25); padding-top:8px; display:none; }
   .dom-panel.on{ display:block; }
 
-  /* 画面移動 十字キー */
+   
   .dpad{ display:grid; grid-template-columns:repeat(5,1fr); gap:3px; }
   .dpad .dp{ flex:none; padding:4px 0; user-select:none; touch-action:none; }
 
-  /* 全画面ヒートマップ */
+   
   .hmview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:60; display:none; flex-direction:column;
     background:radial-gradient(ellipse at center, #10131f 0%, #070911 75%); padding:12px 16px 8px; }
   .hmview.show{ display:flex; }
@@ -420,7 +417,7 @@
   .hm-full #hmcv{ height:100%; }
   .hmv-note{ text-align:center; font-size:10.5px; color:var(--muted); padding-top:7px; letter-spacing:0.06em; }
 
-  /* ===== ver.4.9: 世界線 -WORLD LINE- ===== */
+   
   .wlview{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:60; display:none; flex-direction:column;
     background:radial-gradient(ellipse at top, #12151f 0%, #06070d 78%); padding:12px 16px 8px; }
   .wlview.show{ display:flex; }
@@ -455,7 +452,7 @@
     background:rgba(74,138,181,0.18); border:1px solid rgba(74,138,181,0.45); color:#8fc3e8; }
   .wl-row.flash{ animation:wlflash 1.4s ease-out; }
   @keyframes wlflash{ 0%{background:rgba(201,169,97,0.34);} 100%{background:transparent;} }
-  /* 展開される詳細 */
+   
   .wl-det{ display:none; margin:0 0 10px 122px; padding:14px 16px; border-radius:8px;
     background:rgba(201,169,97,0.06); border-left:2px solid rgba(201,169,97,0.5); }
   .wl-det.open{ display:block; }
@@ -474,7 +471,7 @@
     .wl-left{ width:62px; } .wl-det{ margin-left:0; } .wl-name{ font-size:11.5px; }
   }
 
-  /* ===== ver.5.0: 関連ニュース ===== */
+   
   .nw-list{ display:flex; flex-direction:column; gap:9px; }
   .nw-item{ padding:8px 10px; border-radius:6px; background:rgba(255,255,255,0.035);
     border-left:2px solid rgba(120,170,210,0.5); }
@@ -489,7 +486,7 @@
   .nw-meta{ font-size:9.5px; color:var(--muted); margin-top:4px; letter-spacing:0.03em; }
 
 
-  /* ===== ver.5.6: 解決への推論 ===== */
+   
   .inf-cta{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:9px 0 4px; }
   .if-btn{ font-size:12px; font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer;
     font-family:inherit; color:#171106; border:none;
@@ -516,7 +513,7 @@
   .if-lev{ font-size:12.5px; line-height:1.9; color:var(--pearl); padding:11px 13px; border-radius:7px;
     background:rgba(224,140,60,0.09); border:1px solid rgba(224,140,60,0.4); }
   .if-lev b{ color:#f0b978; }
-  /* バックキャストの時間軸 */
+   
   .if-bc{ display:flex; flex-direction:column; gap:0; }
   .if-step{ display:grid; grid-template-columns:118px 1fr; gap:12px; position:relative; padding:0 0 14px; }
   .if-step:last-child{ padding-bottom:0; }
@@ -527,7 +524,7 @@
   .if-step .body{ font-size:12px; line-height:1.85; color:var(--pearl-mid); padding-left:16px;
     border-left:1px solid rgba(201,169,97,0.25); margin-left:0; }
   .if-step:last-child .body{ border-left-color:transparent; }
-  /* 5軸リソース */
+   
   .if-res{ display:grid; grid-template-columns:84px 1fr; gap:6px 12px; font-size:11.5px; line-height:1.75; }
   .if-res .k{ color:var(--gold); font-weight:700; letter-spacing:0.04em; }
   .if-res .v{ color:var(--pearl-mid); }
@@ -549,7 +546,7 @@
     .if-res{ grid-template-columns:1fr; gap:2px 0; } .if-res .k{ margin-top:6px; }
   }
 
-  /* ===== ver.5.4: 学習モード ===== */
+   
   .lrn-hud{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:28; display:none;
     pointer-events:none; }
   .lrn-hud.show{ display:block; }
@@ -561,7 +558,7 @@
     background:var(--gold-soft); margin:0 3px; opacity:0.3; animation:lrnDot 1.4s infinite; }
   .lrn-ttl .dots span:nth-child(2){ animation-delay:.2s } .lrn-ttl .dots span:nth-child(3){ animation-delay:.4s }
   @keyframes lrnDot{ 0%,100%{opacity:0.25;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
-  /* ニュースカード（1件ずつ現れて消える） */
+   
   .lrn-card{ position:absolute; left:50%; bottom:118px; transform:translateX(-50%) translateY(14px);
     width:min(620px, calc(100vw - 44px)); padding:16px 20px; border-radius:10px;
     background:rgba(12,10,18,0.93); border:1px solid rgba(201,169,97,0.45);
@@ -587,7 +584,7 @@
     .lrn-ttl{ top:64px; }
   }
 
-  /* ===== ver.5.1: 未来知のブレ ===== */
+   
   .rev-notice{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:8px 0 10px;
     padding:7px 10px; border-radius:6px; background:rgba(224,72,74,0.10);
     border:1px solid rgba(224,72,74,0.45); }
@@ -645,7 +642,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.6.6</span></div>
   </div>
   <div class="stats" id="stats"></div>
 </div>
@@ -663,8 +660,7 @@
   <div class="btnrow" style="margin-bottom:7px;">
     <div class="vbtn" id="lrnBtn">◈ 学習モード</div>
   </div>
-  <!-- ver.6.3: 天之瓊矛への相互リンク〔鈴木様裁定 2026-08-03〕。入口（STEP 0）にも同じ導線があるが、
-       樹を観ている最中にも渡れるよう常時開くパネルにも置く。天之瓊矛側の「🌳 世界樹へ」と対。 -->
+  
   <div class="btnrow" style="margin-bottom:7px;">
     <a class="vbtn" id="nubokoBtn" href="https://www.sengokudama.com/japan/" target="_blank" rel="noopener noreferrer"
        style="text-decoration:none;display:block"
@@ -717,7 +713,7 @@
 
 <div class="detail" id="detail"><div class="close" onclick="closeDetail()">✕</div><div id="detailBody"></div></div>
 
-<!-- 解決ログ（右コンソール）: 年表が進むと解決した課題が流れてくる -->
+
 <div class="feed" id="feed">
   <h3>SOLVED · 解決ログ</h3>
   <div class="feed-list" id="feedList"></div>
@@ -725,13 +721,13 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ver.3.7→4.0: 表示時の質問ダイアログ（汎用） -->
+
 <div class="ask" id="askGuide">
   <div class="q" id="askQ">簡単に説明を聞きますか？</div>
   <div><div class="vbtn" id="askYes">はい</div><div class="vbtn" id="askNo">いいえ</div></div>
 </div>
 
-<!-- 全画面ヒートマップ -->
+
 <div class="hmview" id="hmView">
   <div class="hmv-top">
     <div class="hmv-ttl">◈ 35×35 影響ヒートマップ<span class="hmv-kw" id="hmvKw"></span></div>
@@ -749,7 +745,7 @@
   <div class="hmv-note">ドラッグ＝回転｜ホイール／2本指ピンチ＝拡大（拡大すると項目名表示）｜ホバー・<b>タップ</b>＝数値詳細</div>
 </div>
 
-<!-- ===== ver.4.9: 世界線 -WORLD LINE- ===== -->
+
 <div class="wlview" id="wlView">
   <div class="hmv-top">
     <div><span class="hmv-ttl">世 界 線 <span style="font-size:11px;color:var(--muted)">-WORLD LINE-</span></span>
@@ -762,7 +758,7 @@
   <div class="wl-body" id="wlBody"><div class="wl-track" id="wlTrack"></div></div>
 </div>
 
-<!-- ===== ver.5.1: 未来知のブレ -DRIFT OF FUTURE KNOWLEDGE- ===== -->
+
 <div class="dfview" id="dfView">
   <div class="hmv-top">
     <div><span class="hmv-ttl" style="color:#ff8a8b">未 来 知 の ブ レ <span style="font-size:11px;color:var(--muted)">-DRIFT OF FUTURE KNOWLEDGE-</span></span>
@@ -775,7 +771,7 @@
   <div class="df-body"><div class="df-track" id="dfTrack"></div></div>
 </div>
 
-<!-- ===== ver.5.6: 解決への推論 -INFERENCE- ===== -->
+
 <div class="ifview" id="ifView">
   <div class="hmv-top">
     <div><span class="hmv-ttl">解 決 へ の 推 論 <span style="font-size:11px;color:var(--muted)">-INFERENCE-</span></span>
@@ -787,7 +783,7 @@
   <div class="if-body"><div class="if-track" id="ifTrack"></div></div>
 </div>
 
-<!-- ===== ver.5.4: 学習モード ===== -->
+
 <div class="lrn-hud" id="lrnHud">
   <div class="lrn-ttl">
     <div class="t1">L E A R N I N G</div>
@@ -799,7 +795,7 @@
 <button class="lrn-exit" id="lrnExit">✕ 学習モードを終える</button>
 
 
-<!-- ver.6.2: 自動プレゼンの下部テロップ（その年に解決した課題を束ねて大きく出す） -->
+
 <div class="pres-cap" id="presCap">
   <div class="pc-in">
     <div class="pc-head">
@@ -823,7 +819,7 @@
 <div class="intro" id="intro">
   <div class="intro-card" id="introCard">
 
-    <!-- ===== STEP 0 : ランディング ===== -->
+    
     <div class="istep" id="step0">
       <div class="eyebrow">THE WORLD TREE · TREE OF LIFE</div>
       <h1>世 界 樹<span>を読む</span></h1>
@@ -844,15 +840,13 @@
       </div>
       <button class="what-btn" id="whatLink"><span class="wb-ic">❦</span><span class="wb-ttl">世界樹とは</span><span style="color:var(--muted);font-size:11px">── 物語と、根・幹・枝・葉・果実の読み方</span></button>
       <button class="what-btn" id="clustersLink"><span class="wb-ic">◈</span><span class="wb-ttl">現課題｜7クラスターを読む</span><span style="color:var(--muted);font-size:11px">── 各クラスターの構造解析</span></button>
-      <!-- ver.6.1: エビデンス集（250課題の全数監査）を公開 -->
+      
       <a class="what-btn" id="evidenceLink" href="evidence.html" target="_blank" rel="noopener noreferrer"><span class="wb-ic">⚖</span><span class="wb-ttl">エビデンス集｜250課題の全数監査</span><span style="color:var(--muted);font-size:11px">── 確度A/B/C・参考資料230件</span></a>
-      <!-- ver.6.3: 天之瓊矛への相互リンク〔鈴木様裁定 2026-08-03〕。
-           世界樹＝世界の構造知と未来軸／天之瓊矛＝指標・資料に基づく自治体の可視化、という役割分担。
-           250課題のうち市区町村の公表統計で観測できるのは36課題だけで、そこは天之瓊矛が担う。 -->
+      
       <a class="what-btn" href="https://www.sengokudama.com/japan/" target="_blank" rel="noopener noreferrer"><span class="wb-ic">🗾</span><span class="wb-ttl">天之瓊矛｜全1,741市区町村を数字で観る</span><span style="color:var(--muted);font-size:11px">── 2050年までの人口・財政・災害・歴史文化</span></a>
     </div>
 
-    <!-- ===== STEP 1 : キーワード入力 ===== -->
+    
     <div class="istep" id="step1" style="display:none">
       <div class="back-link" data-to="step0">‹ 戻る</div>
       <div class="eyebrow">STEP 1 · YOUR DOMAIN</div>
@@ -868,7 +862,7 @@
       <button class="intro-btn" id="analyzeBtn">◈ Ａ Ｉ で 解 析 す る</button>
     </div>
 
-    <!-- ===== STEP 2 : 解析結果＋ヒートマップ ===== -->
+    
     <div class="istep" id="step2" style="display:none">
       <div class="back-link" data-to="step1">‹ キーワードを修正</div>
       <div class="eyebrow">STEP 2 · ANALYSIS</div>
@@ -901,7 +895,7 @@
       </div>
     </div>
 
-    <!-- ===== ver.5.3: 現課題｜7クラスターを読む ===== -->
+    
     <div class="istep" id="stepClusters" style="display:none">
       <div class="back-link" data-to="step0">‹ 戻る</div>
       <div class="eyebrow">CURRENT STRUCTURE · 現課題の構造解析</div>
@@ -912,7 +906,7 @@
       <button class="intro-btn" data-to="step0" style="margin-top:18px">戻 る</button>
     </div>
 
-    <!-- ===== 世界樹とは（ヘルプ） ===== -->
+    
     <div class="istep" id="stepHelp" style="display:none">
       <div class="back-link" data-to="step0">‹ 戻る</div>
       <div class="eyebrow">THE WORLD TREE · 世界樹とは</div>
@@ -939,9 +933,7 @@
 
 <script>
 'use strict';
-/* ================================================================
-   データ層：7クラスター × 35サブ要素 × 250課題
-================================================================ */
+ 
 const ELEMS = {
   tech:{n:'技術',c:'#4a8ab5'}, prod:{n:'生産体制',c:'#b87333'},
   norm:{n:'規範',c:'#a06fc0'}, mind:{n:'意識',c:'#c9a961'}
@@ -1276,7 +1268,7 @@ const DATA = [
   ['記録対象の高齢化','あと5-10年が限界。時間との戦い。']]}
 ]}];
 
-/* 個別の物語＋解決年（yr）の精緻化 */
+ 
 const SPECIAL = {
 '三世代同居の激減':{o:'early',yr:2042,st:'産業革命が父を工場へ連れ出し、職住分離が核家族を生んだ。約百年かけてそれは「規範」として定着した。だがAI・ロボットによる在宅生産体制が整えば、職住は再融合し、父は家に戻る。核家族問題は「解決すべき課題」ではなく「前提条件の消滅によって消える課題」である。生産体制の転換が10〜30年、新しい家族規範の定着はその先30年。'},
 '「家」概念の消失':{yr:2048,st:'家の消失は価値観の堕落ではなく、職住分離という生産体制の帰結だった。在宅生産の復活と事業承継の危機が「家業」を再発見させる。処分権を時間に返上する「預かり所有」の再実装が鍵。'},
@@ -1296,7 +1288,7 @@ const SPECIAL = {
 '半導体産業の衰退':{o:'early',yr:2031,st:'国家投資は既に走っている。5〜10年で製造基盤の一角を取り戻せるかの勝負。遅れの自覚こそが最大の投資動機になった稀有な例。'}
 };
 
-/* 果実（規範の枝に実る・2056年〜）: g=成果, b=腐った果実 */
+ 
 const FRUITS = [
  {ci:0,g:'物語の規範化——語り部が公職になる',gd:'地域の歴史を語り継ぐことが、消防団のような公的役割として定着した未来。物語の担い手が制度で支えられる。',b:'物語の動員転用',bd:'再建された物語が排他的ナショナリズムに転用される。恩送りは水平に、動員は垂直に——錨を抽象でなく具体に打つ防壁を失った場合の腐果。'},
  {ci:1,g:'多世代近居の新標準',gd:'職住融合により、歩いて行き来できる距離に三世代が住む形が新しい標準になった未来。核家族は歴史用語になる。',b:'新しい家父長制への揺り戻し',bd:'家の復権が個人の自由の抑圧に反転する。「生まれで縛る」装置の復活——選んで縛る原則を忘れた場合の腐果。'},
@@ -1307,16 +1299,14 @@ const FRUITS = [
  {ci:6,g:'デジタル徒弟制——技能が死ななくなる',gd:'すべての名人の所作がAIに記録され、人はいつでも「師匠の記憶」から学び直せる。技能の絶滅が終わる。',b:'記録済みゆえの軽視',bd:'「データがあるから」と生身の修行が軽んじられ、身体知の再生産が細る。記録と継承の混同という腐果。'}
 ];
 
-/* ================================================================
-   ツリー構築（3D座標）
-================================================================ */
+ 
 const nodes=[], edges=[], spirals=[], ornaments=[];
 function N(o){ o.i=nodes.length; nodes.push(o); return o; }
 function E(a,b,o){ edges.push(Object.assign({a:a.i,b:b.i},o||{})); }
 const rnd=(seed=>()=> (seed=(seed*9301+49297)%233280)/233280)(42);
 const rnd2=(seed=>()=> (seed=(seed*9301+49297)%233280)/233280)(1234);
 
-/* --- 幹 --- */
+ 
 const trunkNodes=[];
 {
   let prev=null;
@@ -1327,31 +1317,31 @@ const trunkNodes=[];
     const top=N({t:'tjoint',x:(rnd()-0.5)*9,y:tr.y1,z:(rnd()-0.5)*9,hid:1});
     E(prev,mid,{k:'trunk',ti}); E(mid,top,{k:'trunk',ti});
     trunkNodes.push(mid); prev=top;
-    if(ti>=1){ const side=(ti%2?1:-1);   // 幹の脇から立ち上がる小さな渦（太い幹の縁に）
+    if(ti>=1){ const side=(ti%2?1:-1);   
       spirals.push({tip:{x:side*(80-ti*16),y:tr.y1-6,z:side*10},from:{x:0,y:tr.y1-26,z:0},s:12+ti*2,ccw:ti%2}); }
   });
   const crown=N({t:'tjoint',x:0,y:TIERS[4].y1+34,z:0,hid:1});
   E(prev,crown,{k:'trunk',ti:4});
   spirals.push({tip:crown,from:prev,s:46,ccw:1});
   spirals.push({tip:crown,from:prev,s:34,ccw:0});
-  /* 頂部を渦で満たす（参照画の樹冠中心） */
+   
   [[-34,10,1],[30,16,0],[-16,26,0],[18,30,1]].forEach((o,i)=>{
     spirals.push({tip:{x:o[0],y:crown.y+o[1]-14,z:(i%2?18:-18)},from:crown,s:30+i*7,ccw:o[2]});
   });
 }
 
-/* --- 根 --- */
+ 
 const problems=[];
 DATA.forEach((cl,ci)=>{
   const az = ci*(Math.PI*2/7)+0.4;
   const dx=Math.cos(az), dz=Math.sin(az);
   const cRoot=N({t:'croot',x:dx*138,y:-72,z:dz*138,ci,label:cl.r+' '+cl.name,pick:1,r:9,col:cl.c});
-  /* 板根: 幹の表面(接点)から生え、横へ張り出して地表を掴み、地中へ潜る */
-  const flare=N({t:'tjoint',x:dx*88,y:26,z:dz*88,hid:1});          // 幹の縁＝接点（幹の中に埋めて継ぎ目を隠す）
-  const grip =N({t:'tjoint',x:dx*152,y:-6,z:dz*152,hid:1});        // 横へ広がり地表を掴む
+   
+  const flare=N({t:'tjoint',x:dx*88,y:26,z:dz*88,hid:1});          
+  const grip =N({t:'tjoint',x:dx*152,y:-6,z:dz*152,hid:1});        
   E(flare,grip,{k:'root0',ci});
   E(grip,cRoot,{k:'root1',ci});
-  /* 左右の爪根（地面以下をグリップする指） */
+   
   [-0.20,0.20].forEach(da=>{
     const ax=Math.cos(az+da), az2=Math.sin(az+da);
     const claw=N({t:'tjoint',x:ax*128,y:-12,z:az2*128,hid:1});
@@ -1360,11 +1350,11 @@ DATA.forEach((cl,ci)=>{
   spirals.push({tip:cRoot,from:grip,s:15,ccw:ci%2});
   let prev=cRoot;
   cl.subs.forEach((sub,si)=>{
-    const rr=150+si*38, yy=-95-si*30;                       // 根は奥深く、下へ
+    const rr=150+si*38, yy=-95-si*30;                       
     const wob=(rnd()-0.5)*0.32;
     const sx=Math.cos(az+wob)*rr, sz=Math.sin(az+wob)*rr;
     const sRoot=N({t:'sroot',x:sx,y:yy,z:sz,ci,si,label:sub.id+' '+sub.n,pick:1,r:5.5,col:cl.c,sub});
-    /* 中間点を垂らして曲線の根に */
+     
     const rm=N({t:'tjoint',x:(prev.x+sx)/2+(rnd()-0.5)*12,y:(prev.y+yy)/2-18,z:(prev.z+sz)/2+(rnd()-0.5)*12,hid:1});
     E(prev,rm,{k:'root2',ci}); E(rm,sRoot,{k:'root2',ci}); prev=sRoot;
     sub.is.forEach((iss,ii)=>{
@@ -1379,22 +1369,16 @@ DATA.forEach((cl,ci)=>{
   });
 });
 
-/* ================================================================
-   枝・葉の階層構造〔ver.2.2 鈴木様指示〕
-   7本の大枝（クラスター）→ 35本の中枝（サブ要素）→ 250の小枝＋葉（課題）
-   ・大枝は己の根と同じ方位＝根の真上に立つ
-   ・下の大枝ほど長く深くたわみ、上の大枝はたわまず斜め上へ短く
-   ・中枝は大枝から約30°で左右交互に分岐（解決時期が遅いサブほど枝先側）
-================================================================ */
-const boughs=[];   // 中枝の一覧（果実・鳥が参照: {n2,q,az,ti,elemK}）
+ 
+const boughs=[];   
 DATA.forEach((cl,ci)=>{
-  const az=ci*(Math.PI*2/7)+0.4;                 // 根と同じ方位
+  const az=ci*(Math.PI*2/7)+0.4;                 
   const dx=Math.cos(az), dz=Math.sin(az);
-  const y0=246+ci*23+(rnd()-0.5)*10;             // 付け根は幹上部に螺旋状分散(246〜384)
-  const hf=Math.max(0,Math.min(1,(y0-246)/138)); // 0=下の大枝, 1=上の大枝
-  const LEN=(500-170*hf)*(0.92+rnd()*0.16);      // 下ほど遠くへ
-  const LIFT=110+115*hf;                          // 上ほど上向きに
-  const DROOP=(1-hf)*70-16*hf;                    // 下は深くたわみ・上はたわまず斜め上へ
+  const y0=246+ci*23+(rnd()-0.5)*10;             
+  const hf=Math.max(0,Math.min(1,(y0-246)/138)); 
+  const LEN=(500-170*hf)*(0.92+rnd()*0.16);      
+  const LIFT=110+115*hf;                          
+  const DROOP=(1-hf)*70-16*hf;                    
   const sway=(ci%2?1:-1), px2=-dz*sway, pz2=dx*sway;
   const b0={x:dx*36,y:y0+10,z:dz*36};
   const c1={x:dx*LEN*0.32+px2*LEN*0.08, y:y0-DROOP*2.2, z:dz*LEN*0.32+pz2*LEN*0.08};
@@ -1405,7 +1389,7 @@ DATA.forEach((cl,ci)=>{
       x:u*u*u*b0.x+3*u*u*t*c1.x+3*u*t*t*c2.x+t*t*t*b2.x,
       y:u*u*u*b0.y+3*u*u*t*c1.y+3*u*t*t*c2.y+t*t*t*b2.y,
       z:u*u*u*b0.z+3*u*u*t*c1.z+3*u*t*t*c2.z+t*t*t*b2.z }; };
-  /* --- 大枝（7セグメント連続テーパー） --- */
+   
   const WBASE=24-6*hf, WTIP=4.5;
   const wL=t=>WTIP+(WBASE-WTIP)*Math.pow(1-t,1.5);
   const TSL=[0.14,0.3,0.47,0.63,0.78,0.9];
@@ -1428,19 +1412,19 @@ DATA.forEach((cl,ci)=>{
     const op=Q(tt);
     ornaments.push({x:op.x,y:op.y+8,z:op.z,ci,pi:(ci+oi)%4});
   });
-  /* --- 中枝（このクラスターの5サブ要素。時期が遅いほど大枝の先へ） --- */
+   
   cl.subs.forEach((sub,si)=>{
     const ti=TIERIDX[sub.h];
     const tAt=Math.max(0.22,Math.min(0.9,({1:0.30,2:0.48,3:0.66,4:0.84})[ti]+(rnd()-0.5)*0.06));
     const bp=Q(tAt);
     const qa=Q(tAt-0.04), qb=Q(tAt+0.04);
     const baseAng=Math.atan2(qb.z-qa.z,qb.x-qa.x);
-    /* 5本の中枝を扇状スロットに: 方位±72°/±38°/0°・仰角8〜54°＝隣同士が上下左右30°以上開く */
+     
     const YAWS =[-1.32,-0.70,0,0.70,1.32];
     const PITCH=[0.08,0.90,0.46,1.06,0.20];
     const phi=baseAng+YAWS[si]*(0.98+rnd()*0.04);
     const ux=Math.cos(phi), uz=Math.sin(phi);
-    const mlen=(195+70*(1-tAt))*(0.95+rnd()*0.25);   // 中枝を長く＝先まで広がる
+    const mlen=(195+70*(1-tAt))*(0.95+rnd()*0.25);   
     const upTip=Math.tan(PITCH[si])*mlen*0.60+14*hf+5*(ti-1);
     const dipM=(1-hf)*8;
     const m0=bp;
@@ -1465,7 +1449,7 @@ DATA.forEach((cl,ci)=>{
     }
     const bSamples=tArr2.map((t2,i2)=>({t:t2,node:midNodes[i2]}));
     spirals.push({tip:n2,from:midNodes[3],s:18+ti*2,ccw:(spirals.length%2)});
-    /* --- 小枝＋葉（課題。解決が遅いほど中枝の先端へ） --- */
+     
     const probs=problems.filter(p=>p.sub===sub);
     const order=probs.map((p,idx)=>({p,o:(SPECIAL[p.name]&&SPECIAL[p.name].o==='early')?-1:(SPECIAL[p.name]&&SPECIAL[p.name].o==='late')?99:idx}));
     order.sort((a,b)=>a.o-b.o);
@@ -1493,8 +1477,7 @@ DATA.forEach((cl,ci)=>{
   });
 });
 
-/* --- 中大枝（美観用ダミー・9本）: 7大枝の間隙と頂部を埋める。
-       小枝と薄金の葉を最初から纏う（データ非連動＝時代では染まらない） --- */
+ 
 for(let di=0;di<9;di++){
   const az=(di<7)?((di+0.5)*(Math.PI*2/7)+0.4):(0.4+(di===7?1.15:3.95));
   const dx=Math.cos(az), dz=Math.sin(az);
@@ -1523,7 +1506,7 @@ for(let di=0;di<9;di++){
   });
   const qe=Q(1), qf=Q(0.85);
   spirals.push({tip:{x:qe.x,y:qe.y,z:qe.z},from:{x:qf.x,y:qf.y,z:qf.z},s:14+rnd()*8,ccw:di%2});
-  /* 空間を埋める小枝＋薄金の葉 */
+   
   const nTw=5+(di%3);
   for(let k2=0;k2<nTw;k2++){
     const tt=Math.min(0.97,0.40+0.55*(k2+0.5)/nTw+(rnd()-0.5)*0.05);
@@ -1539,15 +1522,12 @@ for(let di=0;di<9;di++){
   }
 }
 
-/* --- 樹上の黒鳥（クリムト《生命の樹》の鳥） --- */
+ 
 let birdPt=null;
 { const nbg=boughs.find(b=>b.ti===3&&b.elemK==='mind')||boughs.find(b=>b.ti===3)||boughs[0];
   if(nbg){ const bp=nbg.q(0.46); birdPt={x:bp.x,y:bp.y+2,z:bp.z}; } }
 
-/* ver.4.9: エビデンス監査台帳v1.0 由来の確度（信頼度）。世界線ビューの明瞭度と詳細バッジに使用。
-   A=複数の一次・公的資料で確認 ／ B=一次資料1件で確認 ／ C=裏付けなし・要再調査 ／ －=検証可能な数値主張なし（定性・判定対象外）
-   ver.2.9の改名5件は監査結果を現行名の実態に補正済み（出生率1.15・限界集落40%・読書62.6%=A／化石燃料約8割=B／ソフトパワー内実不足=－）
-   更新時は付属ツール gen_conf を再実行して差し替える */
+ 
 const CONF_RAW={
   'A':'空き家の景観破壊|大企業の品質偽装|官僚の文書改ざん|政治家不祥事の常態化|SNS誹謗中傷|いじめ・ハラスメント|首都の象徴の不在|生涯未婚率の上昇|合計特殊出生率1.14|晩産化の固定|単身世帯38.0%|家業継承の困難|ヤングケアラー|老老介護|ダブルケア|育休取得率の男女差|限界集落40%|消滅可能性都市896|耕作放棄地|外国人労働者の増加と摩擦|婚外子の社会的排除|高齢者のSNS被害|ディープフェイク動画|月1冊も本を読まない62.6%|内部留保600兆円超の塩漬け|従業員賃金の停滞|転嫁拒否|実質賃金の30年停滞|非正規雇用37%|老後2000万円問題|人材投資の停滞|教育投資の削減|内部留保の塩漬け|半導体産業の衰退|時価総額ランキング後退|東京一極集中|地方交付税依存|食料安全保障の不在|裏金問題|食料自給率38%|農業の高齢化|生物多様性の喪失|海洋プラスチック汚染|鹿・猪の獣害|首都直下地震|インフラ老朽化|熱中症死者|特許出願の減少|任期付ポストの激増|博士課程進学率低下|教員の長時間労働',
   'B':'皇室・天皇制への希薄化|都市景観の混沌|京都の景観論争|美術・芸術教育の衰退|神社祭祀の担い手不足|神輿担ぎ手の物理的不足|通過儀礼の簡略化|神道・仏教離れ|30代未婚率の高さ|パラサイト・シングル|婚活疲れ|「子無し選択」の増加|祖父母世代の孤立|保育所不足|介護離職|産後うつ|小学校統廃合|公共サービス維持困難|道路・橋・上下水道の老朽化|LGBTQ+の社会的位置づけ|フェイクニュース拡散|陰謀論の浸透|リテラシー教育の遅れ|広告料の海外流出|海外アプリの影響工作リスク|クラウド依存|ファクトチェック機関の未整備|ヘイト・誹謗中傷の蔓延|記者クラブ制度の硬直|大学生の学習時間|2倍速視聴・要約文化|集中時間の短縮|自社株買いの常態化|株主還元優先で投資不足|HFT・超高速取引|金融資産と実体経済の乖離|単価切り下げ圧力|役員報酬の高騰|中間層の崩壊|ワーキングプア|商店街のシャッター化|貯蓄ゼロ世帯|設備投資の不足|スタートアップ育成の遅れ|バイオ産業の遅れ|AI開発での遅れ|脱炭素技術の遅れ|DX対応の遅れ|地方議員のなり手不足|道州制議論の停滞|平成の大合併の限界|エネルギー政策の場当たり化|政治家の不祥事|官僚の忖度|政治資金透明性の欠如|投票率低下|国連での発言力|国際貢献の縮小|独立シンクタンクの不在|官庁エリートの専門性低下|化石燃料約8割依存|原発再稼働の停滞|電気代上昇|種子・肥料の輸入依存|農地の荒廃拡大|漁業の衰退|絶滅危惧種3,772種|サンゴ礁・藻場の消失|南海トラフ地震|廃棄物処理問題|リサイクル率の停滞|資源安全保障|伝統工芸の事業所4分の1|宮大工の不足|古文・漢文離れ|ユニコーン企業数|ベンチャーキャピタル不足|大学運営費交付金削減|論文シェア9%→3%|記録対象の高齢化',
@@ -1555,7 +1535,7 @@ const CONF_RAW={
   '－':'国家アイデンティティの希薄化|経済成長物語の失効|戦後史観の左右分断|県民意識・郷土愛の低下|建国神話への態度|公共建築の凡庸化|ロードサイドの均質化|公共マナーの劣化|「バレなければ良い」文化|年中行事の家庭からの消失|氏神・檀那寺との切断|国旗国歌への複雑感情|クールジャパンの内容希薄化|公共建築の象徴性欠如|国家的コモン・グラウンドの不在|ナショナルブランドの座標軸不在|親ガチャ言説|親戚関係の希薄化|盆暮の帰省離れ|「家」概念の消失|育児ノイローゼ|商店街シャッター化|人口減少の心理的影響|多文化共生の表層化|「日本人」の定義の揺らぎ|観光客との文化摩擦|子供のスマホ依存|専門家への不信|アルゴリズムによる思考誘導|生成AIによる虚偽情報|専門家の権威崩壊|ポストトゥルース現象|AI生成コンテンツの判別不能|真偽判定の党派化|国会の質疑時間浪費|政治の人気投票化|政策議論のエンタメ化|分断・極化|市民広場の不在|タイパ志向の蔓延|「論破」文化|古典離れ|四半期決算プレッシャー|ROE至上主義|「お客様第一」の形骸化|地域への還元不足|ESG投資の表層化|地方経済の縮小|四半期資本主義|防衛戦略の対外依存|政策の連続性消失|短期的バラマキの常態化|政官の倫理低下|利権政治の継続|G7内での影響力低下|ソフトパワーの内実不足|政策立案能力の脆弱化|官邸主導の偏り|政策ブレーンの不足|大学と政策の断絶|EBPMの遅れ|再エネのコスト高|エネルギー安全保障リスク|送電網の老朽化|分散型への移行遅れ|円安での食料価格上昇|フードマイレージの長距離化|里山・里海の荒廃|森林の管理放棄|気候災害の頻発|防災予算の不足|復興の遅れ|カーボンニュートラル困難|循環型経済への移行遅れ|地産地消の不徹底|江戸期循環知の消失|修行の経済的不可能化|暗黙知の消失|道具・素材の供給途絶|教養層の薄さ|文理分断|大学の就職予備校化|国際教養人材の不足|英語偏重・他言語軽視|エコシステムの薄さ|大企業の硬直|リスクテイクの不足|基礎研究の枯死|若手研究者の海外流出|技能のマニュアル化困難|AI記録の体系化不足|職人の知のロスト|製造現場のノウハウ消失|農業・漁業の知の消失|芸道の身体知',
 };
 const CONF=(()=>{const m={};for(const k in CONF_RAW)CONF_RAW[k].split("|").forEach(n=>{if(n)m[n]=k;});return m;})();
-/* 信頼度の表示仕様: 高いほど濃く・大きく・くっきり（cluster色は保持し明瞭度だけを変える） */
+ 
 const CONF_STYLE={
   'A':{op:1.00,r:12,glow:1,n:'A',d:'複数の一次・公的資料で確認'},
   'B':{op:0.74,r:10,glow:0,n:'B',d:'一次資料1件で確認'},
@@ -1563,7 +1543,7 @@ const CONF_STYLE={
   'C':{op:0.28,r:8, glow:0,n:'C',d:'裏付けなし・要再調査'}
 };
 
-/* --- 解決年の割当て（西暦） --- */
+ 
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
 problems.forEach((p,pi)=>{
   p._idx=pi;
@@ -1571,14 +1551,14 @@ problems.forEach((p,pi)=>{
   if(sp&&sp.yr){ p.yr=sp.yr; return; }
   const [lo,hi]=YEAR_RANGE[p.tier];
   const span=hi-lo;
-  const subShift=(hashStr(p.sub.id)%9)/10;               // サブ要素ごとの位相ずれ 0〜0.8
+  const subShift=(hashStr(p.sub.id)%9)/10;               
   const frac=Math.min(0.98,(p.rank+0.5)/Math.max(1,p.rankN)*0.85+subShift*0.15);
   p.yr=Math.round(lo+span*frac+(rnd2()-0.5)*1.2);
   if(p.yr<lo)p.yr=lo; if(p.yr>hi)p.yr=hi;
 });
-problems.forEach(p=>{ p.conf=CONF[p.name]||'－'; });   // ver.4.9: 監査台帳の確度を付与
+problems.forEach(p=>{ p.conf=CONF[p.name]||'－'; });   
 
-/* --- 果実（規範の枝の曲線上に吊るす） --- */
+ 
 const fruitNodes=[];
 const normBoughs=boughs.filter(b=>b.elemK==='norm');
 FRUITS.forEach((f,fi)=>{
@@ -1596,21 +1576,17 @@ FRUITS.forEach((f,fi)=>{
   fruitNodes.push(good,rot);
 });
 
-/* 花野（地面の玉）は視認性を妨げるため廃止〔2026-07-12 鈴木様指示〕 */
+ 
 
-/* --- 渦巻きの単位曲線（クリムトの螺旋・巻き数を増やす） --- */
+ 
 const SPIRAL_PTS=[];
 for(let i=0;i<=48;i++){ const th=i/48*4.2*Math.PI;
   const r=Math.exp(-0.20*th);
   SPIRAL_PTS.push({x:Math.cos(th)*r, y:Math.sin(th)*r});
 }
 
-/* ================================================================
-   事業領域エンジン：キーワード → 240課題 × 35エレメント × 7クラスターの
-   関係スコアリング（端末内解析・外部送信なし）＋ 35×35シナジー行列
-================================================================ */
-/* 35×35 解決シナジー行列（行=解決元 → 列=被影響先, 0〜3, '.'=自己）
-   出典: 35サブ要素_解決相互関係スコア.html を機械抽出 */
+ 
+ 
 const SYN=['.3323221221112112211231310111323131',
 '2.122110110001101200211200120232111',
 '21.21121121022112110113110010122020',
@@ -1648,7 +1624,7 @@ const SYN=['.3323221221112112211231310111323131',
 '1100001011121010121211012110023122.'];
 function synVal(i,j){ const c=SYN[i].charAt(j); return c==='.'?3:parseInt(c,10); }
 
-/* エレメント一覧（DATA順＝SYN順で 1-1..7-5） */
+ 
 const ELEM_LIST=[];
 DATA.forEach((cl,ci)=>cl.subs.forEach(sub=>{
   ELEM_LIST.push({id:sub.id,n:sub.n,sub,cl,ci});
@@ -1658,7 +1634,7 @@ ELEM_LIST.forEach((e,i)=>{
   e.text=[e.n,e.sub.hy].concat(e.sub.is.map(x=>x[0]+' '+x[1])).join(' ').toLowerCase();
 });
 
-/* 業種→エレメント 関係辞書（端末内AI解析のナレッジ基盤） */
+ 
 const DOMAIN_LEX=[
  {kw:['建築','建設','設計','宮大工','大工','木造','城','天守','社寺','神社','仏閣','工務','施工','リフォーム','左官','棟梁'],el:['7-1','1-2','6-5','1-4','7-5','4-5'],w:3},
  {kw:['不動産','空き家','都市','まちづくり','街づくり','景観','再開発','住宅','土木','インフラ'],el:['1-2','2-4','4-3','6-5','5-1'],w:3},
@@ -1689,13 +1665,7 @@ const DOMAIN_LEX=[
  {kw:['本','読書','書店','ライター','文章','知','教養','古典'],el:['3-5','7-2','1-1'],w:2},
  {kw:['ロボット','自動化','自動運転','ドローン','iot'],el:['4-5','7-5','2-4','6-4'],w:3}
 ];
-/* ver.5.8: 社会課題辞書〔鈴木様指摘「少子高齢化を入れるとスコアが出ない」〕
-   従来の解析は「業種辞書（仕事の語彙）＋文字面N-gram」のため、課題語を入れると
-   文字の一致する課題（例:「高齢化」→農業の高齢化・職人の高齢化）だけが光り、
-   意味的な本丸（少子化→2-1結婚・出産動機）に届かなかった。
-   → 社会課題の語彙を意味的に正しいサブ要素へ橋渡しする辞書。
-   仕組みはDOMAIN_LEXと同一（ヒットで該当サブ要素をブースト）だが、
-   シナジー事業の候補には使わない（課題は共創相手ではないため別配列）。 */
+ 
 const ISSUE_LEX=[
  {name:'少子高齢化・人口減少',kw:['少子高齢化','少子化','高齢化','人口減少','人口問題','出生率','出生数','超高齢'],el:['2-1','2-3','2-2','2-4'],w:3},
  {name:'未婚化・晩婚化',kw:['未婚','晩婚','晩産','婚姻数','結婚しない'],el:['2-1','2-2'],w:3},
@@ -1728,13 +1698,13 @@ const ISSUE_LEX=[
  {name:'イノベーション不足',kw:['イノベーション','起業率','ユニコーン不足','挑戦しない'],el:['7-3','4-4'],w:3}
 ];
 
-/* ver.4.4: DOMAIN_LEXと同順の業種表示名（シナジー事業・スコア理由の表示に使用） */
+ 
 const LEX_NAMES=['建築・伝統建築','不動産・まちづくり','教育','農林水産','IT・AI・DX','金融','医療・介護・福祉',
  'メディア・広告','飲食','物流','観光・ホスピタリティ','製造・ものづくり','エネルギー','行政・地域創生',
  'デザイン・アート','歴史・文化','政治・政策','環境・循環','人材・育成','防災・レジリエンス','家族・子育て',
  '経営・コンサルティング','スタートアップ・R&D','小売・EC','シンクタンク・研究','国際・語学','出版・教養','ロボティクス・自動化'];
 
-/* 入力文字列 → トークン集合（日本語N-gram＋英数語） */
+ 
 function domTokens(str){
   const s=(str||'').toLowerCase();
   const out=new Set();
@@ -1747,12 +1717,12 @@ function domTokens(str){
 }
 const idOf=id=>ELEM_LIST.findIndex(e=>e.id===id);
 
-/* 解析本体：domain へ結果を格納 */
+ 
 const domain={active:false,kw:'',elemRaw:[],elemRel:[],elem5:[],clusterRel:[],show:true};
 function analyzeDomain(input){
   const toks=domTokens(input);
   const raw=ELEM_LIST.map(()=>0);
-  /* ① 業種辞書ブースト（ver.4.4: 一致語を理由表示用に記録） */
+   
   domain._lexHits=[];
   DOMAIN_LEX.forEach((entry,li)=>{
     let hit=0; const words=[];
@@ -1762,7 +1732,7 @@ function analyzeDomain(input){
       domain._lexHits.push({li,words,els:entry.el});
     }
   });
-  /* ①' 社会課題辞書ブースト（ver.5.8: 課題語→意味的に正しいサブ要素へ橋渡し。理由表示にはname直載せ） */
+   
   ISSUE_LEX.forEach(entry=>{
     let hit=0; const words=[];
     entry.kw.forEach(k=>{ if(input.toLowerCase().includes(k)){ hit++; words.push(k); } });
@@ -1771,7 +1741,7 @@ function analyzeDomain(input){
       domain._lexHits.push({name:'社会課題:'+entry.name,words,els:entry.el});
     }
   });
-  /* ② 課題テキストとの語彙一致（240課題を精査。ver.4.4: 一致語を要素ごとに記録） */
+   
   ELEM_LIST.forEach((e,i)=>{
     let sc=0; const hits=[];
     toks.forEach(t=>{ if(e.text.includes(t)){ sc+=(t.length>=3?1.3:0.6); hits.push(t); } });
@@ -1782,9 +1752,9 @@ function analyzeDomain(input){
   });
   const maxRaw=Math.max(0.0001,...raw);
   const rel=raw.map(v=>v/maxRaw);
-  /* 1〜5段階（閾値未満は0＝無関係） */
+   
   const five=rel.map(r=> r<0.14?0 : Math.max(1,Math.min(5,Math.round(1+4*r))) );
-  /* 課題ごとのスコア */
+   
   problems.forEach(p=>{
     const ei=p.sub._eidx;
     const ct=(p.name+' '+p.detail).toLowerCase();
@@ -1796,11 +1766,11 @@ function analyzeDomain(input){
     p._domRel=p._domRaw/maxP;
     p._dom5 = p._domRel<0.14?0 : Math.max(1,Math.min(5,Math.round(1+4*p._domRel)));
   });
-  /* クラスター集計 */
+   
   const cRaw=DATA.map(()=>0);
   ELEM_LIST.forEach((e,i)=>{ cRaw[e.ci]+=raw[i]; });
   const cMax=Math.max(0.0001,...cRaw);
-  /* 実効関係度: 直接関係＋シナジー行列を1段伝播（自事業の解決が促す先も影響圏に入る） */
+   
   const eff=rel.map((r,i)=>{
     let s=r;
     for(let k=0;k<35;k++){ if(k!==i){ const sv=synVal(k,i)/3; s+=rel[k]*sv*sv*0.45; } }
@@ -1809,8 +1779,7 @@ function analyzeDomain(input){
   domain.active=true; domain.kw=input;
   domain.elemRaw=raw; domain.elemRel=rel; domain.elem5=five; domain.elemEff=eff;
   domain.clusterRel=cRaw.map(v=>v/cMax);
-  /* ver.2.7: クラスター二段集計＝直接（rel和）と解決シナジー波及込み（eff和）を共通スケールで
-     eff>=rel が要素ごとに保証されるため、淡バー（波及込み）は常に濃バー（直接）以上になる */
+   
   const cDir=DATA.map(()=>0), cEff=DATA.map(()=>0);
   ELEM_LIST.forEach((e,i)=>{ cDir[e.ci]+=rel[i]; cEff[e.ci]+=eff[i]; });
   const cScale=Math.max(0.0001,...cEff);
@@ -1819,38 +1788,33 @@ function analyzeDomain(input){
   return domain;
 }
 
-/* ================================================================
-   カメラ・描画
-================================================================ */
+ 
 const cv=document.getElementById('cv'), bctx=cv.getContext('2d');
-let ctx=bctx;                      // frame()冒頭で毎回bctxに戻す（ver.5.5で点描モードを廃止し、以後この付け替えは無い）
-let W=0,H=0,DPR=1,bgCanvas=null,CX=0.435;   // CX=投影中心（モバイルは0.5=中央、デスクトップは左寄せ）
-let SOX=0,SOY=0;   // ver.3.6: スクリーン座標の実測センタリング補正（モバイル・未操作時のみ変化）
+let ctx=bctx;                      
+let W=0,H=0,DPR=1,bgCanvas=null,CX=0.435;   
+let SOX=0,SOY=0;   
 function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; bctx.setTransform(DPR,0,0,DPR,0,0);
-  cv.style.width=W+'px'; cv.style.height=H+'px';   // ver.3.9: JSでもCSSサイズを強制（CSS任せにしない最終保証）
+  cv.style.width=W+'px'; cv.style.height=H+'px';   
   const _bv=document.getElementById('bgVideo'); if(_bv){ _bv.style.width=W+'px'; _bv.style.height=H+'px'; }
-  CX = W<=900 ? 0.5 : 0.435;   // 解決ログ非表示のモバイルでは樹を中央に
+  CX = W<=900 ? 0.5 : 0.435;   
   buildBackground();
   try{ if(nodes.length){
     const pD=camTargets.all.dist, pTy=camTargets.all.ty;
     const f=fitAllDist();
     camTargets.all.dist=f.dist; camTargets.all.ty=f.ty;
-    if(Math.abs(cam.dist-pD)<2&&Math.abs(cam.ty-pTy)<2){ cam.dist=f.dist; cam.ty=f.ty; }   // 既定のままなら追従
-  } }catch(e){}   // 初回呼び出し時はcam未定義→スキップ
+    if(Math.abs(cam.dist-pD)<2&&Math.abs(cam.ty-pTy)<2){ cam.dist=f.dist; cam.ty=f.ty; }   
+  } }catch(e){}   
 }
 addEventListener('resize',resize);
-/* ver.3.4: iOSはURLバーの伸縮でwindow.resizeが飛ばないことがある→visualViewportも監視。
-   さらに読み込み直後のレイアウト確定後にもう一度フィットを取り直す（実機の初期ズレ対策） */
+ 
 if(window.visualViewport) visualViewport.addEventListener('resize',()=>resize());
 setTimeout(()=>{ try{resize();}catch(e){} },900);
 setTimeout(()=>{ try{resize();}catch(e){} },2500);
-/* ver.3.6: iOSの「ページ自体のピンチ拡大」を抑止（拡大＋隅寄り表示の原因になり得る。
-   アプリ内のズームはPointer Events実装なので影響なし） */
+ 
 ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 document.addEventListener('touchmove',e=>{ if(e.touches.length>1) e.preventDefault(); },{passive:false});
-/* ver.3.6→3.8: 実機診断用オーバーレイ（URLに ?debug を付けた時のみ表示）。
-   ver.3.8: エラー捕捉・ループ生存・樹のbbox中心を追加＝スクショ1枚で原因特定できる形に */
+ 
 addEventListener('error',e=>{ if(!window.__lastErr)window.__lastErr=String(e.message||'').slice(0,200); });
 addEventListener('unhandledrejection',e=>{ if(!window.__lastErr)window.__lastErr='rej:'+String(e.reason&&e.reason.message||e.reason).slice(0,180); });
 if(location.search.indexOf('debug')>=0){
@@ -1882,41 +1846,41 @@ if(location.search.indexOf('debug')>=0){
       +'\nERR '+(window.__frameErr||window.__drawErr||window.__lastErr||'なし')+'  ver.4.5'; },500);
 }
 
-/* 深宇宙の神秘的な地（オフスクリーン生成・回転用に対角サイズの正方形で作る） */
+ 
 function buildBackground(){
   const D=Math.ceil(Math.hypot(W,H))+60;
   bgCanvas=document.createElement('canvas');
   bgCanvas.width=D; bgCanvas.height=D;
   const g=bgCanvas.getContext('2d');
-  /* 深宇宙のグラデーション（ver.3.2: 最奥の地球movが透けるよう半透明の帳に。より暗く・奥行き重視） */
+   
   g.clearRect(0,0,D,D);
-  g.fillStyle='rgba(4,6,12,0.28)'; g.fillRect(0,0,D,D);   // ver.3.5: 地球が見えるよう帳を薄く
+  g.fillStyle='rgba(4,6,12,0.28)'; g.fillRect(0,0,D,D);   
   const grad=g.createRadialGradient(D/2,D/2,40, D/2,D/2,D*0.62);
   grad.addColorStop(0,'rgba(38,44,84,0.26)');
   grad.addColorStop(0.35,'rgba(24,29,58,0.16)');
   grad.addColorStop(0.7,'rgba(13,16,34,0.08)');
   grad.addColorStop(1,'rgba(6,9,20,0)');
   g.fillStyle=grad; g.fillRect(0,0,D,D);
-  /* 星雲（紫・藍・翠・金の淡い霧） */
-  const NEB=[['rgba(107,72,120,',0.10],['rgba(44,95,122,',0.08],['rgba(58,117,112,',0.06],['rgba(201,169,97,',0.045]];   // ver.3.2: 暗め・控えめ
+   
+  const NEB=[['rgba(107,72,120,',0.10],['rgba(44,95,122,',0.08],['rgba(58,117,112,',0.06],['rgba(201,169,97,',0.045]];   
   NEB.forEach(nb=>{
     const x=D*(0.12+Math.random()*0.76), y=D*(0.12+Math.random()*0.76), R=120+Math.random()*240;
     const ng=g.createRadialGradient(x,y,0,x,y,R);
     ng.addColorStop(0,nb[0]+nb[1]+')'); ng.addColorStop(1,nb[0]+'0)');
     g.fillStyle=ng; g.fillRect(Math.max(0,x-R),Math.max(0,y-R),R*2,R*2);
   });
-  /* 周辺減光＝縁を暗く沈めて奥行きを出す（ver.3.2） */
+   
   const vg=g.createRadialGradient(D/2,D/2,D*0.20, D/2,D/2,D*0.55);
-  vg.addColorStop(0,'rgba(2,3,8,0)'); vg.addColorStop(1,'rgba(2,3,8,0.42)');   // ver.3.5: 減光を弱めて動画を活かす
+  vg.addColorStop(0,'rgba(2,3,8,0)'); vg.addColorStop(1,'rgba(2,3,8,0.42)');   
   g.fillStyle=vg; g.fillRect(0,0,D,D);
-  /* 樹を囲む淡い金の同心リング（ver.2.6: 参照画像の意匠。回転中心と同心＝回転しても不変） */
+   
   g.strokeStyle='#c9a961'; g.lineCap='round';
   [[0.295,0.06,1.4],[0.375,0.045,1.2],[0.46,0.03,1.0]].forEach(rr=>{
     g.globalAlpha=rr[1]; g.lineWidth=rr[2];
     g.beginPath(); g.arc(D/2,D/2,D*rr[0],0,6.29); g.stroke();
   });
   g.globalAlpha=1;
-  /* 星屑（回転しても途切れないよう全面に） */
+   
   const SC=['#ffffff','#fff6dd','#e8c977','#cfe0ff'];
   for(let i=0;i<560;i++){
     const x=Math.random()*D, y=Math.random()*D;
@@ -1925,16 +1889,16 @@ function buildBackground(){
     g.globalAlpha=a; g.fillStyle=SC[Math.floor(Math.random()*SC.length)];
     const r=big?1.2+Math.random()*1.3:0.4+Math.random()*0.8;
     g.beginPath(); g.arc(x,y,r,0,6.29); g.fill();
-    if(big){ g.globalAlpha=a*0.3; g.beginPath(); g.arc(x,y,r*3,0,6.29); g.fill(); }   // ver.3.2: 十字スパークは廃止（チープなため〔鈴木様指示〕）・暈のみ
+    if(big){ g.globalAlpha=a*0.3; g.beginPath(); g.arc(x,y,r*3,0,6.29); g.fill(); }   
   }
-  /* 金粉（クリムトの名残・樹の周りに漂う） */
+   
   for(let i=0;i<170;i++){
     const x=D/2+(Math.random()-0.5)*D*0.5, y=D/2+(Math.random()-0.5)*D*0.5;
     g.globalAlpha=0.05+Math.random()*0.10;
     g.fillStyle=['#c9a961','#e8c977','#b8842e'][Math.floor(Math.random()*3)];
     const s=0.8+Math.random()*1.8; g.fillRect(x,y,s,s);
   }
-  /* 星霧の渦（透かし） */
+   
   for(let k=0;k<6;k++){
     const cxb=Math.random()*D, cyb=Math.random()*D, S=50+Math.random()*100;
     const rot=Math.random()*6.28, fl=Math.random()<0.5?1:-1;
@@ -1961,16 +1925,14 @@ const camTargets={
   fruit:{yaw:2.1,pitch:0.28,dist:430,ty:355}
 };
 let camAnim=null;
-function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; camTouched=(k!=='all'); autoRot=false; updateRotBtn(); }   // ver.3.4: 全景なら吸着を再開
+function flyTo(k){ const t=camTargets[k]; camAnim={from:{...cam},to:{...cam,...t},t:0}; camTouched=(k!=='all'); autoRot=false; updateRotBtn(); }   
 
-/* ver.2.5→3.3: 縦長・狭小画面では全景が収まる距離を実測の反復で自動調整。
-   ver.3.3〔鈴木様指示〕: ①倍率1.30→1.55の「思いっきり引き」 ②樹の投影バウンディング中心が
-   画面の縦センターに来るよう cam.ty も自動調整（従来は重心が上寄りだった） */
+ 
 function fitAllDist(){
   if(W/H>=1.05) return {dist:1220, ty:255};
   let d=1220, ty=255;
   const saveD=cam.dist, saveTy=cam.ty;
-  const measure=()=>{   // 現在のcamで対象ノードの画面範囲を実測
+  const measure=()=>{   
     let r=0, minY=1e9, maxY=-1e9;
     nodes.forEach(n=>{
       if(n.hid)return;
@@ -1989,37 +1951,33 @@ function fitAllDist(){
     d=Math.max(1220,Math.min(4200,d*m.r*1.03));
   }
   d=Math.min(4600,d*1.55);
-  /* 引いた距離で縦センターを2回反復して合わせ込む（∂sy/∂ty≒cos(pitch)·f） */
+   
   for(let it=0;it<2;it++){
     cam.dist=d; cam.ty=ty;
     const m=measure();
     if(!m.r) break;
     const f=760/d, cp=Math.cos(cam.pitch)||1;
     ty+=(H/2-m.cY)/(cp*f);
-    ty=Math.max(-200,Math.min(900,ty));   // ver.3.4: 発散防止クランプ
+    ty=Math.max(-200,Math.min(900,ty));   
   }
   cam.dist=saveD; cam.ty=saveTy;
   return {dist:Math.round(d), ty:Math.round(ty)};
 }
 
-/* ver.3.4: 自己修復カメラ〔鈴木様の実機報告「木がかなりズレている」対応〕
-   一発の初期計算に頼らず、ユーザーがカメラを操作するまで毎フレーム全景位置へ吸着し続ける。
-   iOSのURLバー変動・読み込み順序・回転など、どんな初期化タイミングでも数瞬で正しい構図に収束する */
-let camTouched=false;   // ドラッグ/ピンチ/ホイール/ズーム/パン/視点プリセットで true
+ 
+let camTouched=false;   
 function camGlue(){
   if(camTouched||pres.on||camAnim) return;
-  if(W/H>=1.05){ SOX=0; SOY=0; return; }      // デスクトップは従来どおり
+  if(W/H>=1.05){ SOX=0; SOY=0; return; }      
   const t=camTargets.all;
   cam.dist+=(t.dist-cam.dist)*0.18;
   cam.ty  +=(t.ty  -cam.ty  )*0.18;
 }
-/* ver.3.6〔鈴木様指示「根本的に解決したい」〕: 描画済みノードの実座標(_sx/_sy)から樹の画面上の
-   バウンディング中心を毎フレーム実測し、スクリーン座標オフセットで直接ど真ん中へ補正する。
-   カメラ推定を経由しないため、回転角・機種・ビューポートの癖に関係なく定義上センターに収束する */
+ 
 function screenCenterGlue(){
   if(W/H>=1.05){ SOX=0; SOY=0; return; }
-  if(pres.on||camAnim){ SOX*=0.92; SOY*=0.92; return; }   // プレゼン・視点移動中は補正を自然に解除
-  if(camTouched) return;                                   // ユーザー操作後は凍結（視点の一部として維持）
+  if(pres.on||camAnim){ SOX*=0.92; SOY*=0.92; return; }   
+  if(camTouched) return;                                   
   let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9,n=0;
   for(const nd of nodes){
     if(nd.hid||nd._sx===undefined) continue;
@@ -2030,7 +1988,7 @@ function screenCenterGlue(){
     n++;
   }
   if(n<20) return;
-  SOX+=(W/2-(minX+maxX)/2)*0.12;   // 目標: bbox中心 = 画面中心（現SOX込みの実測なので差分を加算）
+  SOX+=(W/2-(minX+maxX)/2)*0.12;   
   SOY+=(H/2-(minY+maxY)/2)*0.12;
   SOX=Math.max(-W,Math.min(W,SOX)); SOY=Math.max(-H,Math.min(H,SOY));
 }
@@ -2046,21 +2004,21 @@ function project(p,sway){
   const zc=z2+cam.dist;
   if(zc<40) return null;
   const f=760/zc;
-  return {sx:W*CX + x1*f + SOX, sy:H/2 - y1*f + SOY, d:zc, f};   // 左寄せ（デスクトップ）／SOX,SOY=ver.3.6の実測センタリング補正
+  return {sx:W*CX + x1*f + SOX, sy:H/2 - y1*f + SOY, d:zc, f};   
 }
 
-/* --- 状態 --- */
-const BG_VIDEO_ONLY=true;   // ver.4.3: 背景を地球動画のみに（宇宙canvas・太陽を停止）〔鈴木様指示〕。falseで旧宇宙背景に戻る
+ 
+const BG_VIDEO_ONLY=true;   
 const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','norm','mind']),
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
   };
-if(W/H>=1.05) state.labelBias=3.0;   // ver.4.2: PC（横長）は既定の文字表示を300%に〔鈴木様指示〕。スマホは従来どおり
+if(W/H>=1.05) state.labelBias=3.0;   
 function visibleP(p){
   if(!state.clusters.has(p.ci))return false;
   if(!state.elems.has(p.elem))return false;
   if(!state.tiers.has(p.tier))return false;
   if(state.search && !p.name.includes(state.search) && !p.sub.n.includes(state.search)
-    && !(state._searchSubs&&state._searchSubs.has(p.sub.id)))return false;   // ver.5.9: 社会課題辞書経由の一致
+    && !(state._searchSubs&&state._searchSubs.has(p.sub.id)))return false;   
   return true;
 }
 function nodeAlpha(n){
@@ -2072,7 +2030,7 @@ function nodeAlpha(n){
   if(n.t==='sroot') return state.clusters.has(n.ci)?1:0.1;
   return 1;
 }
-/* 葉の開花度 0=蕾, 1=開葉（解決） */
+ 
 function solveT(p){ const w=3; return Math.max(0,Math.min(1,(state.year-(p.yr-w))/w)); }
 function fruitT(){ return Math.max(0,Math.min(1,(state.year-2055)/8)); }
 function yearTier(y){ return y<2031?1: y<2037?2: y<2056?3:4; }
@@ -2089,7 +2047,7 @@ function shade(hex,amt){
   r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));
   return 'rgb('+r+','+g+','+b+')';
 }
-/* hex でも rgb() でも受ける明暗調整（幹・枝の円柱シェーディング用） */
+ 
 function shade2(c,amt){
   let r,g,b;
   if(c[0]==='#'){ const n=parseInt(c.slice(1),16); r=(n>>16)&255; g=(n>>8)&255; b=n&255; }
@@ -2098,7 +2056,7 @@ function shade2(c,amt){
   return 'rgb('+r+','+g+','+b+')';
 }
 
-/* --- 落果 --- */
+ 
 const falls=[];
 setInterval(()=>{
   if(document.hidden)return;
@@ -2109,7 +2067,7 @@ setInterval(()=>{
   if(falls.length>3)falls.shift();
 },7000);
 
-/* --- 選択チェーン --- */
+ 
 function chainPoints(p){
   const pts=[nodes[0]];
   for(let ti=0;ti<=p.tier;ti++) pts.push(trunkNodes[ti]);
@@ -2118,7 +2076,7 @@ function chainPoints(p){
           down:[nodes[0]].concat(ch)};
 }
 
-/* --- 螺旋描画（画面空間・金のリボン二重線＋渦の眼。葉や果実の背面に置く） --- */
+ 
 function drawSpiral(sp,items){
   const A=sp.tip, B=sp.from;
   const pa=project(A), pb=project(B);
@@ -2133,7 +2091,7 @@ function drawSpiral(sp,items){
     ctx.beginPath();
     for(let i=0;i<SPIRAL_PTS.length;i++){
       const pt=SPIRAL_PTS[i];
-      // 螺旋の始点(θ=0, r=1)が枝の続きになるよう回転配置
+      
       const px=pt.x, py=pt.y*flip;
       const wx=pa.sx + (px*ux - py*uy)*S;
       const wy=pa.sy + (px*uy + py*ux)*S;
@@ -2147,36 +2105,36 @@ function drawSpiral(sp,items){
   }});
 }
 
-/* --- 事業領域ハイライト（黄金に灯る根・幹・枝・葉） --- */
+ 
 function drawDomainHighlight(){
   if(!domain.active||!domain.show||!domain.hi||!domain.hi.length)return;
   const pulse=0.55+0.45*Math.sin(time*0.0024);
   ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
-  // 奥→手前になるよう関係度の低い順に描く（深いものが上に重なって最も輝く）
+  
   for(let idx=domain.hi.length-1; idx>=0; idx--){
     const p=domain.hi[idx];
     if(!state.clusters.has(p.ci))continue;
     const rel=p._domRel, sc=p._dom5;
     const ch=chainPoints(p);
-    const glow=0.30+0.70*rel;                 // 関係が深いほど強く輝く
-    const baseW=(0.7+sc*0.9);                  // 関係が深いほど根が太い
-    // 根（細根→幹）と 幹→枝→葉 の両方を金色に
+    const glow=0.30+0.70*rel;                 
+    const baseW=(0.7+sc*0.9);                  
+    
     [{list:ch.down,wm:1.15},{list:ch.up,wm:0.9}].forEach(seg=>{
       ctx.beginPath(); let started=false;
       for(const nd of seg.list){ const pr=project(nd); if(!pr){started=false;continue;}
         if(!started){ctx.moveTo(pr.sx,pr.sy);started=true;} else ctx.lineTo(pr.sx,pr.sy); }
       const zf=760/cam.dist;
       const aa=Math.min(0.95,glow*0.55*pulse+0.15);
-      ctx.globalAlpha=aa*0.45;                                 // 柔らかな金の暈（夜空に滲む）
+      ctx.globalAlpha=aa*0.45;                                 
       ctx.strokeStyle='rgba(201,160,60,0.8)';
       ctx.lineWidth=Math.max(1.2,baseW*seg.wm*zf*2.2);
       ctx.stroke();
-      ctx.globalAlpha=aa;                                      // 中心の金の芯
+      ctx.globalAlpha=aa;                                      
       ctx.strokeStyle='rgba(255,238,180,0.95)';
       ctx.lineWidth=Math.max(0.5,baseW*seg.wm*zf*0.85);
       ctx.stroke();
     });
-    // 細根の起点と葉先に光の玉（深いほど大きい）
+    
     [p.rootNode,p.leafNode].forEach((nd,k)=>{
       const pr=project(nd); if(!pr)return;
       const R=Math.max(1.6,(2.2+sc*1.5)*pr.f*2.0*(k?1:0.85));
@@ -2191,7 +2149,7 @@ function drawDomainHighlight(){
   ctx.restore(); ctx.globalAlpha=1;
 }
 
-/* --- 太陽の巡り（ときどき昇り、光の当たり方が変わる） --- */
+ 
 const sunState={t:-1,dur:30000,next:12000,dir:1};
 function drawSun(dt){
   if(sunState.t<0){ if(time>sunState.next){ sunState.t=0; sunState.dir=Math.random()<0.5?-1:1; } return; }
@@ -2202,17 +2160,17 @@ function drawSun(dt){
   const sx=W*(sunState.dir>0? 0.08+0.84*k : 0.92-0.84*k);
   const sy=H*(0.34-0.24*Math.sin(Math.PI*k));
   const R=Math.min(W,H)*0.05;
-  /* 暈 */
+   
   const g1=ctx.createRadialGradient(sx,sy,0,sx,sy,R*6);
   g1.addColorStop(0,'rgba(255,244,200,'+(0.55*inten).toFixed(3)+')');
   g1.addColorStop(0.18,'rgba(255,220,140,'+(0.28*inten).toFixed(3)+')');
   g1.addColorStop(0.5,'rgba(232,180,90,'+(0.10*inten).toFixed(3)+')');
   g1.addColorStop(1,'rgba(232,180,90,0)');
   ctx.fillStyle=g1; ctx.fillRect(sx-R*6,sy-R*6,R*12,R*12);
-  /* 本体 */
+   
   ctx.fillStyle='rgba(255,250,225,'+(0.85*inten).toFixed(3)+')';
   ctx.beginPath();ctx.arc(sx,sy,R*0.55,0,6.29);ctx.fill();
-  /* 全景に差す光（光線の当たり方が変わる） */
+   
   const g2=ctx.createRadialGradient(sx,sy,0,sx,sy,Math.max(W,H)*0.95);
   g2.addColorStop(0,'rgba(255,230,160,'+(0.10*inten).toFixed(3)+')');
   g2.addColorStop(0.5,'rgba(255,215,130,'+(0.045*inten).toFixed(3)+')');
@@ -2220,7 +2178,7 @@ function drawSun(dt){
   ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
 }
 
-/* --- 描画ループ --- */
+ 
 let time=0,lastT=0,rafId=0;
 function frame(t){
   time=t; const dt=Math.min(50,t-lastT); lastT=t;
@@ -2230,19 +2188,19 @@ function frame(t){
     ['yaw','pitch','dist','ty'].forEach(kk=>{cam[kk]=camAnim.from[kk]+(camAnim.to[kk]-camAnim.from[kk])*k;});
     if(camAnim.t>=1)camAnim=null; }
   else if(autoRot) cam.yaw+=0.00018*dt;
-  camGlue();   // ver.3.4: 自己修復カメラ（モバイル・カメラ未操作時のみ全景へ吸着）
-  try{ learnTick(dt); learnIdleTick(); }catch(e){ if(!window.__drawErr)window.__drawErr='lrn:'+String(e&&e.message||e).slice(0,120); }   // ver.5.4
+  camGlue();   
+  try{ learnTick(dt); learnIdleTick(); }catch(e){ if(!window.__drawErr)window.__drawErr='lrn:'+String(e&&e.message||e).slice(0,120); }   
 
-  /* 自動プレゼン: 1年＝約3.8秒でゆっくり進み、カメラは回転・角度・遠近を漂う */
+   
   if(pres.on){
-    /* ver.4.1: 年送りを壁時計アンカー方式に（累積会計より頑健・スマホの高リフレッシュ環境でも厳密に3.8秒/年） */
+     
     if(!pres.nextYearAt) pres.nextYearAt=time+3800;
     if(time>=pres.nextYearAt){ pres.nextYearAt=time+3800;
-      /* ver.6.2: 年が進むたびに下部テロップを差し替える（旧＝散布する明滅テキストは廃止） */
+       
       if(state.year>=2080){ setYear(2026); presCaptionHide(); }
       else { setYear(state.year+1); presCaptionShow(state.year); }
     }
-    cam.yaw+=0.000115*dt;                        // 常に少しずつ回転し続ける
+    cam.yaw+=0.000115*dt;                        
     if(!pres.target||pres.camT<=0){
       pres.target={pitch:0.08+Math.random()*0.38, dist:640+Math.random()*470, ty:120+Math.random()*170};
       pres.camT=9000+Math.random()*7000;
@@ -2255,12 +2213,9 @@ function frame(t){
     if(time>pres.hideAt)document.body.classList.add('pres-hide');
   }
 
-  /* ver.4.3: 背景は地球動画のみ〔鈴木様指示〕。
-     旧実装はclearRectせず半透明の宇宙canvasを毎フレーム上塗り→αが蓄積して不透明化し動画を完全に塞いでいた（PC/スマホとも地球が見えない真因）。
-     宇宙canvas・太陽を復活させる場合は、必ず毎フレームclearRectしてから半透明で描くこと */
+   
   ctx.clearRect(0,0,W,H);
-  /* ver.4.5: 地球動画をcanvasへ直接描画（cover相当）。DOM層の重なり（z-index・WebView合成の癖）に一切依存しない＝
-     樹が見えている端末なら同じ経路で地球も必ず見える。DOM側の<video>はデコード源＋保険としてそのまま残す */
+   
   if(BG_VIDEO_ONLY){
     try{
       const _v=window.__bgvEl||(window.__bgvEl=document.getElementById('bgVideo'));
@@ -2278,10 +2233,10 @@ function frame(t){
     ctx.drawImage(bgCanvas,-D/2,-D/2);
     ctx.restore();
   }
-  /* 太陽（樹の背後を巡る）— 動画のみモードでは描かない */
-  if(!BG_VIDEO_ONLY){ try{ drawSun(dt); }catch(e){ if(!window.__drawErr)window.__drawErr='sun:'+String(e&&e.message||e).slice(0,180); } }   // ver.3.8
+   
+  if(!BG_VIDEO_ONLY){ try{ drawSun(dt); }catch(e){ if(!window.__drawErr)window.__drawErr='sun:'+String(e&&e.message||e).slice(0,180); } }   
 
-  /* 地面ディスク */
+   
   (function(){
     ctx.beginPath(); let first=true;
     for(let i=0;i<=36;i++){ const a=i/36*Math.PI*2;
@@ -2294,11 +2249,11 @@ function frame(t){
   })();
 
   const items=[];
-  const goldTrunk=['#6b5320','#8a6f2a','#a3842f','#c9a961','#e8c977'];  // 夜空に輝く黄金の幹
+  const goldTrunk=['#6b5320','#8a6f2a','#a3842f','#c9a961','#e8c977'];  
   const eraTier=yearTier(state.year);
 
   const trunkTopY=TIERS[4].y1+34;
-  const halfAt=y=>{ const f=Math.max(0,Math.min(1,(y+4)/(trunkTopY+4))); return 100-86*f; };  // 大樹の幹（10倍級）・根元100→頂14のテーパー
+  const halfAt=y=>{ const f=Math.max(0,Math.min(1,(y+4)/(trunkTopY+4))); return 100-86*f; };  
   edges.forEach(e=>{
     const A=nodes[e.a],B=nodes[e.b];
     const pa=project(A),pb=project(B);
@@ -2321,7 +2276,7 @@ function frame(t){
     if(al<=0)return;
     const P0=pa,P1=pb,WA=Math.max(0.4,wA),WB=Math.max(0.32,wB),C=col,SH=shade,LN=line,EK=e.k;
     let dd=(pa.d+pb.d)/2;
-    if(EK==='trunk') dd-=halfAt((A.y+B.y)/2)*0.92;   // 幹は円柱前面の深度で描く＝内側の根が透けない
+    if(EK==='trunk') dd-=halfAt((A.y+B.y)/2)*0.92;   
     else if(EK==='root0') dd-=26;
     items.push({d:dd,draw(){
       ctx.globalAlpha=al;
@@ -2335,7 +2290,7 @@ function frame(t){
       ctx.lineTo(P0.sx-nx*WA,P0.sy-ny*WA);
       ctx.closePath();
       if(SH){ const mx=(P0.sx+P1.sx)/2, my=(P0.sy+P1.sy)/2, ww=(WA+WB)/2||1;
-        /* 円柱の陰影: 暗い縁 → ハイライト帯 → 中間色 → 反対の暗い縁 */
+         
         const g=ctx.createLinearGradient(mx+nx*ww,my+ny*ww, mx-nx*ww,my-ny*ww);
         g.addColorStop(0,shade2(C,-48));
         g.addColorStop(0.22,shade2(C,-4));
@@ -2344,10 +2299,10 @@ function frame(t){
         g.addColorStop(1,shade2(C,-58));
         ctx.fillStyle=g; } else ctx.fillStyle=C;
       ctx.fill();
-      if(SH&&WB>2&&EK!=='root3'&&EK!=='twig'){ /* 節を先端側のみ丸く継ぐ（付け根に瘤を出さず、ひと続きの曲線に） */
+      if(SH&&WB>2&&EK!=='root3'&&EK!=='twig'){  
         ctx.beginPath();ctx.arc(P1.sx,P1.sy,WB,0,6.29);ctx.fill();
       }
-      if(EK==='trunk'){ /* 樹皮の縦筋（円柱の丸みと大樹の質感） */
+      if(EK==='trunk'){  
         ctx.strokeStyle=shade2(C,-62); ctx.globalAlpha=al*0.30; ctx.lineCap='round';
         [[-0.72,0.9],[-0.42,1.5],[-0.06,1.9],[0.34,1.4],[0.68,0.9]].forEach(bk=>{
           ctx.lineWidth=Math.max(0.5,WA*0.045*bk[1]);
@@ -2356,7 +2311,7 @@ function frame(t){
           ctx.lineTo(P1.sx+nx*WB*bk[0]*0.92,P1.sy+ny*WB*bk[0]*0.92);
           ctx.stroke();
         });
-        /* ver.2.6: 螺旋の捻りリボン＝世界y座標に連続な正弦で幹に巻き付く光と影（参照画像の意匠） */
+         
         [[0,56,0.30,0.16],[2.1,-70,0.26,0.13],[4.2,44,0.20,0.11]].forEach(tw=>{
           const f0=Math.sin(A.y*0.016+tw[0])*0.60, f1=Math.sin(B.y*0.016+tw[0])*0.60;
           ctx.strokeStyle=shade2(C,tw[1]); ctx.globalAlpha=al*tw[2];
@@ -2371,10 +2326,10 @@ function frame(t){
     }});
   });
 
-  /* 螺旋（クリムトの渦） */
+   
   spirals.forEach(sp=>drawSpiral(sp,items));
 
-  /* ロゼット装飾（円花と吊り鐘を交互に） */
+   
   ornaments.forEach(o=>{
     const pr=project(o); if(!pr)return;
     const al=(o.ci!==undefined)?(state.clusters.has(o.ci)?0.9:0.07):(state.elems.has(o.elem)?0.9:0.07);
@@ -2382,7 +2337,7 @@ function frame(t){
     const inner=['#c5292a','#2c5f7a','#f5f0e8','#5a7048'][o.pi];
     items.push({d:pr.d,draw(){
       ctx.globalAlpha=al;
-      if(o.pi%2){ /* 吊り飾り（クリムトの釣鐘） */
+      if(o.pi%2){  
         ctx.strokeStyle='#c9a961'; ctx.lineWidth=Math.max(0.5,0.8*pr.f);
         ctx.beginPath(); ctx.moveTo(pr.sx,pr.sy-R); ctx.lineTo(pr.sx,pr.sy); ctx.stroke();
         ctx.fillStyle=inner;
@@ -2400,12 +2355,12 @@ function frame(t){
     }});
   });
 
-  /* 黒鳥（枝にとまる） */
+   
   if(birdPt){ const pr=project(birdPt); if(pr){ const s=pr.f*2.1; items.push({d:pr.d-0.3,draw(){
     const x=pr.sx,y=pr.sy-7*s;
     ctx.fillStyle='#3f2d16';
     ctx.beginPath(); ctx.ellipse(x,y,8.2*s,4.6*s,-0.18,0,6.29); ctx.fill();
-    ctx.strokeStyle='rgba(232,201,119,0.55)'; ctx.lineWidth=Math.max(0.5,0.7*s); ctx.stroke(); // 夜空に浮かぶ金の縁
+    ctx.strokeStyle='rgba(232,201,119,0.55)'; ctx.lineWidth=Math.max(0.5,0.7*s); ctx.stroke(); 
     ctx.beginPath(); ctx.arc(x+7.4*s,y-3.6*s,2.9*s,0,6.29); ctx.fill();
     ctx.beginPath(); ctx.moveTo(x-7.5*s,y-1.5*s); ctx.lineTo(x-14*s,y-5.5*s); ctx.lineTo(x-6.8*s,y+1.8*s); ctx.closePath(); ctx.fill();
     ctx.fillStyle='#c9a961';
@@ -2418,12 +2373,12 @@ function frame(t){
     ctx.beginPath(); ctx.ellipse(x-0.5*s,y+0.3*s,5.2*s,2.6*s,-0.2,0,3.4); ctx.stroke();
   }}); } }
 
-  /* 霧の帯は ver.3.2 で廃止〔鈴木様指示〕 */
+   
 
   const zoomF=760/cam.dist;
   nodes.forEach(n=>{
     if(n.hid)return;
-    const pr=project(n,n.t==='fruit');   // 葉は根本固定（そよぎは回転で表現）
+    const pr=project(n,n.t==='fruit');   
     if(!pr){n._sx=undefined;return;}
     n._sx=pr.sx;n._sy=pr.sy;n._sd=pr.d;n._sr=(n.r||3)*pr.f*2.1;
     let al=nodeAlpha(n);
@@ -2432,17 +2387,17 @@ function frame(t){
       ctx.globalAlpha=al;
       if(n.t==='leaf'){
         const st=solveT(n.p);
-        const ct=st>=1?1:st*0.2; // 解決年に課題テーマ色へ染まる（直前はわずかな気配のみ＝カウンターと視覚を一致）
-        const R=Math.max(1.6,n._sr*0.95);      // 小枝と葉は最初から満葉
-        const col=mixCol('#c9b478',n.col,ct);  // 薄い金色 → 課題テーマ色
-        /* 葉の根本＝小枝の先端。接点を起点にそよぐ */
+        const ct=st>=1?1:st*0.2; 
+        const R=Math.max(1.6,n._sr*0.95);      
+        const col=mixCol('#c9b478',n.col,ct);  
+         
         const bn=n.p.bough&&n.p.bough.n1;
         let ang=(bn&&bn._sx!==undefined)?Math.atan2(pr.sy-bn._sy,pr.sx-bn._sx):(n.ph||0);
         ang+=Math.sin(time*0.0012+(n.ph||0))*0.13;
         const Lf=R*1.4, Wd=R*0.78;
         ctx.save(); ctx.translate(pr.sx,pr.sy); ctx.rotate(ang);
         ctx.globalAlpha=al*(0.62+0.38*ct);
-        ctx.beginPath();                    // 基部(接点)から先端(2Lf)へ伸びる卵形の葉身
+        ctx.beginPath();                    
         ctx.moveTo(0,0);
         ctx.quadraticCurveTo(Lf*0.75,-Wd, Lf*1.5,-Wd*0.4);
         ctx.quadraticCurveTo(Lf*1.92,-Wd*0.1, Lf*2,0);
@@ -2452,7 +2407,7 @@ function frame(t){
         ctx.fillStyle=col; ctx.fill();
         ctx.strokeStyle=st>=1?'#e8c977':'rgba(200,180,120,0.4)';
         ctx.lineWidth=st>=1?0.9:0.55; ctx.stroke();
-        if(ct>0.5){                         // 染まった葉の先端に差す光
+        if(ct>0.5){                         
           ctx.globalAlpha=al*0.4*ct;
           ctx.fillStyle=mixCol(col,'#f0dc9c',0.55);
           ctx.beginPath();
@@ -2461,7 +2416,7 @@ function frame(t){
           ctx.quadraticCurveTo(Lf*1.5,Wd*0.34, Lf,0);
           ctx.closePath(); ctx.fill();
         }
-        if(R>3.4){                          // 葉脈（中肋＋側脈3対）
+        if(R>3.4){                          
           ctx.strokeStyle=shade2(col,-52); ctx.globalAlpha=al*0.5; ctx.lineWidth=0.5;
           ctx.beginPath(); ctx.moveTo(Lf*0.15,0); ctx.lineTo(Lf*1.88,0);
           [0.62,1.02,1.4].forEach(fx=>{
@@ -2471,13 +2426,13 @@ function frame(t){
           ctx.stroke();
         }
         ctx.restore();
-        if(st>=1){ // 開葉の金の暈（葉身の中心に）
+        if(st>=1){ 
           ctx.globalAlpha=al*0.35; ctx.strokeStyle='#e8c977'; ctx.lineWidth=0.6;
           const hx=pr.sx+Math.cos(ang)*Lf, hy=pr.sy+Math.sin(ang)*Lf;
           ctx.beginPath();ctx.ellipse(hx,hy,Lf+2.2,Wd+2.0,ang,0,6.29);ctx.stroke();
         }
       } else if(n.t==='dleaf'){
-        /* 美観用の薄金の葉（最初から茂り、時代では染まらない） */
+         
         const R=Math.max(1.4,n._sr*0.9);
         let ang=(n.ph||0)+Math.sin(time*0.0012+(n.ph||0))*0.13;
         const Lf=R*1.4, Wd=R*0.78;
@@ -2494,10 +2449,10 @@ function frame(t){
         ctx.strokeStyle='rgba(190,165,105,0.45)'; ctx.lineWidth=0.5; ctx.stroke();
         ctx.restore();
       } else if(n.t==='twig'){
-        const lv=n._leaves;                 // 樹冠のボリューム（葉群の陰）
+        const lv=n._leaves;                 
         if(lv){ let openN=0; for(const lp of lv){ if(visibleP(lp)) openN+=0.3+0.7*solveT(lp); }
           if(openN>0.05){
-            /* 葉ごとの小枝になったため単色の淡い円で軽く（250個分の負荷対策） */
+             
             const R=Math.max(4,(6+openN*5)*pr.f*2.0), a=Math.min(0.14,0.04+openN*0.05);
             ctx.globalAlpha=al; ctx.fillStyle='rgba(74,90,54,'+a.toFixed(3)+')';
             ctx.beginPath();ctx.arc(pr.sx,pr.sy,R,0,6.29);ctx.fill();
@@ -2521,8 +2476,8 @@ function frame(t){
       } else if(n.t==='croot'||n.t==='sroot'||n.t==='proot'){
         let col=n.col, aMul=1;
         const healed=(n.t==='proot'&&state.year>=n.p.yr);
-        if(healed){ col='#6b6350'; aMul=0.4; } // 原因が癒えて色褪せる
-        /* ver.2.6: 大小の揺らぎ＋光暈＋球体ハイライト（参照画像の根の色彩） */
+        if(healed){ col='#6b6350'; aMul=0.4; } 
+         
         if(n._mag===undefined) n._mag=(n.t==='proot')?0.72+((hashStr(n.p.name)>>>3)%100)/100*0.72:1;
         const R=Math.max(1.2,n._sr*(healed?0.75:1)*n._mag);
         if(!healed&&R>1.7){
@@ -2545,7 +2500,7 @@ function frame(t){
         ctx.lineWidth=cur?1.8:1; ctx.setLineDash(cur?[]:[4,5]);
         ctx.beginPath();ctx.arc(pr.sx,pr.sy,(halfAt(n.y)*1.18+16)*pr.f,0,6.29);ctx.stroke();ctx.setLineDash([]);
       } else if(n.t==='btip'){
-        /* ver.2.6: 枝先の宝珠＝発光オーブ＋金の二重リング（参照画像の意匠） */
+         
         const R=Math.max(2.6,n._sr*1.5), C=ELEMS[n.elem].c;
         const gl=ctx.createRadialGradient(pr.sx,pr.sy,R*0.2,pr.sx,pr.sy,R*3.0);
         gl.addColorStop(0,C); gl.addColorStop(1,'rgba(10,14,30,0)');
@@ -2561,9 +2516,9 @@ function frame(t){
         ctx.beginPath();ctx.arc(pr.sx,pr.sy,R*1.75,0,6.29);ctx.stroke();
       }
       ctx.globalAlpha=1;
-      const zoomL=zoomF*state.labelBias;   // ＋－で文字の出る距離感を調整
+      const zoomL=zoomF*state.labelBias;   
       const showLbl =
-        (n.t==='croot'&&(W>=640||zoomL>0.42)) ||   // モバイル全景ではクラスター名を抑制（重なり防止）
+        (n.t==='croot'&&(W>=640||zoomL>0.42)) ||   
         (n.t==='tier') ||
         (n.t==='btip'&&zoomL>0.7) ||
         (n.t==='fruit'&&zoomL>1.15&&fruitT()>0.3) ||
@@ -2588,15 +2543,14 @@ function frame(t){
     }});
   });
 
-  /* 深度ソート描画（樹の本体）を先に、選択チェーンと落果は最前面に。
-     ver.3.8: 1アイテムずつ例外保護＝不良1件が画面全体を殺さない（iOS実機のフリーズ原因対策）＋最初のエラーを記録 */
+   
   items.sort((a,b)=>b.d-a.d).forEach(it=>{
     try{ it.draw(); }
     catch(e){ if(!window.__drawErr){ window.__drawErr=String(e&&e.message||e).slice(0,200); } ctx.globalAlpha=1; try{ctx.restore();}catch(_){} }
   });
 
-  /* 事業領域の黄金ハイライト（本体の上・選択チェーンの下） */
-  try{ drawDomainHighlight(); }catch(e){ if(!window.__drawErr)window.__drawErr='dom:'+String(e&&e.message||e).slice(0,180); }   // ver.3.8
+   
+  try{ drawDomainHighlight(); }catch(e){ if(!window.__drawErr)window.__drawErr='dom:'+String(e&&e.message||e).slice(0,180); }   
 
   if(state.sel&&(state.sel.t==='leaf'||state.sel.t==='proot')){
     const p=state.sel.p, ch=chainPoints(p);
@@ -2623,16 +2577,14 @@ function frame(t){
     }
   });
 
-  /* ver.6.2: 旧「画面に散らばる明滅テキスト」はここで描いていたが廃止した。
-     読ませたい文字を canvas に薄く描くと樹・背景映像に沈む＝視認性が上がらない。
-     現在は下部テロップ（DOMの #presCap）で見せる＝背景に暗幕を敷けるので確実に読める。 */
+   
 
-  screenCenterGlue();   // ver.3.6: 描画済み実座標で画面センターへ直接補正（モバイル・未操作時）
+  screenCenterGlue();   
   rafId=requestAnimationFrame(frame);
 }
-/* ver.2.5→3.3: モバイル初期表示は全景フィット（思いっきり引き＋縦センター）〔鈴木様指示〕 */
+ 
 if(W/H<1.05){ const f0=fitAllDist(); camTargets.all.dist=f0.dist; camTargets.all.ty=f0.ty; cam.dist=f0.dist; cam.ty=f0.ty; }
-/* ver.3.8: フレーム全体の最終防衛＝どこで例外が起きてもループ・センタリング吸着を止めない（iOSフリーズ対策） */
+ 
 { const frameCore=frame;
   frame=function(t){
     try{ frameCore(t); }
@@ -2644,12 +2596,10 @@ if(W/H<1.05){ const f0=fitAllDist(); camTargets.all.dist=f0.dist; camTargets.all
   };
 }
 rafId=requestAnimationFrame(frame);
-/* RAF停止環境（非表示タブ等）フォールバック: 保留中のrAFを必ず取り消してから手動駆動（多重ループ防止） */
+ 
 setInterval(()=>{ if(performance.now()-lastT>700){ cancelAnimationFrame(rafId); frame(performance.now()); } },750);
 
-/* ================================================================
-   操作
-================================================================ */
+ 
 let drag=null,pinch=null,moved=false;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);
   if(pinch===null&&drag===null){drag={x:e.clientX,y:e.clientY,id:e.pointerId};moved=false;}
@@ -2662,7 +2612,7 @@ cv.addEventListener('pointermove',e=>{
     if(Math.abs(dx)+Math.abs(dy)>4)moved=true;
     if(pinch){drag.lx=e.clientX;drag.ly=e.clientY;return doPinch(e);}
     cam.yaw+=dx*0.005; cam.pitch=Math.max(-1.2,Math.min(1.25,cam.pitch+dy*0.004));
-    if(moved)camTouched=true;   // ver.3.4: 実ドラッグで吸着解除
+    if(moved)camTouched=true;   
     drag.x=e.clientX;drag.y=e.clientY; autoRot=false;updateRotBtn(); cv.classList.add('drag');
   }
   if(!drag){ state.hover=pickAt(e.clientX,e.clientY); cv.style.cursor=state.hover?'pointer':'grab'; }
@@ -2670,8 +2620,8 @@ cv.addEventListener('pointermove',e=>{
 function doPinch(){ if(!drag||!pinch||pinch.x2===undefined)return;
   const d=Math.hypot((pinch.x2-(drag.lx||drag.x)),(pinch.y2-(drag.ly||drag.y)));
   if(pinch.d0===0){pinch.d0=d;return;}
-  cam.dist=Math.max(180,Math.min(4800,cam.dist*(pinch.d0/d)));   // ver.3.0: 上限を全景距離より奥へ（スマホで全景が壊れないように）
-  camTouched=true;   // ver.3.4
+  cam.dist=Math.max(180,Math.min(4800,cam.dist*(pinch.d0/d)));   
+  camTouched=true;   
   pinch.d0=d;
 }
 cv.addEventListener('pointercancel',()=>{drag=null;pinch=null;cv.classList.remove('drag');});
@@ -2699,9 +2649,7 @@ function pickAt(mx,my){
   return best;
 }
 
-/* ================================================================
-   UI: チップ・詳細・タイムライン
-================================================================ */
+ 
 const $=id=>document.getElementById(id);
 function chip(parent,label,color,on,cb){
   const el=document.createElement('div');el.className='chip'+(on?' on':'');
@@ -2711,15 +2659,12 @@ function chip(parent,label,color,on,cb){
 }
 DATA.forEach((cl,ci)=>chip($('clusterChips'),cl.r+' '+cl.name.slice(0,5),cl.c,true,on=>{
   on?state.clusters.add(ci):state.clusters.delete(ci);updateStats();}));
-const ELEM_SHORT={tech:'技術',prod:'生産',norm:'規範',mind:'意識'};   // 2列に収める短縮名
+const ELEM_SHORT={tech:'技術',prod:'生産',norm:'規範',mind:'意識'};   
 Object.keys(ELEMS).forEach(k=>chip($('elemChips'),ELEM_SHORT[k],ELEMS[k].c,true,on=>{
   on?state.elems.add(k):state.elems.delete(k);updateStats();}));
 [1,2,3,4].forEach(ti=>chip($('tierChips'),TIERS[ti].n,TIERS[ti].c,true,on=>{
   on?state.tiers.add(ti):state.tiers.delete(ti);updateStats();}));
-/* ver.5.9: 検索に社会課題辞書を接続〔鈴木様指摘「少子高齢化で検索しても動かないように見える」〕
-   従来は課題名/サブ要素名の文字部分一致のみ＝「少子高齢化」は0件で葉が全消え・無反応に見えた。
-   → ISSUE_LEXの語に双方向で当たり（検索語⊇kw または kw⊇検索語）、該当サブ要素の課題も可視に。
-   ヒット件数を検索欄の下に常時表示（0件でも「一致なし」と告げる） */
+ 
 function updateSearchSubs(){
   const q=(state.search||'').toLowerCase();
   state._searchSubs=new Set();
@@ -2748,24 +2693,17 @@ $('lblPlus').onclick=()=>{ state.labelBias=Math.min(3.2,state.labelBias*1.3);
   toast('文字表示 '+Math.round(state.labelBias*100)+'%（遠くから表示）'); };
 $('lblMinus').onclick=()=>{ state.labelBias=Math.max(0.35,state.labelBias/1.3);
   toast('文字表示 '+Math.round(state.labelBias*100)+'%（近づくと表示）'); };
-/* ver.2.5: モバイル用メニュー開閉 */
+ 
 $('panelToggle').onclick=()=>$('panel').classList.toggle('mob-open');
-/* ver.3.2: 最奥の地球レイヤー（chikyu.mp4）。master直開き時は 世界樹_web/ 配下へフォールバック。
-   自動再生がブロックされたら初回操作で開始（BGMと同じ流儀） */
+ 
 const bgv=document.getElementById('bgVideo');
-bgv.muted=true;   // ver.3.5: iOSは属性だけでなくプロパティ側のmutedも必要なことがある
-const BGV_DEFAULT='bg_stock179523945.mp4';   // ver.4.7: 全公開の既定映像〔鈴木様選定・AdobeStock 179523945〕
+bgv.muted=true;   
+const BGV_DEFAULT='bg_stock179523945.mp4';   
 const bgvFallback=()=>{ if(!bgv.dataset.alt){ bgv.dataset.alt='1'; bgv.src='世界樹_web/'+BGV_DEFAULT; bgv.load(); bgv.play().catch(()=>{}); } };
 bgv.addEventListener('error',bgvFallback);
-if(bgv.error) bgvFallback();   // ver.4.7: リスナー登録前にエラー済みのケース（master直開き・ローカルHTTP）を救済
+if(bgv.error) bgvFallback();   
 
-/* ================================================================
-   ver.4.6: 背景映像の管理画面（URLに ?admin を付けた時のみ表示）
-   - BG_VIDEOS: 配信済み映像のカタログ。新候補を本番に足す時は
-     ①mp4(25MB以下・720p推奨)を 世界樹_web/ に置く ②ここに1行追加 ③デプロイ
-   - 切替は即時反映。「この端末の既定にする」でlocalStorage保存（その端末のみ）
-   - ローカルファイル試写はアップロード不要（blob URL・保存は不可＝その場限り）
-================================================================ */
+ 
 const BG_VIDEOS=[
   {key:'stock1795', name:'蒼の光霧（現行・AdobeStock）', src:'bg_stock179523945.mp4'},
   {key:'chikyu', name:'地球（青い惑星）', src:'chikyu.mp4'},
@@ -2774,10 +2712,10 @@ const BG_VIDEOS=[
 const BGV_LS='yg_bgv_src';
 function applyBgv(src){
   if(!src){ try{bgv.pause();}catch(e){} bgv.removeAttribute('src'); try{bgv.load();}catch(e){} return; }
-  bgv.dataset.alt = (src===BGV_DEFAULT) ? '' : '1';   // 既定以外はerrorフォールバック（既定強制復帰）を無効化
+  bgv.dataset.alt = (src===BGV_DEFAULT) ? '' : '1';   
   bgv.src=src; try{bgv.load();}catch(e){} bgv.play().catch(()=>{});
 }
-/* 起動時: この端末に保存された既定があれば適用 */
+ 
 try{ const _sv=localStorage.getItem(BGV_LS); if(_sv!==null && _sv!==BGV_DEFAULT) applyBgv(_sv); }catch(e){}
 if(location.search.indexOf('admin')>=0)(function buildBgvAdmin(){
   let cur={src:bgv.getAttribute('src')||'', blob:false};
@@ -2797,7 +2735,7 @@ if(location.search.indexOf('admin')>=0)(function buildBgvAdmin(){
     +'<button id="bgvSave" style="flex:1;background:rgba(80,160,90,0.18);border:1px solid rgba(120,200,130,0.5);color:#9fd8a8;border-radius:5px;padding:5px;cursor:pointer">この端末の既定にする</button>'
     +'<button id="bgvReset" style="flex:1;background:rgba(160,80,80,0.15);border:1px solid rgba(200,120,120,0.4);color:#d8a09f;border-radius:5px;padding:5px;cursor:pointer">既定に戻す</button></div>'
     +'<div id="bgvStat" style="margin-top:8px;color:#8f8;font:10px/1.6 monospace;white-space:pre-wrap"></div>'
-    +'<div style="margin-top:6px;color:#8a8474;font-size:10px">※保存はこの端末のみ。全公開の既定を変える時は鈴木様→Claudeへ「この映像を既定に」と依頼（本番に焼き込み）</div>';
+    +'<div style="margin-top:6px;color:#8a8474;font-size:10px">※保存はこの端末のみ。全体の既定を変えるには公開版の差し替えが必要です。</div>';
   document.body.appendChild(p);
   p.querySelectorAll('input[name=bgvSel]').forEach(r=>{ r.addEventListener('change',()=>{ cur={src:r.value,blob:false}; applyBgv(r.value); }); });
   p.querySelector('#bgvUrlGo').addEventListener('click',()=>{ const u=p.querySelector('#bgvUrl').value.trim(); if(u){ cur={src:u,blob:false}; applyBgv(u); } });
@@ -2814,9 +2752,9 @@ addEventListener('pointerdown',bgvKick);
 bgv.addEventListener('loadeddata',bgvKick);
 addEventListener('visibilitychange',bgvKick);
 addEventListener('pageshow',bgvKick);
-setInterval(bgvKick,3000);   // ver.3.5: 何があっても3秒ごとに再生を試みる（Low Power Mode解除後など）
+setInterval(bgvKick,3000);   
 
-/* ver.2.8: キャッシュ回避リロード＝ランダム4桁のクエリを付けて読み直す（F5が使えないPC向け） */
+ 
 $('reloadBtn').onclick=()=>{
   const v=1000+Math.floor(Math.random()*9000);
   location.replace(location.pathname+'?v='+v);
@@ -2830,7 +2768,7 @@ function updateStats(){
 }
 updateStats();
 
-/* --- タイムライン --- */
+ 
 const ERA_LBL={1:'PRESENT · 現在の構造',2:'NEAR · 5〜10年',3:'MID · 10〜30年',4:'FAR · 規範と果実の時代'};
 let playing=false, playTimer=null;
 function setYear(y,fromInput){
@@ -2845,7 +2783,7 @@ function setYear(y,fromInput){
 }
 $('tlRange').addEventListener('input',e=>setYear(parseInt(e.target.value),true));
 $('tlPlay').onclick=()=>{
-  if(pres.on) presStop();   // ver.4.1: プレゼン中に▶を押したら手動操作を優先＝420ms/年の高速再生がプレゼンと並走して「時間が早く進む」原因だった
+  if(pres.on) presStop();   
   playing=!playing;
   $('tlPlay').textContent=playing?'❚❚':'▶';
   if(playing){
@@ -2857,12 +2795,12 @@ $('tlPlay').onclick=()=>{
   } else clearInterval(playTimer);
 };
 
-/* --- 解決ログ（右コンソール）: 年表が進むと解決した課題が流れてくる --- */
+ 
 let feedPrevYear=2025;
 function updateFeed(){
   const list=$('feedList'); if(!list)return;
   const solved=problems.filter(p=>p.yr<=state.year)
-    .sort((a,b)=>b.yr-a.yr||a._idx-b._idx).slice(0,60);   // 新しい解決が上・古いものは下へ流れて消える
+    .sort((a,b)=>b.yr-a.yr||a._idx-b._idx).slice(0,60);   
   if(!solved.length){
     list.innerHTML='<div class="feed-empty">▶ で年表を進めると、解決した課題がここに流れてきます。気になる課題はクリックで詳細へ。</div>';
     feedPrevYear=state.year; return;
@@ -2877,7 +2815,7 @@ window.feedSel=function(i){ const p=problems[i]; if(p) select(p.leafNode); };
 
 setYear(2026);
 
-/* --- 詳細パネル --- */
+ 
 function tag(txt,col){return '<span class="d-tag" style="color:'+col+';border-color:'+col+'">'+txt+'</span>';}
 function refreshDetail(){ if(state.sel)select(state.sel,true); }
 function select(n,silent){
@@ -2888,7 +2826,7 @@ function select(n,silent){
     const done=state.year>=p.yr;
     h+='<div class="d-eyebrow">'+(n.t==='leaf'?'LEAF · 解決された未来':'ROOT · 課題の原因')+'</div>';
     h+='<div class="d-title">'+p.name+'</div>';
-    h+=revNoticeHtml(p);   // ver.5.1: 再検証の赤字メッセージ＋【未来知のブレ】
+    h+=revNoticeHtml(p);   
     h+='<div class="d-sec" style="display:flex;align-items:baseline;gap:10px;">'
       +'<span class="d-year">'+p.yr+'</span>'
       +'<span style="font-size:11px;color:'+(done?'#e8c977':'#c8c0b0')+';">'
@@ -2899,8 +2837,8 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">原因の根 · ROOT CAUSE</div><div class="d-txt">'+p.cluster.cause+'</div></div>';
     h+='<div class="d-sec"><div class="d-lbl">解決仮説 · HYPOTHESIS</div><div class="d-txt">'+p.sub.hy+'</div></div>';
     if(sp&&sp.st)h+='<div class="d-sec"><div class="d-lbl">この課題の物語 · STORY</div><div class="d-story">'+sp.st+'</div></div>';
-    { const ib=infBtnHtml(p); if(ib) h+='<div class="d-sec">'+ib+'</div>'; }   // ver.5.6: 解決への推論
-    { const nh=newsHtml(p); if(nh) h+='<div class="d-sec">'+nh+'</div>'; }   // ver.5.0
+    { const ib=infBtnHtml(p); if(ib) h+='<div class="d-sec">'+ib+'</div>'; }   
+    { const nh=newsHtml(p); if(nh) h+='<div class="d-sec">'+nh+'</div>'; }   
     h+='<div class="d-sec">'
       +'<span class="d-jump" onclick="jumpTo('+p.rootNode.i+')">↓ 根（原因）へ</span>'
       +'<span class="d-jump" onclick="jumpTo('+p.leafNode.i+')">↑ 葉（未来）へ</span>'
@@ -2939,7 +2877,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">この枝の小枝（サブ要素）</div><div class="d-txt">'+n.binfo.subs.join('<br>')+'</div></div>';
     if(n.elem==='norm')h+='<div class="d-sec"><div class="d-story">規範の枝は30年より下の層にはほとんど生えない。規範は一世代かけてしか変わらない──この枝にだけ、果実が実る。</div></div>';
   }
-  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b); bindInfButtons(b);   // ver.5.1/5.6
+  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b); bindInfButtons(b);   
 }
 window.jumpTo=function(i){ const n=nodes[i];
   camAnim={from:{...cam},to:{...cam,tx:0,ty:n.y,dist:Math.max(330,cam.dist*0.6)},t:0};
@@ -2950,9 +2888,7 @@ window.setYear=setYear;
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3400);}
 
-/* ================================================================
-   事業領域フロー UI ＋ 35×35 立体ヒートマップ
-================================================================ */
+ 
 const introEl=$('intro'), introCard=$('introCard');
 const STEPS=['step0','step1','step2','stepHelp','stepClusters'];
 function gotoStep(id){
@@ -2968,12 +2904,7 @@ $('whatLink').onclick=()=>gotoStep('stepHelp');
 $('helpBtn').onclick=()=>gotoStep('stepHelp');
 document.querySelectorAll('[data-to]').forEach(el=>el.onclick=()=>gotoStep(el.dataset.to));
 
-/* ================================================================
-   ver.5.3: 現課題｜7クラスターを読む〔鈴木様指示〕
-   各クラスターの構造解析HTML（別途作成済み）を新しいタブで開く。
-   配信名は cluster1..7.html（元の日本語ファイル名との対応は 世界樹_web/CLUSTERS_README.md）。
-   本番では同階層、マスターを 01_strategy/ から開いた時は 世界樹_web/ に在るのでプローブで切替。
-================================================================ */
+ 
 let CL_BASE='';
 function buildClusterList(){
   const box=$('clList'); if(!box)return;
@@ -2984,7 +2915,7 @@ function buildClusterList(){
     +'<span class="cl-c">'+esc(cl.cause)+'</span></span>'
     +'<span class="cl-go">構造解析を読む ↗</span></a>').join('');
 }
-/* ver.6.1: エビデンス集も同じ配信階層なので CL_BASE を共用する */
+ 
 function applyEvidenceHref(){
   const a=$('evidenceLink'); if(a)a.href=CL_BASE+'evidence.html';
 }
@@ -2993,11 +2924,11 @@ function applyEvidenceHref(){
     .catch(()=>{ CL_BASE='世界樹_web/'; })
     .then(()=>{ buildClusterList(); applyEvidenceHref(); });
 })();
-applyEvidenceHref();   // プローブ前でも押せるよう既定値を入れておく
-buildClusterList();   // プローブ前でも表示できるよう先に一度組む（解決後に貼り直す）
+applyEvidenceHref();   
+buildClusterList();   
 $('clustersLink').onclick=()=>gotoStep('stepClusters');
 
-/* 例チップ（一般の方が自分の仕事を見つけやすい20業種） */
+ 
 const EXAMPLES=['介護・福祉','保育・子育て支援','学校・教育・塾','農業・食品','漁業・水産',
  '建設・住宅','不動産・空き家活用','商店街・小売','飲食店・カフェ','製造業・町工場',
  'IT・アプリ開発','医療・看護','金融・保険','観光・宿泊','運送・物流',
@@ -3006,7 +2937,7 @@ const EXAMPLES=['介護・福祉','保育・子育て支援','学校・教育・
   c.className='ex-chip'; c.textContent=x; c.onclick=()=>{ const t=$('domInput');
     t.value=(t.value.trim()?t.value.trim()+'、':'')+x; t.focus(); }; box.appendChild(c); }); }
 
-/* ver.5.8: 社会課題チップ〔鈴木様指摘対応〕— 課題語からも解析に入れる */
+ 
 const ISSUE_EXAMPLES=['少子高齢化','空き家問題','限界集落・過疎化','フェイクニュース','読書離れ・タイパ',
  '賃金停滞・格差','政治不信','エネルギー・気候変動','食料自給','災害・インフラ老朽化',
  '後継者・技能継承','研究力の低下','いじめ・ハラスメント','孤独・孤立','移民・多文化共生'];
@@ -3014,7 +2945,7 @@ const ISSUE_EXAMPLES=['少子高齢化','空き家問題','限界集落・過疎
   c.className='ex-chip'; c.textContent=x; c.onclick=()=>{ const t=$('domInput');
     t.value=(t.value.trim()?t.value.trim()+'、':'')+x; t.focus(); }; box.appendChild(c); }); }
 
-/* 解析実行 */
+ 
 $('analyzeBtn').onclick=()=>{
   const v=$('domInput').value.trim();
   if(v.length<2){ $('domInput').style.borderColor='#c5292a'; $('domInput').focus();
@@ -3029,7 +2960,7 @@ function enterTree(){
   domain.show=true; $('domPanel').classList.add('on'); updateDomLightBtn();
   const n=problems.filter(p=>p._dom5>0).length;
   setTimeout(()=>toast('◈ あなたの領域に連なる '+n+' の課題が黄金に灯りました'),700);
-  showAskGuide();   // ver.3.7
+  showAskGuide();   
 }
 function showHeatmap(){
   introEl.style.display='none'; $('hmView').classList.add('show');
@@ -3042,16 +2973,7 @@ $('hmShowBtn').onclick=showHeatmap;
 $('hmvTree').onclick=enterTree;
 $('hmvResults').onclick=()=>{ $('hmView').classList.remove('show'); gotoStep('step2'); };
 
-/* ================================================================
-   ver.5.0: エビデンス補強ニュース〔鈴木様指示・項目1〕
-   Claude Codeがバッチで収集・選別した news.json を読み込む。
-   ・収集/選別はローカルのパイプライン（世界樹_tools_*.js）で実施＝ブラウザからは
-     Google/Yahooニュースを直接取得できず（CORS・公開APIなし）、PR記事や実現性の
-     判定にもAIが要るがAPIキーを公開サイトに置けないため
-   ・全URLの到達性を機械検証済み（verified: true / "blocked"=政府系のボット遮断で自動検証不可）
-   ・公開画面には status:'adopted' のみ表示。'pending'（要判断）はローカル管理画面用
-   ・読み込み失敗（file://直開き等）でもアプリは通常どおり動く
-================================================================ */
+ 
 const NEWS={loaded:false, items:[], byProblem:new Map(), counts:null};
 function newsFor(name){ return NEWS.byProblem.get(name)||[]; }
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -3069,17 +2991,10 @@ function newsHtml(p){
   }).join('')+'</div>';
   return h;
 }
-/* ================================================================
-   ver.5.1: 未来知のブレ -DRIFT OF FUTURE KNOWLEDGE-〔鈴木様指示〕
-   仮説と反証の記録。新しいエビデンスを世界樹に反映しつつ、
-   「過去にどう考えていたか」を消さずに残すための改訂台帳（revisions.json）。
-   ・課題/サブ要素に改訂があれば、詳細に赤字で「再検証により新たな知を獲得しました」
-   ・【未来知のブレ】ボタンで、旧仮説→新エビデンスの書き換え過程を表示
-   ・kind: 仮説の反証 / 数値更新 / 定義の要確認
-================================================================ */
+ 
 const REV={loaded:false, items:[], byKey:new Map()};
 function revFor(p){
-  // 課題名の改訂＋その課題が属するサブ要素の改訂（＝仮説の反証）を両方拾う
+  
   return [...(REV.byKey.get('problem:'+p.name)||[]), ...(REV.byKey.get('sub:'+p.sub.id)||[])];
 }
 function revNoticeHtml(p){
@@ -3106,15 +3021,7 @@ function bindRevButtons(root){
   }).catch(()=>{ REV.loaded=false; });
 })();
 
-/* ================================================================
-   ver.5.6: 解決への推論 -INFERENCE-〔鈴木様指示〕
-   バックキャスティング方法論（黒木マーケティング室）× 35サブ要素リソースマップ
-   × エビデンス（news.json）を Claude Code が事前に突き合わせて生成した推論。
-   ・ブラウザからライブAI推論はできない（静的サイト・APIキーを置けない）ため、
-     取り込み済みの推論（inference.json）を提示する方式。
-   ・サブ要素単位（35）。各課題は自分の属するサブ要素の推論を参照する。
-   ・「検証された予測」ではなく「明示された推論」——方法論と事実にもとづく思考の提案。
-================================================================ */
+ 
 const INF={loaded:false, items:{}, vps:{}, scope:''};
 function infFor(p){ return INF.items[p.sub.id]||null; }
 function infBtnHtml(p){
@@ -3138,38 +3045,28 @@ function bindInfButtons(root){
 })();
 
 (function loadNews(){
-  // 本番(世界樹_web/)では同階層。マスターを 01_strategy/ から開いた時は 世界樹_web/ に退避する
+  
   const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
   grab('news.json').catch(()=>grab('世界樹_web/news.json')).then(j=>{
     NEWS.items=(j.items||[]).filter(n=>n.status==='adopted');
     NEWS.counts=j.counts||null; NEWS.generated=j.generated||'';
-    /* ver.6.0: 「新着」＝最新の蓄積バッチのみ。初出日が2種類以上あるときだけ、最も新しい日を新着とする
-       （初回＝全件同日なら新着マーク無し。蓄積で新しい日が加わると、その分だけ新着になる） */
+     
     const seenDates=[...new Set(NEWS.items.map(n=>n.first_seen).filter(Boolean))].sort();
     NEWS.freshDate=(seenDates.length>1)?seenDates[seenDates.length-1]:null;
     NEWS.items.forEach(n=>(n.problems||[]).forEach(nm=>{
       if(!NEWS.byProblem.has(nm))NEWS.byProblem.set(nm,[]);
       NEWS.byProblem.get(nm).push(n); }));
     NEWS.loaded=true;
-    // 非同期で届くので、既に開いている画面は描き直す（ニュース有無バッジ・詳細に反映）
+    
     if($('wlView').classList.contains('show')){ const nm=wlOpenName; wlBuild(); if(nm)wlToggle(nm,true); }
     if(state.sel)refreshDetail();
-  }).catch(()=>{ NEWS.loaded=false; });   // file://直開き等では読めない＝ニュース無しで通常動作
+  }).catch(()=>{ NEWS.loaded=false; });   
 })();
 
-/* ================================================================
-   ver.4.9: 世界線 -WORLD LINE-
-   一本の縦の道に、未来に解決される250課題を年順にプロット。
-   ・点の明瞭度＝エビデンス確度（CONF）。高いほど濃く大きくくっきり（色はクラスター色を保持）
-   ・事業領域を設定済みなら、関係する課題の左に●（関係が深いほど明るい）
-   ・行クリックで内容を展開。「影響を受ける課題解決」＝解決シナジー2以上のサブ要素に属し、
-     この解決以降に解決する課題（＝この解決が後押しし得るもの）へジャンプ
-================================================================ */
+ 
 let wlBuilt=false, wlOpenName=null;
-const WL_JUMP_SHOW=12;   // 初期表示件数（超過分は「他N件」で展開＝全件に到達できる）
-/* 影響先＝解決シナジーが最強(3/3)のサブ要素に属し、この解決以降に解決する課題。
-   syn>=2まで含めると中央値48件・最大176件とノイズが多く因果として弱いため3/3に限定
-   （実測: 3/3なら中央値8件・最大49件・該当なし60件） */
+const WL_JUMP_SHOW=12;   
+ 
 function wlAffected(p){
   const i=p.sub._eidx, out=[];
   problems.forEach(q=>{
@@ -3225,15 +3122,15 @@ function wlDetHtml(p){
   const cs=CONF_STYLE[p.conf]||CONF_STYLE['－'];
   const sp=SPECIAL[p.name];
   let h='<div class="dt">'+p.name+'</div>';
-  h+=revNoticeHtml(p);   // ver.5.1: 再検証の赤字メッセージ＋【未来知のブレ】
-  h+=infBtnHtml(p);      // ver.5.6: 解決への推論
+  h+=revNoticeHtml(p);   
+  h+=infBtnHtml(p);      
   h+='<div class="wl-conf"><b style="color:var(--gold-soft)">信頼度 '+cs.n+'</b> ── '+cs.d+'</div>';
   h+='<div class="d-tags" style="margin-bottom:8px">'+tag(p.cluster.r+' '+p.cluster.name,p.cluster.c)
     +tag(p.sub.id+' '+p.sub.n,'#c8c0b0')+tag(p.yr+'年 解決見込み','#e8c977')+'</div>';
   h+='<div class="dlbl">現状 · CURRENT STATE</div><div class="dtxt">'+p.detail+'</div>';
   h+='<div class="dlbl">解決仮説 · HYPOTHESIS</div><div class="dtxt">'+p.sub.hy+'</div>';
   if(sp&&sp.st) h+='<div class="dlbl">この課題の物語 · STORY</div><div class="dtxt">'+sp.st+'</div>';
-  h+=newsHtml(p);   // ver.5.0
+  h+=newsHtml(p);   
   const aff=wlAffected(p);
   if(aff.length){
     const chip=a=>'<span class="wl-jump" data-j="'+encodeURIComponent(a.q.name)+'" title="解決シナジー 3/3（'+p.sub.id+' '+p.sub.n+' → '+a.q.sub.id+' '+a.q.sub.n+'）">'
@@ -3253,13 +3150,13 @@ function wlToggle(name,forceOpen){
   if(!det)return;
   const isOpen=det.classList.contains('open');
   if(isOpen&&!forceOpen){ det.classList.remove('open'); det.innerHTML=''; wlOpenName=null; return; }
-  // 既に開いている他の行を閉じる（一度に1件）
+  
   track.querySelectorAll('.wl-det.open').forEach(d=>{ d.classList.remove('open'); d.innerHTML=''; });
   const p=problems.find(x=>x.name===name); if(!p)return;
   det.innerHTML=wlDetHtml(p); det.classList.add('open'); wlOpenName=name;
-  det.onclick=e=>e.stopPropagation();   // 詳細内のクリックで行トグルが走らないように
-  bindRevButtons(det);   // ver.5.1
-  bindInfButtons(det);   // ver.5.6
+  det.onclick=e=>e.stopPropagation();   
+  bindRevButtons(det);   
+  bindInfButtons(det);   
   const bindJumps=()=>det.querySelectorAll('.wl-jump[data-j]').forEach(b=>{
     b.onclick=()=>wlJump(decodeURIComponent(b.dataset.j)); });
   bindJumps();
@@ -3277,8 +3174,7 @@ function wlJump(name){
   row.scrollIntoView({behavior:'smooth',block:'center'});
   row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
 }
-/* ver.5.1: 未来知のブレ ── 旧仮説→新エビデンスの書き換え記録を表示
-   focusName を渡すと、その課題に関わる記録を先頭に据えて強調する（全記録も下に続く） */
+ 
 const DF_KIND_CLS={'仮説の反証':'k1','数値更新':'k2','定義の要確認':'k3'};
 function dfItemHtml(r,hit){
   const cls=DF_KIND_CLS[r.kind]||'k3';
@@ -3332,7 +3228,7 @@ function closeDrift(){ $('dfView').classList.remove('show'); }
 $('dfClose').onclick=closeDrift;
 $('dfAll').onclick=()=>dfRender(null);
 
-/* ver.5.6: 解決への推論を全画面で表示（focusName＝起点の課題） */
+ 
 function ifRender(focusName){
   const t=$('ifTrack');
   const p=focusName?problems.find(x=>x.name===focusName):null;
@@ -3393,15 +3289,15 @@ function showWorldLine(){
 function closeWorldLine(){ $('wlView').classList.remove('show'); }
 $('wlBtn').onclick=showWorldLine;
 $('wlTree').onclick=closeWorldLine;
-$('dfBtn').onclick=()=>showDrift(null);   // ver.5.1
+$('dfBtn').onclick=()=>showDrift(null);   
 
-/* 結果レンダリング */
+ 
 function renderResults(){
   $('resKw').innerHTML='解析キーワード：<b>'+domain.kw.replace(/</g,'&lt;').slice(0,120)+'</b>';
-  // クラスターバー
+  
   const cb=$('clBars'); cb.innerHTML='';
   DATA.forEach((cl,ci)=>{
-    /* ver.2.7: 二段バー＝濃（直接の関係）＋淡い延長（解決シナジーの波及込み）。数値は波及込み */
+     
     const dir=(domain.clusterDir&&domain.clusterDir[ci])||0;
     const eff=(domain.clusterEff&&domain.clusterEff[ci])||0;
     const row=document.createElement('div'); row.className='clbar';
@@ -3411,7 +3307,7 @@ function renderResults(){
       +'<div class="cb-val">'+Math.round(eff*100)+'</div>'
       +'<button class="cb-play" title="このスコアの理由">▶</button>';
     cb.appendChild(row);
-    /* ver.4.4: ▶＝スコアの理由（クリックで開閉） */
+     
     const why=document.createElement('div'); why.className='cb-why'; why.innerHTML=clusterWhy(ci);
     cb.appendChild(why);
     row.querySelector('.cb-play').addEventListener('click',()=>{
@@ -3423,8 +3319,8 @@ function renderResults(){
       row.querySelector('.cb-fill').style.width=Math.round(dir*100)+'%';
     });
   });
-  renderTimeline();   // ver.4.4: 課題解決の時間軸
-  // エレメントTOP
+  renderTimeline();   
+  
   const eb=$('elBars'); eb.innerHTML='';
   const ranked=ELEM_LIST.map((e,i)=>({e,i,v:domain.elem5[i],rel:domain.elemRel[i]}))
     .filter(o=>o.v>0).sort((a,b)=>b.rel-a.rel).slice(0,12);
@@ -3439,16 +3335,16 @@ function renderResults(){
     eb.appendChild(row);
     requestAnimationFrame(()=>{ row.querySelector('.eb-fill').style.width=Math.round(o.rel*100)+'%'; });
   });
-  renderSynBiz();   // ver.4.4: シナジー事業
+  renderSynBiz();   
 }
 
-/* ver.4.4: クラスタースコアの理由文を生成 */
+ 
 function clusterWhy(ci){
   const rel=domain.elemRel||[];
   const dir=Math.round(((domain.clusterDir&&domain.clusterDir[ci])||0)*100);
   const eff=Math.round(((domain.clusterEff&&domain.clusterEff[ci])||0)*100);
   let h='<div class="why-line"><b>スコア '+eff+'</b>＝直接 '+dir+'＋解決シナジーの波及 '+Math.max(0,eff-dir)+'</div>';
-  /* 直接の根拠＝このクラスター内で関係が強い要素と、一致した入力語 */
+   
   const subs=ELEM_LIST.map((e,i)=>({e,i,r:rel[i]||0})).filter(o=>o.e.ci===ci&&o.r>0.03)
     .sort((a,b)=>b.r-a.r).slice(0,3);
   if(subs.length){
@@ -3457,12 +3353,12 @@ function clusterWhy(ci){
       return '『'+o.e.id+' '+o.e.n+'』(関係度'+Math.round(o.r*100)+'%)'+tk;
     }).join('／')+'</div>';
     const lexNames=(domain._lexHits||[]).filter(hh=>hh.els.some(id=>{const i=idOf(id);return i>=0&&ELEM_LIST[i].ci===ci;}))
-      .map(hh=>(hh.name||LEX_NAMES[hh.li])+'（'+hh.words.slice(0,3).join('・')+'）');   // ver.5.8: 社会課題辞書はname直載せ
+      .map(hh=>(hh.name||LEX_NAMES[hh.li])+'（'+hh.words.slice(0,3).join('・')+'）');   
     if(lexNames.length) h+='<div class="why-line">◆ 辞書一致：'+lexNames.slice(0,2).join('、')+' がこのクラスターの要素を加点</div>';
   } else {
     h+='<div class="why-line">◆ 入力語との直接の一致はほぼ検出されませんでした</div>';
   }
-  /* 波及の根拠＝あなたの主要素の解決がシナジー行列でこのクラスターを促進する経路 */
+   
   const bridges=[];
   ELEM_LIST.forEach((e,j)=>{ if(e.ci!==ci)return;
     for(let k=0;k<35;k++){ if(k===j)continue;
@@ -3484,7 +3380,7 @@ function clusterWhy(ci){
   return h;
 }
 
-/* ver.4.4: 課題解決の時間軸（近未来〜2036／中未来2037-55／遠未来2056〜。各課題は解決段階にのみ載る） */
+ 
 function renderTimeline(){
   const box=$('tlStages'); if(!box)return; box.innerHTML='';
   const cands=problems.filter(p=>p._dom5>0).sort((a,b)=>b._domRel-a._domRel).slice(0,18);
@@ -3511,8 +3407,7 @@ function renderTimeline(){
   });
 }
 
-/* ver.4.4: シナジー事業＝解決シナジー行列で「あなたの主要素の解決が相手の要素を促す」業種を採点
-   （世界の状況＝シナジー構造と関係度が変われば結果も変わる動的算出） */
+ 
 function renderSynBiz(){
   const box=$('synBiz'); if(!box)return; box.innerHTML='';
   const rel=domain.elemRel||[];
@@ -3530,7 +3425,7 @@ function renderSynBiz(){
       if(!best||term>best.term)best={term,i:o.i,j,sv};
     });});
     sc/=Math.max(1,els.length);
-    if(ov>=0.5) sc*=0.2;   // 自業種とほぼ同じ領域は「共創相手」から外し気味に
+    if(ov>=0.5) sc*=0.2;   
     if(best) scored.push({li,sc,best});
   });
   scored.sort((a,b)=>b.sc-a.sc);
@@ -3543,7 +3438,7 @@ function renderSynBiz(){
   });
 }
 
-/* ---- 35×35 立体ヒートマップ ---- */
+ 
 const hm={yaw:0.62,tilt:0.5,zoom:1,flat:false,W:0,H:0,DPR:1,centers:null};
 const hmcv=$('hmcv'), hmx=hmcv.getContext('2d');
 function hmResize(){ const r=hmcv.getBoundingClientRect(); if(!r.width)return;
@@ -3557,10 +3452,10 @@ function hmProj(gx,gz,h){
   const cell=hmCell();
   return {sx:hm.W/2 + rx*cell, sy:hm.H*0.60 + rz*cell*hm.tilt - h, rz};
 }
-function hmImpact(i,j){ // 波及度 0..1: 基礎シナジー(0-3)を常時表示し、事業の実効関係で増幅
+function hmImpact(i,j){ 
   const eff=(domain.elemEff&&domain.elemEff[i])||0;
   const s=synVal(i,j)/3;
-  return s*(0.22+0.78*eff);   // 元の35×35マップと同じ広がり＋事業関係の濃淡
+  return s*(0.22+0.78*eff);   
 }
 function heatCol(t,a){ t=Math.max(0,Math.min(1,t));
   const r=Math.round(50+205*t), g=Math.round(38+165*Math.pow(t,0.85)), b=Math.round(28+62*t);
@@ -3578,7 +3473,7 @@ function hmRender(){
     const c=hmProj(gx,gz,h);
     list.push({i,j,gx,gz,P,h,rz:c.rz});
   }
-  list.sort((a,b)=>a.rz-b.rz);          // 奥から手前へ
+  list.sort((a,b)=>a.rz-b.rz);          
   hm.centers=[];
   list.forEach(o=>{
     const {gx,gz,P,h,i,j}=o;
@@ -3586,23 +3481,23 @@ function hmRender(){
           t2=hmProj(gx+0.46,gz+0.46,h), t3=hmProj(gx-0.46,gz+0.46,h);
     const b1=hmProj(gx+0.46,gz-0.46,0), b2=hmProj(gx+0.46,gz+0.46,0), b3=hmProj(gx-0.46,gz+0.46,0);
     const rowCol=DATA[ELEM_LIST[i].ci].c;
-    // 側面（立体）
+    
     if(!hm.flat && P>0.02){
       hmx.fillStyle=heatCol(P*0.55,0.9);
       hmx.beginPath();hmx.moveTo(t1.sx,t1.sy);hmx.lineTo(t2.sx,t2.sy);hmx.lineTo(b2.sx,b2.sy);hmx.lineTo(b1.sx,b1.sy);hmx.closePath();hmx.fill();
       hmx.fillStyle=heatCol(P*0.38,0.9);
       hmx.beginPath();hmx.moveTo(t2.sx,t2.sy);hmx.lineTo(t3.sx,t3.sy);hmx.lineTo(b3.sx,b3.sy);hmx.lineTo(b2.sx,b2.sy);hmx.closePath();hmx.fill();
     }
-    // 上面
+    
     if(P<=0.02){ hmx.fillStyle='rgba(255,255,255,0.03)'; hmx.strokeStyle='rgba(201,169,97,0.05)'; }
     else { hmx.fillStyle=heatCol(P,0.92); hmx.strokeStyle='rgba(255,240,190,'+(0.15+0.4*P)+')'; }
     hmx.beginPath();hmx.moveTo(t0.sx,t0.sy);hmx.lineTo(t1.sx,t1.sy);hmx.lineTo(t2.sx,t2.sy);hmx.lineTo(t3.sx,t3.sy);hmx.closePath();
     hmx.fill(); hmx.lineWidth=0.5; hmx.stroke();
-    // 対角（自己）にクラスター色の縁
+    
     if(i===j){ hmx.strokeStyle=rowCol; hmx.lineWidth=1.1; hmx.stroke(); }
     const cc=hmProj(gx,gz,h); hm.centers.push({sx:cc.sx,sy:cc.sy,i,j,P});
   });
-  /* 軸ラベル（行=左端・列=上端）。拡大すると項目名も表示 */
+   
   const showName=hm.zoom>=1.25;
   hmx.textBaseline='middle';
   for(let i=0;i<35;i++){
@@ -3623,8 +3518,7 @@ function hmRender(){
     hmx.restore();
   }
 }
-/* ver.3.1: タッチ対応〔鈴木様指示「スマホはカーソルが無くデータが表示されない」〕
-   タップ＝数値詳細（判定半径広め・表示は次のタップ/空タップまで維持）／2本指ピンチ＝拡大／ドラッグ＝回転は従来どおり */
+ 
 let hmDrag=null; const hmPts=new Map(); let hmPinch0=0;
 hmcv.addEventListener('pointerdown',e=>{ try{hmcv.setPointerCapture(e.pointerId);}catch(_){}
   hmPts.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -3644,7 +3538,7 @@ hmcv.addEventListener('pointermove',e=>{
   else hmHover(e);
 });
 hmcv.addEventListener('pointerup',e=>{
-  if(hmDrag&&hmDrag.moved<7) hmShowTip(e,true);   // 動かさず離した＝タップ→数値詳細
+  if(hmDrag&&hmDrag.moved<7) hmShowTip(e,true);   
   hmPts.delete(e.pointerId); if(hmPts.size<2) hmPinch0=0;
   hmDrag=null; hmcv.classList.remove('drag');
 });
@@ -3654,13 +3548,13 @@ hmcv.addEventListener('wheel',e=>{ e.preventDefault();
 function hmShowTip(e,tap){
   if(!hm.centers){ return; }
   const r=hmcv.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
-  let best=null,bd=tap?26:16;                     // タップは指の太さぶん判定を広く
+  let best=null,bd=tap?26:16;                     
   for(const c of hm.centers){ const d=Math.hypot(c.sx-mx,c.sy-my); if(d<bd){bd=d;best=c;} }
   const tip=$('hmTip');
   if(best){ const A=ELEM_LIST[best.i], B=ELEM_LIST[best.j], s=synVal(best.i,best.j);
     const eff=Math.round(((domain.elemEff&&domain.elemEff[best.i])||0)*100);
     const self=best.i===best.j;
-    /* ver.5.3: 大きく読める構造に。行×列の要素名を主役にし、数値は単位を添えて並べる */
+     
     let h='<div class="hmt-pair">'
       +'<div class="hmt-el" style="color:'+A.cl.c+'"><span class="eid">'+A.id+'</span>'+esc(A.n)+'</div>';
     if(!self){
@@ -3675,7 +3569,7 @@ function hmShowTip(e,tap){
     h+='</div>';
     tip.innerHTML=h;
     tip.classList.add('show'); }
-  else tip.classList.remove('show');              // 何も無い所のタップ/ホバー＝閉じる
+  else tip.classList.remove('show');              
 }
 function hmHover(e){ if(e.pointerType!=='mouse')return; hmShowTip(e,false); }
 hmcv.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse')$('hmTip').classList.remove('show'); });
@@ -3686,15 +3580,15 @@ document.querySelectorAll('.hm-btn[data-hm]').forEach(b=>b.onclick=()=>{
 });
 addEventListener('resize',()=>{ if($('hmView').classList.contains('show')){ hmResize(); hmRender(); } });
 
-/* 樹画面の領域ボタン */
+ 
 $('domMapBtn').onclick=()=>{ if(domain.active) gotoStep('step2'); };
 $('domHmBtn').onclick=()=>{ if(domain.active) showHeatmap(); };
 function updateDomLightBtn(){ $('domLightBtn').textContent='✦ 領域の光 '+(domain.show?'ON':'OFF'); }
 $('domLightBtn').onclick=()=>{ domain.show=!domain.show; updateDomLightBtn(); };
 
-/* 画面移動（↑↓←→・⌂でリセット。押し続けで連続移動） */
+ 
 function panView(dir){
-  camTouched=true;   // ver.3.4
+  camTouched=true;   
   const st=46*(cam.dist/880);
   if(dir==='up')cam.ty+=st;
   else if(dir==='down')cam.ty-=st;
@@ -3709,12 +3603,12 @@ document.querySelectorAll('.dp').forEach(b=>{
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{ if(rep){clearInterval(rep);rep=null;} }));
 });
 
-/* ver.3.0: 拡大縮小コントローラー（押し続けで連続。スマホのピンチ代替）〔鈴木様指示〕 */
+ 
 function zoomView(k){
   if(k==='fit'){ flyTo('all'); return; }
   const f=(k==='in')?1/1.055:1.055;
   cam.dist=Math.max(180,Math.min(4800,cam.dist*f));
-  camTouched=true;   // ver.3.4
+  camTouched=true;   
   autoRot=false; updateRotBtn();
 }
 document.querySelectorAll('.zm').forEach(b=>{
@@ -3724,9 +3618,7 @@ document.querySelectorAll('.zm').forEach(b=>{
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{ if(rep){clearInterval(rep);rep=null;} }));
 });
 
-/* ================================================================
-   BGM（sekai_bgm/ からランダム連続再生・既定ON）
-================================================================ */
+ 
 const BGM_FILES=['001.mp3','002.mp3','003.mp3','004.mp3','005.mp3','006.mp3','007.mp3','008.mp3','009.mp3'];
 const bgm={on:true,audio:null,last:-1,started:false};
 function bgmNext(){
@@ -3736,7 +3628,7 @@ function bgmNext(){
   if(!bgm.audio){ bgm.audio=new Audio(); bgm.audio.volume=0.45;
     bgm.audio.addEventListener('ended',bgmNext); }
   bgm.audio.src='sekai_bgm/'+BGM_FILES[i];
-  bgm.audio.play().then(()=>{ bgm.started=true; }).catch(()=>{});  // 自動再生ブロック時は初回操作で開始
+  bgm.audio.play().then(()=>{ bgm.started=true; }).catch(()=>{});  
 }
 function updateBgmBtn(){ $('bgmBtn').textContent='♪ BGM '+(bgm.on?'ON':'OFF'); }
 $('bgmBtn').onclick=()=>{ bgm.on=!bgm.on; updateBgmBtn();
@@ -3745,51 +3637,39 @@ $('bgmBtn').onclick=()=>{ bgm.on=!bgm.on; updateBgmBtn();
 bgmNext();
 addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });
 
-/* ================================================================
-   自動プレゼン: カメラが漂い、時代が1年ずつゆっくり進み、
-   その年に解決した課題が下部のテロップに大きく出る〔ver.6.2で散布明滅から変更〕
-================================================================ */
+ 
 const pres={on:false,yearMs:0,camT:0,target:null,hideAt:0};
 function presStart(){
   pres.on=true; pres.yearMs=0; pres.nextYearAt=0; pres.target=null; presCaptionHide();
-  document.body.classList.add('pres-on');      // ver.3.0: プレゼン中は西暦バーを半透明に〔鈴木様指示〕
-  pres.savedBias=state.labelBias; state.labelBias=3.2;   // ver.3.3: プレゼン中は文字表示を最大増に〔鈴木様指示〕
-  camTouched=true;   // ver.3.4: プレゼンのカメラ漂いと吸着の競合を防ぐ
+  document.body.classList.add('pres-on');      
+  pres.savedBias=state.labelBias; state.labelBias=3.2;   
+  camTouched=true;   
   if(playing){ clearInterval(playTimer); playing=false; $('tlPlay').textContent='▶'; }
   autoRot=false; updateRotBtn();
   setYear(2026);
-  pres.hideAt=time+3000;                      // 3秒後に操作パネルが眠る
+  pres.hideAt=time+3000;                      
   $('presBtn').textContent='■ プレゼン停止';
   toast('🎬 自動プレゼン ── マウスやキーで操作パネルが戻ります（Escで終了）');
 }
 function presStop(){
   pres.on=false; document.body.classList.remove('pres-hide'); document.body.classList.remove('pres-on');
-  presCaptionHide();   // ver.6.2: 終了時にテロップも引っ込める
-  if(pres.savedBias!==undefined){ state.labelBias=pres.savedBias; pres.savedBias=undefined; }   // 文字表示を元へ
+  presCaptionHide();   
+  if(pres.savedBias!==undefined){ state.labelBias=pres.savedBias; pres.savedBias=undefined; }   
   $('presBtn').textContent='🎬 自動プレゼン';
   autoRot=true; updateRotBtn();
 }
 $('presBtn').onclick=()=>{ if(learn.on)learnStop(); pres.on?presStop():presStart(); };
 function presWake(){ if(!pres.on)return; document.body.classList.remove('pres-hide'); pres.hideAt=time+3000; }
 
-/* ================================================================
-   ver.5.4: 学習モード -LEARNING-〔鈴木様指示〕
-   ボタン、または樹の画面を放置（IDLE_MS）で自動開始。
-   世界樹がゆっくり回りながら、取り込み済みのエビデンス・ニュース
-   （news.json＝Claude Codeがバッチで収集・選別したもの）を
-   タイトルと要約で1件ずつ提示する。
-   ※ライブでニュースを取得しているのではなく、取り込み済みのプールを読み上げる。
-     ブラウザからGoogle/Yahooニュースは直接取得できないため（CORS・公開APIなし）。
-   操作（ポインタ/キー/ホイール）で即終了。プレゼンとは排他。
-================================================================ */
+ 
 const learn={on:false, i:0, nextAt:0, order:[], phase:'in'};
-const LEARN_HOLD=7000;        // 1件を表示している時間
-const LEARN_GAP=900;          // 次のカードまでの間
-const LEARN_IDLE_MS=90000;    // 樹の画面を90秒放置したら自動で学習モードへ
+const LEARN_HOLD=7000;        
+const LEARN_GAP=900;          
+const LEARN_IDLE_MS=90000;    
 let lastActAt=0;
 
 function learnPool(){
-  // 取り込み済み（採用）ニュース。ver.6.0: 新着（first_seenが最近）を先頭に、次いで記事日付の新しい順
+  
   return NEWS.items.slice().sort((a,b)=>
     (isFresh(b)-isFresh(a)) || (b.first_seen||'').localeCompare(a.first_seen||'') || (b.date||'').localeCompare(a.date||''));
 }
@@ -3799,13 +3679,13 @@ function learnStart(auto){
   if(!pool.length){ if(!auto)toast('取り込み済みのニュースがまだありません'); return; }
   if(pres.on)presStop();
   learn.on=true; learn.order=pool; learn.i=0; learn.nextAt=0; learn.phase='in';
-  { const nf=pool.filter(isFresh).length; const sub=$('lrnSub');   // ver.6.0: 累計と新着を表示
+  { const nf=pool.filter(isFresh).length; const sub=$('lrnSub');   
     if(sub) sub.innerHTML='取り込み済みのエビデンス <b style="color:#e8c977">'+pool.length+'件</b>'
       +(nf?'（うち<b style="color:#ff8a8b">新着 '+nf+'件</b>）':'')+' を読み込んでいます'
       +'<span class="dots"><span></span><span></span><span></span></span>'; }
   $('lrnHud').classList.add('show'); $('lrnExit').classList.add('show');
   $('lrnBtn').textContent='■ 学習を停止';
-  document.body.classList.add('pres-hide');   // 操作パネルを退場（プレゼンと同じ演出を流用）
+  document.body.classList.add('pres-hide');   
   camTouched=true; autoRot=false; updateRotBtn();
   learnShow(0);
   if(auto)toast('◈ 学習モード ── 取り込み済みのエビデンスを読み込みます（操作で終了）');
@@ -3820,10 +3700,8 @@ function learnStop(){
   autoRot=true; updateRotBtn();
   lastActAt=time;
 }
-/* ver.6.0: 最近プールに入ったニュースか（first_seenが14日以内）＝「新着」判定。
-   TODAY_STR は起動時に固定（Date系はrAF環境で使えるが軽く1回だけ） */
-/* ver.6.0: 新着＝最新の蓄積バッチ（NEWS.freshDate）と初出日が一致するもの。
-   freshDateは初出日が2種類以上あるときだけ設定される（初回全件同日なら新着なし） */
+ 
+ 
 function isFresh(n){ return !!(NEWS.freshDate && n.first_seen===NEWS.freshDate); }
 function learnShow(i){
   const n=learn.order[i]; if(!n)return;
@@ -3840,22 +3718,21 @@ function learnShow(i){
 }
 function learnTick(dt){
   if(!learn.on)return;
-  cam.yaw+=0.00009*dt;                                   // ゆっくり回り続ける
+  cam.yaw+=0.00009*dt;                                   
   if(!learn.nextAt){ learn.nextAt=time+LEARN_HOLD; return; }
-  /* タブ復帰・rAF停止明けで time が大きく飛ぶと、溜まった分だけカードが一気に送られてしまう。
-     予定時刻を大幅に過ぎていたら「今」を起点に取り直す（バースト防止） */
+   
   if(time-learn.nextAt>4000){ learn.nextAt=time+(learn.phase==='in'?LEARN_HOLD:LEARN_GAP); return; }
   if(time<learn.nextAt)return;
-  if(learn.phase==='in'){                                // 表示時間が終わった→伏せる
+  if(learn.phase==='in'){                                
     $('lrnCard').classList.remove('in');
     learn.phase='out'; learn.nextAt=time+LEARN_GAP; return;
   }
-  learn.i=(learn.i+1)%learn.order.length;                 // 次の1件へ（末尾で最初に戻る）
+  learn.i=(learn.i+1)%learn.order.length;                 
   learnShow(learn.i);
   learn.phase='in'; learn.nextAt=time+LEARN_HOLD;
 }
 function learnIdleTick(){
-  // 樹の画面を見ているとき（intro/全画面ビューが閉じている）だけ放置判定する
+  
   if(learn.on||pres.on||playing)return;
   if(introEl.style.display!=='none')return;
   if($('hmView').classList.contains('show')||$('wlView').classList.contains('show')||$('dfView').classList.contains('show'))return;
@@ -3869,26 +3746,13 @@ $('lrnExit').onclick=learnStop;
 
 addEventListener('pointermove',presWake);
 addEventListener('keydown',e=>{ if(pres.on&&e.key==='Escape'){ presStop(); return; } presWake(); });
-/* ================================================================
-   ver.6.2: 自動プレゼンの下部テロップ〔鈴木様指示「視認性が悪い・全面のウィンドウで」〕
-
-   旧実装（ver.2.0〜4.1）は解決課題名を canvas に薄く散布していたが、
-   ピークα0.55・縁取りなしのため樹と背景映像に埋もれて読めなかった。
-   → 下部に暗幕つきの帯を敷き、その年に解決した課題を**まとめて**大きく出す。
-
-   なぜ「1件ずつ送る」ではなく「年ごとに束ねる」のか:
-     1年＝3.8秒に対し、同じ年に解決する課題は最大15件（2034年）・平均5.4件。
-     1件ずつ読ませる速度（1.5秒以上）では年送りに追いつかず、
-     テロップが何年も遅れて別の年の話を映すことになるため。
-================================================================ */
-/* 名前を出す上限。画面幅で加減する——狭い画面で6件出すと折り返しが増えて
-   1件あたりの文字が小さくなり、かえって読めなくなるため（超過分は「ほか N件」に畳む）。
-   件数そのものは「N件が解決」で伝わるので、名前は少なく大きくが正解。 */
+ 
+ 
 function pcMax(){ return W>=1180?4:(W>=820?3:2); }
 function presCaptionShow(year){
   const cap=$('presCap'); if(!cap)return;
   const list=problems.filter(p=>p.yr===year);
-  if(!list.length){ cap.classList.remove('on'); return; }   // 解決ゼロの年は帯ごと引っ込める
+  if(!list.length){ cap.classList.remove('on'); return; }   
   const shown=list.slice(0,pcMax()), rest=list.length-shown.length;
   $('pcYear').textContent=year;
   $('pcCnt').textContent=list.length+'件が解決';
@@ -3900,7 +3764,7 @@ function presCaptionShow(year){
 }
 function presCaptionHide(){ const cap=$('presCap'); if(cap)cap.classList.remove('on'); }
 
-/* ver.3.7: 表示時の説明ガイド〔鈴木様指示〕──旧「▶を押すと…」自動トーストはガイドに置換 */
+ 
 const GUIDE=[
   '世界樹（世界の構造樹）へようこそ',
   '構造の先にある社会課題が、葉として生い茂っています',
@@ -3910,7 +3774,7 @@ const GUIDE=[
   '美しい音楽と共にお楽しみください'
 ];
 let askShown=false, guideTimers=[];
-/* ver.4.0: 質問ダイアログの汎用化（説明→課題表示の2段質問）〔鈴木様指示〕 */
+ 
 function askDialog(q,onYes,onNo){
   $('askQ').textContent=q;
   $('askGuide').classList.add('show');
@@ -3929,39 +3793,35 @@ function playGuide(list){
 function showAskGuide(){
   if(askShown) return; askShown=true;
   setTimeout(()=>askDialog('簡単に説明を聞きますか？',
-    ()=>{ playGuide(GUIDE); guideTimers.push(setTimeout(askLabels, GUIDE.length*3900+700)); },   // 説明の後に2問目
-    ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       // 挨拶の後に2問目
+    ()=>{ playGuide(GUIDE); guideTimers.push(setTimeout(askLabels, GUIDE.length*3900+700)); },   
+    ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       
   ),1400);
 }
 
-/* ver.6.0: ?q= 課題検索ディープリンク〔天之瓊矛カルテ等から検索語つきURLでワンクリック来訪〕
-   例: www.sengokudama.com/sekaiju/?q=少子高齢化 → タイトル画面を飛ばし、その語を課題検索した
-   状態のツリーを表示（検索欄への手入力が不要になる）。既存の検索入力ハンドラを再利用する。 */
+ 
 (function qDeepLink(){
   let q; try{ q=new URLSearchParams(location.search).get('q'); }catch(_){ return; }
   if(!q) return; q=q.trim(); if(!q) return;
-  askShown=true;   // タイトル後の説明ダイアログ（showAskGuide）を抑止＝検索目的の来訪
+  askShown=true;   
   let toasted=false;
   const apply=function(){
-    introEl.style.display='none';                    // 「そのまま観る」と同じくイントロを閉じる
+    introEl.style.display='none';                    
     $('hmView').classList.remove('show');
     const sb=$('search');
-    if(sb){ sb.value=q; sb.dispatchEvent(new Event('input')); }   // state.search 設定→フィルタ→統計更新
+    if(sb){ sb.value=q; sb.dispatchEvent(new Event('input')); }   
     if(!toasted){ toast('「'+q+'」で関連課題を検索しました'); toasted=true; }
   };
-  apply();                                 // 同期適用（rAFはタブ非表示時に凍結するため依存しない）
-  window.addEventListener('load',apply);   // フォント・レイアウト確定後にも再適用（保険）
+  apply();                                 
+  window.addEventListener('load',apply);   
 })();
 </script>
 
 <script>
-/* ver.6.5: 旧URL（sekaiju.pages.dev）に来た方へ「移転のお知らせ」を出す。
-   新URL www.sengokudama.com では hostname が一致しないので要素そのものが生成されない＝本番に影響しない。
-   （301転送ではなく本体にお知らせを持たせた理由は開発メモの §10 と ver.6.5 の節） */
+ 
 (function(){
-  if(!/(^|\.)pages\.dev$/i.test(location.hostname)) return;   // 旧ドメイン以外では何もしない
+  if(!/(^|\.)pages\.dev$/i.test(location.hostname)) return;   
   const NEW = 'https://www.sengokudama.com/sekaiju/';
-  const dest = NEW + location.search + location.hash;         // ?q=少子高齢化 などのディープリンクを引き継ぐ
+  const dest = NEW + location.search + location.hash;         
   const box = document.createElement('div');
   box.id = 'movedNotice';
   box.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:95;display:flex;'
