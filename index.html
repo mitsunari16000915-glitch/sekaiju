@@ -43,6 +43,26 @@
     .tsz{ margin-left:auto; margin-right:12px; }    
     .tsz .tsv{ min-width:30px; }
   }
+   
+   
+  .srch-bar{ position:fixed; z-index:22; left:50%; transform:translateX(-50%); top:74px;
+    display:none; align-items:center; gap:2px; max-width:min(92vw,560px);
+    background:rgba(20,16,10,0.92); border:1px solid rgba(201,169,97,0.5); border-radius:16px;
+    box-shadow:0 3px 14px rgba(0,0,0,0.5); }
+  .srch-bar.show{ display:flex; }
+   
+  .srch-bar .sb-main{ padding:6px 4px 6px 13px; cursor:pointer; color:var(--gold-soft);
+    font-size:calc(11px*var(--fz)); letter-spacing:0.04em; white-space:nowrap;
+    display:flex; align-items:baseline; min-width:0; }
+  .srch-bar .sb-main b{ color:var(--pearl); font-weight:600;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  .srch-bar .sb-main .sb-n{ color:var(--pearl-mid); flex:none; }
+  .srch-bar .sb-main .sb-go{ color:var(--muted); font-size:0.88em; margin-left:5px; flex:none; }
+  .srch-bar .sb-x{ padding:6px 12px 6px 8px; cursor:pointer; color:var(--muted);
+    font-size:calc(12px*var(--fz)); border-left:1px solid rgba(201,169,97,0.28); }
+  .srch-bar .sb-x:hover{ color:var(--pearl); }
+  .srch-bar.none{ border-color:rgba(255,138,139,0.55); }
+  .srch-bar.none .sb-main{ color:#ff8a8b; }
   html,body { height:100%; overflow:hidden; background:#05070d; }
    
   #bgVideo{ position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; object-fit:cover; z-index:0;    
@@ -117,6 +137,11 @@
   #clusterChips,#elemChips,#tierChips{ display:grid; grid-template-columns:1fr 1fr; }
   #clusterChips .chip,#elemChips .chip,#tierChips .chip{ text-align:center; padding:3px 4px;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+   
+  #scenChips{ display:grid; grid-template-columns:1fr 1fr 1fr; }
+  #scenChips .chip{ text-align:center; padding:3px 2px; line-height:1.25; }
+  #scenChips .chip b{ display:block; font-weight:inherit; }
+  #scenChips .chip i{ display:block; font-style:normal; font-size:0.8em; opacity:0.62; letter-spacing:0; }
   .panel h3:first-child { margin-top:0; }
   .chiprow { display:flex; flex-wrap:wrap; gap:3px; }
   .chip { padding:2px 6px; font-size:calc(10.5px*var(--fz)); letter-spacing:0.03em; border-radius:3px; cursor:pointer;
@@ -248,6 +273,7 @@
     .panel::-webkit-scrollbar-thumb{ background:rgba(201,169,97,0.4); border-radius:2px; }
     .vbtn{ padding:8px 4px; font-size:calc(11.5px*var(--fz)); }
     #clusterChips .chip,#elemChips .chip,#tierChips .chip{ padding:6px 4px; font-size:calc(11px*var(--fz)); }
+    #scenChips .chip{ padding:6px 2px; font-size:calc(11px*var(--fz)); }    
     .detail { width:min(320px, calc(100vw - 24px)); }
     .topbar .ttl{ font-size:calc(15px*var(--fz)); } .topbar .stats{ display:none; }
     .timeline { gap:10px; padding:8px 14px; bottom:10px; }
@@ -541,6 +567,28 @@
   .if-lead b{ color:var(--gold-soft); }
   .if-sub{ font-size:calc(12px*var(--fz)); color:var(--muted); margin-bottom:4px; letter-spacing:0.06em; }
   .if-h{ font-size:calc(21px*var(--fz)); font-weight:900; color:var(--gold-soft); letter-spacing:0.06em; margin-bottom:12px; }
+   
+  .if-sum{ margin:0 0 18px; padding:13px 15px 12px; border-radius:8px;
+    background:linear-gradient(180deg,rgba(201,169,97,0.13),rgba(201,169,97,0.05));
+    border:1px solid rgba(201,169,97,0.45); }
+  .if-sum-h{ font-size:calc(11px*var(--fz)); letter-spacing:0.22em; color:var(--gold);
+    font-family:'Cormorant Garamond',serif; margin-bottom:9px; }
+  .if-sum-h .cav{ letter-spacing:0.04em; color:var(--muted); font-size:0.94em; margin-left:8px;
+    font-family:'Noto Serif JP',serif; }
+  @media(max-width:520px){ .if-sum-h .cav{ display:block; margin:3px 0 0; } }
+  .if-sum-r{ display:grid; grid-template-columns:76px 1fr; gap:4px 12px; align-items:baseline;
+    padding:6px 0; border-top:1px solid rgba(201,169,97,0.16); }
+  .if-sum-r:first-of-type{ border-top:0; padding-top:0; }
+  .if-sum-r .k{ font-size:calc(10.5px*var(--fz)); color:var(--gold); letter-spacing:0.1em;
+    font-weight:700; white-space:nowrap; }
+  .if-sum-r .v{ font-size:calc(13px*var(--fz)); line-height:1.95; color:var(--pearl); }
+   
+  .if-sum .num{ color:var(--gold-soft); font-weight:700; font-size:1.18em; letter-spacing:0.02em; }
+  .if-sum .kw{ color:#fff; font-weight:700; font-size:1.08em; }
+  @media(max-width:760px){
+    .if-sum-r{ grid-template-columns:1fr; gap:1px; padding:7px 0; }
+    .if-sum-r .k{ letter-spacing:0.14em; }
+  }
   .if-sec{ margin-bottom:16px; }
   .if-lbl{ font-size:calc(11px*var(--fz)); letter-spacing:0.16em; color:var(--gold); margin-bottom:6px;
     font-family:'Cormorant Garamond',serif; }
@@ -646,6 +694,21 @@
     font-size:calc(11px*var(--fz)); line-height:1.9; color:#a8bb8e; text-align:left; }
   .fd-sup .sup-more b{ color:#d7e6c4; font-weight:700; }
   .fd-sup .sup-note{ color:var(--muted); font-size:calc(10px*var(--fz)); }
+
+   
+  .d-foodcta{ margin:14px 0 4px; }
+  .d-foodbtn{ display:flex; align-items:center; gap:12px; width:100%; padding:14px 16px; cursor:pointer;
+    border:1px solid rgba(142,176,112,0.65); border-radius:9px; font-family:inherit; text-align:left;
+    background:linear-gradient(100deg, rgba(122,158,96,0.24), rgba(122,158,96,0.08)); color:#eef6e2;
+    transition:all .18s; }
+  .d-foodbtn:hover{ border-color:#b6d79a; background:linear-gradient(100deg, rgba(122,158,96,0.36), rgba(122,158,96,0.15));
+    box-shadow:0 0 16px rgba(122,158,96,0.3); transform:translateY(-1px); }
+  .d-foodbtn .ic{ font-size:calc(24px*var(--fz)); line-height:1; flex:none; }
+  .d-foodbtn .tx{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+  .d-foodbtn .t1{ font-size:calc(14px*var(--fz)); font-weight:700; letter-spacing:0.04em; color:#eef6e2; }
+  .d-foodbtn .t2{ font-size:calc(10.5px*var(--fz)); color:#a8bb8e; }
+  .d-foodbtn .go{ font-size:calc(20px*var(--fz)); color:#a9cb88; flex:none; transition:transform .18s; }
+  .d-foodbtn:hover .go{ transform:translateX(3px); color:#d7e6c4; }
 
    
   .fd-lead,.fd-disc,.fd-note,.fd-box,.fd-p,.fd-blk,.fd-cell,.nw-item,.if-cav,.wl-det,
@@ -917,7 +980,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · TIMELINE 2026–2080 · <span style="color:#f5f0e8">世界樹 ver.7.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · <span id="tlSpan">TIMELINE 2026–2080</span> · <span style="color:#f5f0e8">世界樹 ver.8.5</span></div>
   </div>
   <div class="stats" id="stats"></div>
   
@@ -955,6 +1018,11 @@
   <div class="chiprow" id="elemChips"></div>
   <h3>TIERS · 解決時期</h3>
   <div class="chiprow" id="tierChips"></div>
+  
+  <h3>SCENARIO · 見通し</h3>
+  <div class="chiprow" id="scenChips"></div>
+  <div id="scenNote" style="font-size:calc(9.5px*var(--fz));letter-spacing:0.02em;line-height:1.6;
+       margin:4px 2px 0;color:var(--pearl-mid)"></div>
   <input class="searchbox" id="search" placeholder="課題検索: 空き家 / 少子高齢化 …" style="margin-top:7px">
   <div id="searchHit" style="font-size:calc(9.5px*var(--fz));letter-spacing:0.04em;margin:3px 2px 0;min-height:12px;line-height:1.4"></div>
   <h3>VIEW · 視点</h3>
@@ -1004,6 +1072,12 @@
 
 <div class="toast" id="toast"></div>
 
+
+
+<div class="srch-bar" id="srchBar">
+  <span class="sb-main" id="srchBarMain">⌕ <b id="srchBarWord"></b><span class="sb-n" id="srchBarN"></span><span class="sb-go">一覧 ▸</span></span>
+  <span class="sb-x" id="srchBarX" title="検索をやめる">✕</span>
+</div>
 
 <div class="ask" id="askGuide">
   <div class="q" id="askQ">簡単に説明を聞きますか？</div>
@@ -1072,6 +1146,8 @@
     <div><span class="hmv-ttl">食 糧 問 題 <span style="font-size:calc(11px*var(--fz));color:var(--muted)">-FOOD · SPECIAL SECTION-</span></span>
       <span class="hmv-kw" id="fdKw"></span></div>
     <div class="hmv-btns">
+      
+      <span class="hm-btn" id="fdShare" title="いま開いている面のURLを送ります">🔗 リンクを送る</span>
       <span class="hm-btn" id="fdClose">✕ 閉じる</span>
     </div>
   </div>
@@ -1143,6 +1219,8 @@
       
       <button class="what-btn leaf" id="foodLink"><span class="wb-ic">🌾</span><span class="wb-ttl">食糧問題編</span><span class="wb-sub">── 8軸90課題・二つの読み方・工程表</span></button>
       
+      
+      <a class="what-btn" id="listLink" href="list.html" target="_blank" rel="noopener noreferrer"><span class="wb-ic">▤</span><span class="wb-ttl">250の社会課題｜一覧で見渡す</span><span class="wb-sub">── 7つの群・35の分野に並べた索引</span></a>
       <a class="what-btn" id="evidenceLink" href="evidence.html" target="_blank" rel="noopener noreferrer"><span class="wb-ic">⚖</span><span class="wb-ttl">エビデンス集｜250課題の全数監査</span><span class="wb-sub">── 確度A/B/C・参考資料230件</span></a>
       
       <a class="what-btn" href="https://www.sengokudama.com/japan/" target="_blank" rel="noopener noreferrer"><span class="wb-ic">🗾</span><span class="wb-ttl">天之瓊矛へ接続｜自治体分析へ</span><span class="wb-sub">── 全1,741市区町村を2050年まで</span></a>
@@ -1225,7 +1303,7 @@
         <span class="num">幹</span><span><b>幹は時間の積層。</b>最下段は「過去の構造（変えられない）」、以下「現在」「5〜10年」「10〜30年」「30年〜」の五層。</span>
         <span class="num">枝</span><span><b>7本の大枝＝7つの課題群。</b>そこから35のサブ要素の中枝が伸び、先端は変化の駆動要素──「技術」「生産体制」「意識」「規範」の色を持つ。<b>解決時期が遅いサブ要素ほど大枝の先に付き、「規範」の中枝は最も未来側にしか生えない。</b></span>
         <span class="num">葉</span><span><b>葉＝課題が解決された未来。</b>はじめは薄い金色。<b>下の年表バーを未来へ進める（▶で自動再生）と、解決年を迎えた葉がその課題のテーマ色に染まっていきます。</b>葉を選ぶと根から葉への道筋が金色に灯る。大きな課題ほど、葉も大きく描かれる。</span>
-        <span class="num">実</span><span><b>規範が加わった枝には果実が実る（2056年〜）。</b>成果＝金の果実、新たな課題＝腐った果実。腐果は地に落ち、土に還り、<b>次の世界樹を育てる養分</b>になる。</span>
+        <span class="num">実</span><span><b>規範が加わった枝には果実が実る（<span id="fruitYr">2056年〜</span>）。</b>成果＝金の果実、新たな課題＝腐った果実。腐果は地に落ち、土に還り、<b>次の世界樹を育てる養分</b>になる。</span>
       </div>
       <button class="intro-btn" data-to="step0" style="margin-top:16px">戻 る</button>
     </div>
@@ -1336,7 +1414,7 @@ const DATA = [
   ['小学校統廃合','年約400校ペース。地域コミュニティ核の消失。'],
   ['商店街シャッター化','地方の中心市街地空洞化。'],
   ['公共サービス維持困難','バス路線廃止・生活インフラの劣化。'],
-  ['耕作放棄地','42.3万ha（東京都の2倍）。'],
+  ['耕作放棄地','42.3万ha＝東京都の約1.9倍（2015年農林業センサス。この統計は2015年で終了）。現行指標は農水省「荒廃農地」で25.7万ha（2024年）＝定義の異なる別統計。'],
   ['道路・橋・上下水道の老朽化','高度成長期建設の更新投資不足。'],
   ['人口減少の心理的影響','「先細り」感覚が地域の活力を奪う。']]},
  {id:'2-5',n:'多様性との共生',h:'far',e:['norm','mind'],hy:'AI翻訳が言語の壁を5年で消すが、共生は規範問題であり社会的統合の作法は一世代かけて形成される。',is:[
@@ -1496,7 +1574,7 @@ const DATA = [
   ['食料自給率38%','先進国最低水準。'],
   ['種子・肥料の輸入依存','野菜種子の9割超が海外産。'],
   ['農業の高齢化','基幹的農業従事者の平均68歳。'],
-  ['農地の荒廃拡大','耕作放棄地が東京都の2倍の面積に。獣害の発生源にも。'],
+  ['農地の荒廃拡大','耕作放棄地が東京都の約1.9倍の面積に（2015年農林業センサス）。獣害の発生源にも。'],
   ['漁業の衰退','就業者は1980年代の1/3。'],
   ['円安での食料価格上昇','輸入食品高騰が家計直撃。'],
   ['フードマイレージの長距離化','地産地消比率の低下。']]},
@@ -1573,11 +1651,11 @@ const DATA = [
  
 const SPECIAL = {
 '三世代同居の激減':{o:'early',yr:2042,st:'産業革命が父を工場へ連れ出し、職住分離が核家族を生んだ。約百年かけてそれは「規範」として定着した。だがAI・ロボットによる在宅生産体制が整えば、職住は再融合し、父は家に戻る。核家族問題は「解決すべき課題」ではなく「前提条件の消滅によって消える課題」である。生産体制の転換が10〜30年、新しい家族規範の定着はその先30年。'},
-'「家」概念の消失':{yr:2048,st:'家の消失は価値観の堕落ではなく、職住分離という生産体制の帰結だった。在宅生産の復活と事業承継の危機が「家業」を再発見させる。処分権を時間に返上する「預かり所有」の再実装が鍵。'},
-'合計特殊出生率1.14':{o:'late',yr:2058,st:'出生率は規範の問題であり、政策の即効性は乏しい。在宅生産体制・養育の社会化・住宅コスト低下（人口減の逆説的恩恵）が前提条件を整えたあと、一世代（30年）遅れて回復が現れるというのが本世界樹の仮説。'},
+'「家」概念の消失':{o:4.5,yr:2048,st:'家の消失は価値観の堕落ではなく、職住分離という生産体制の帰結だった。在宅生産の復活と事業承継の危機が「家業」を再発見させる。処分権を時間に返上する「預かり所有」の再実装が鍵。'},
+'合計特殊出生率1.14':{o:'late',yr:2073,st:'出生率は規範の問題であり、政策の即効性は乏しい。在宅生産体制・養育の社会化・住宅コスト低下（人口減の逆説的恩恵）が前提条件を整えたあと、一世代（30年）遅れて回復が現れるというのが本世界樹の仮説。職住の再融合＝「三世代同居の激減」が解ける2042年に規範30年則を足して2073年に置く。同じ枝の前提条件（未婚率・晩産化・婚活・「子無し選択」）がすべて解けたあとに来るのは、この因果の順序による。'},
 '宮大工の不足':{o:'early',yr:2030,st:'国内に約100名。技能は10年単位でしか人に渡らないため、最後の世代が現役のうちに継承を国家事業化しなければ物理的に消える。締切は5〜10年。デジタル記録（7-5）と職人の経済保障（生産体制）の同時実行が条件。'},
 'GAFAMへの完全依存':{yr:2033,st:'完全な独立は非現実的。分散型プロトコル・国産AI基盤・規制の三点で「依存の分散」を作るのが5〜10年の現実解。データ主権は次の10年の主戦場。'},
-'内部留保600兆円超の塩漬け':{yr:2040,st:'説教では動かない。経営者の大量引退（大承継時代）と人手不足が、資本を強制的に動かす。財団所有・承継ファンド・事業転換積立という「売れない構造」の器が10〜30年で普及する。'},
+'内部留保600兆円超の塩漬け':{o:0.5,yr:2040,st:'説教では動かない。経営者の大量引退（大承継時代）と人手不足が、資本を強制的に動かす。財団所有・承継ファンド・事業転換積立という「売れない構造」の器が10〜30年で普及する。'},
 '限界集落40%':{yr:2044,st:'全部は救えない、が結論から逃げないこと。自動運転物流・遠隔医療・分散電源で「残す集落」の質を設計し、たたむ集落は家じまいの儀礼とともに撤退する。撤退の設計も文明の技術である。'},
 '化石燃料約8割依存':{o:'early',yr:2043,st:'ペロブスカイト・洋上風力・蓄電・次世代炉の組み合わせで、2040年代に自給5割が射程。エネルギー自給は「地震文明の自立」の物理的土台になる。'},
 '食料自給率38%':{o:'early',yr:2041,st:'精密農業・植物工場・培養タンパクの三本柱で2030年代に反転開始。農地は余っていく——制約は土地ではなく担い手であり、そこにこそ自動化が効く。'},
@@ -1585,9 +1663,35 @@ const SPECIAL = {
 '南海トラフ地震':{o:'early',yr:2032,st:'発生は消せない。これは地震文明の宿命である。解は「被害の構造」を変えること——予測AI・事前復興計画・分散化。試験日は選べないから、備えを暦に書き込む（訓練の祝祭化）。'},
 '裏金問題':{yr:2059,st:'資金の完全透明化は技術的に今すぐ可能。だが政治文化という規範の入れ替わりは世代交代を要する。技術が先行し、規範が30年遅れて追いつく典型例。'},
 '職人の知のロスト':{o:'early',yr:2029,st:'LLMとモーションキャプチャで「記録の革命」は既に起きた。制約は技術ではなく、保持者の存命時間だけ。世界樹の中で最も締切が近い葉のひとつ。'},
-'東京一極集中':{yr:2047,st:'リモートワークとAIによる地方生産性の向上が「東京でなければならない理由」を経済的に侵食する。ただし制度としての分権（道州制級）は30年仕事。経済が先、制度が後。'},
+'東京一極集中':{o:3.5,yr:2047,st:'リモートワークとAIによる地方生産性の向上が「東京でなければならない理由」を経済的に侵食する。ただし制度としての分権（道州制級）は30年仕事。経済が先、制度が後。'},
 'フェイクニュース拡散':{o:'early',yr:2037,st:'コンテンツ来歴技術（C2PA）の標準化は5〜10年で進み、「署名なき情報は疑う」が技術的には既定値になる。ただし社会の習慣として根づき、この葉が開くのは2030年代後半。真偽の判定を個人の努力から、インフラの仕事へ移す。'},
-'半導体産業の衰退':{o:'early',yr:2031,st:'国家投資は既に走っている。5〜10年で製造基盤の一角を取り戻せるかの勝負。遅れの自覚こそが最大の投資動機になった稀有な例。'}
+'半導体産業の衰退':{o:'early',yr:2031,st:'国家投資は既に走っている。5〜10年で製造基盤の一角を取り戻せるかの勝負。遅れの自覚こそが最大の投資動機になった稀有な例。'},
+
+ 
+
+ 
+'民俗芸能の継承不能':{o:'early',yr:2038,st:'担い手が絶えるのではなく、担い手が先に老いる。記録も支援も、保持者が舞える間にしか間に合わない。宮大工・職人の知とまったく同じ締切型の課題で、違うのは締切の年だけ。中未来の帯に置きながら、その最も手前に来る。'},
+'伝統的街並みの消失':{o:'early',yr:2039,st:'壊した街並みは戻らない。だからこれは「いつ直すか」ではなく「いつまでに止めるか」の課題である。景観の合意形成には年数がかかる一方、対象そのものは減り続けるので、遅れた分だけ守るものが消える。この枝の最も手前に置く理由はそれだけである。'},
+'信頼資本の枯渇':{o:'late',yr:2077,st:'これは単独の課題ではなく、同じ枝の6つ（品質偽装・文書改ざん・不祥事の常態化・誹謗中傷・「バレなければ良い」・いじめ）の残高である。個別の是正が全部済んだあとに、ようやく積み直しが始まる。失うのは一度、戻すのは一世代。だから枝の最先端、規範の帯の終わり近くに置く。'},
+
+ 
+'消滅可能性都市896':{o:'early',yr:2041,st:'消滅可能性は予測であって判決ではない。ただし人口の慣性は大きく、2020年代の出生数がそのまま2040年代の担い手数になる。だからこの課題は「早く決める」ことでしか動かない——残す・畳む・束ねるの判断が先に来る。同じ枝の「限界集落40%」より手前に置くのは、判断の順序がそうだからである。'},
+'道路・橋・上下水道の老朽化':{o:'late',yr:2054,st:'建設後50年を超える橋梁は、直近7年で約13万橋から約24万橋へ倍増した（国土交通省 道路メンテナンス年報）。高度成長期に一斉に造ったものは、一斉に寿命が来る。更新は分散できず、財源も人手も同時に足りない。だから縮小社会の設計（残す・畳む）が決まったあとにしか終わらない。この枝で最も遅い。'},
+
+ 
+'実質賃金の30年停滞':{o:'early',yr:2038,st:'2026年に入り実質賃金は6か月連続でプラスに転じた（厚生労働省 毎月勤労統計）。ただし30年の停滞は数か月では清算されない。人手不足が構造化し、賃上げが「善意」から「調達の条件」に変わったとき初めて固定する。中間層の再建は、まずこの一点が動いてから始まる。'},
+'中間層の崩壊':{yr:2041,st:'中間層は所得の中央値ではなく、生活の予測可能性で決まる。賃金が動いても、住居・教育・医療の見通しが立たなければ層は戻らない。実質賃金の反転が先、生活コストの安定が後——この枝ではその順序で2番目に置く。'},
+
+ 
+'地方交付税依存':{o:'early',yr:2041,st:'自主財源の比率は制度の問題であり、技術を待たずに動かせる。国の補正予算に依存した財政運営からの脱却は、総務省自身が地方財政の課題として明記している。東京一極集中の是正（同じ枝の次）より先に来るのは、財源の設計が人の移動より先に決まるからである。'},
+'投票率低下':{o:'late',yr:2077,st:'投票率は原因ではなく結果である。不信の個別要因——裏金・忖度・利権・不透明な政治資金——が片づいたあとにしか戻らない。制度をいじって数字だけ上げることはできるが、それは同じ枝の他の課題を解いたことにはならない。だから最後に置く。'},
+
+ 
+'カーボンニュートラル困難':{o:4.5,yr:2050,st:'2050年カーボンニュートラルは、2020年に国として掲げた期限である。世界樹はこの課題を「達成した年」ではなく「達成が困難でなくなる年」として置く——経路が技術と制度で埋まり、あとは実行だけになる時点。期限そのものに年を合わせるのは、250課題のうちこの課題だけが、暦を先に決めてから逆算されているからである。'},
+
+ 
+'論文シェア9%→3%':{yr:2047,st:'論文は人が書く。博士課程に入った人が独立した研究者になるまで約10年、その成果が国際シェアに現れるまでさらに10年。つまり今日の入学者数が2040年代のシェアを決める。手を打っても結果が出るまでが遠い——この時間差そのものが、課題の本体である。'},
+'教員の長時間労働':{o:'late',yr:2053,st:'勤務時間の上限を定めても、業務量と定数が変わらなければ、超過は記録から消えるだけで実体は残る。教育機構の再生では、大学側の課題（交付金・任期付ポスト・研究時間）が先に動き、初等中等の働き方が最後に残る。制度が先・実体が後という順序が、この枝の並びそのものである。'}
 };
 
  
@@ -1753,7 +1857,16 @@ DATA.forEach((cl,ci)=>{
     spirals.push({tip:n2,from:midNodes[3],s:18+ti*2,ccw:(spirals.length%2)});
      
     const probs=problems.filter(p=>p.sub===sub);
-    const order=probs.map((p,idx)=>({p,o:(SPECIAL[p.name]&&SPECIAL[p.name].o==='early')?-1:(SPECIAL[p.name]&&SPECIAL[p.name].o==='late')?99:idx}));
+     
+    const order=probs.map((p,idx)=>{
+      const sp=SPECIAL[p.name];
+      const o = !sp ? idx
+        : sp.o==='early' ? -1
+        : sp.o==='late'  ? 99
+        : (typeof sp.o==='number') ? sp.o
+        : idx;
+      return {p,o};
+    });
     order.sort((a,b)=>a.o-b.o);
     order.forEach((e2,rank)=>{
       const p=e2.p, n=order.length;
@@ -1858,6 +1971,8 @@ problems.forEach((p,pi)=>{
   p.yr=Math.round(lo+span*frac+(rnd2()-0.5)*1.2);
   if(p.yr<lo)p.yr=lo; if(p.yr>hi)p.yr=hi;
 });
+ 
+problems.forEach(p=>{ p.yr0=p.yr; });
 problems.forEach(p=>{ p.conf=CONF[p.name]||'－'; });   
 
  
@@ -2100,6 +2215,7 @@ function resize(){ DPR=Math.min(2,window.devicePixelRatio||1);
   cv.style.width=W+'px'; cv.style.height=H+'px';   
   const _bv=document.getElementById('bgVideo'); if(_bv){ _bv.style.width=W+'px'; _bv.style.height=H+'px'; }
   CX = W<=900 ? 0.5 : 0.435;   
+  try{ srchBarPos(); }catch(_){}   
   buildBackground();
   try{ if(nodes.length){
     const pD=camTargets.all.dist, pTy=camTargets.all.ty;
@@ -2310,9 +2426,40 @@ function project(p,sway){
 }
 
  
+const SCEN={
+  opt :{k:0.75,n:'楽観',t:'×0.75',c:'#6f9f6a',
+        d:'解決が前倒しになった場合の読み方。2026年からの隔たりを4分の3に縮めて読みます。'},
+  base:{k:1.00,n:'基本',t:'既定',  c:'#e8c977',
+        d:'エビデンスに基づく既定の配列。監査台帳も出典も、この年で作られています。'},
+  pes :{k:1.35,n:'悲観',t:'×1.35', c:'#b5705a',
+        d:'解決が後ろ倒しになった場合の読み方。2026年からの隔たりを1.35倍に伸ばして読みます。'}
+};
+const SC_END0=2080;                                            
+function scK(){ return SCEN[state.scen].k; }
+function scY(y){ return Math.round(2026+(y-2026)*scK()); }     
+function scEnd(){ return scY(SC_END0); }
+ 
+const TIER_BND={1:null,2:2031,3:2037,4:2056};
+const TIER_DUR={1:'いま',2:[5,10],3:[10,30],4:[30,null]};
+function rebuildTierLabels(){
+  const k=scK();
+  const dur=a=>{ if(typeof a==='string')return a;
+    const lo=Math.round(a[0]*k);
+    return a[1]===null ? lo+'年〜' : lo+'〜'+Math.round(a[1]*k)+'年'; };
+  for(let ti=1;ti<=4;ti++){
+    const lo=TIER_BND[ti], nx=TIER_BND[ti+1];
+    const ys = lo===null ? '〜'+(scY(nx)-1)
+             : nx===undefined ? scY(lo)+'-'
+             : scY(lo)+'-'+String(scY(nx)-1).slice(2);
+    TIERS[ti].s = dur(TIER_DUR[ti])+'（'+ys+'）';
+  }
+}
+
+ 
 const BG_VIDEO_ONLY=true;   
 const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','norm','mind']),
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
+  scen:'base',            
   };
 if(W/H>=1.05) state.labelBias=3.0;   
 function visibleP(p){
@@ -2334,8 +2481,10 @@ function nodeAlpha(n){
 }
  
 function solveT(p){ const w=3; return Math.max(0,Math.min(1,(state.year-(p.yr-w))/w)); }
-function fruitT(){ return Math.max(0,Math.min(1,(state.year-2055)/8)); }
-function yearTier(y){ return y<2031?1: y<2037?2: y<2056?3:4; }
+ 
+function fruitT(){ const a=scY(2055), sp=Math.max(1,Math.round(8*scK()));
+  return Math.max(0,Math.min(1,(state.year-a)/sp)); }
+function yearTier(y){ return y<scY(2031)?1: y<scY(2037)?2: y<scY(2056)?3:4; }
 function mixCol(hexA,hexB,t){
   const A=parseInt(hexA.slice(1),16),B=parseInt(hexB.slice(1),16);
   const r=Math.round(((A>>16)&255)*(1-t)+((B>>16)&255)*t);
@@ -2499,7 +2648,7 @@ function frame(t){
     if(!pres.nextYearAt) pres.nextYearAt=time+3800;
     if(time>=pres.nextYearAt){ pres.nextYearAt=time+3800;
        
-      if(state.year>=2080){ setYear(2026); presCaptionHide(); }
+      if(state.year>=scEnd()){ setYear(2026); presCaptionHide(); }   
       else { setYear(state.year+1); presCaptionShow(state.year); }
     }
     cam.yaw+=0.000115*dt;                        
@@ -2551,6 +2700,10 @@ function frame(t){
   })();
 
   const items=[];
+   
+  const leafLbl=[];
+   
+  const fixedLbl=[];
   const goldTrunk=['#6b5320','#8a6f2a','#a3842f','#c9a961','#e8c977'];  
   const eraTier=yearTier(state.year);
 
@@ -2824,10 +2977,20 @@ function frame(t){
         (n.t==='tier') ||
         (n.t==='btip'&&zoomL>0.7) ||
         (n.t==='fruit'&&zoomL>1.15&&fruitT()>0.3) ||
-        ((n.t==='leaf'||n.t==='proot')&&(state.sel===n || state.search&&visibleP(n.p)&&zoomL>0.9 || zoomL>2.1&&al>0.5)) ||
+         
+        ((n.t==='leaf'||n.t==='proot')&&(state.sel===n || state.search&&visibleP(n.p)&&zoomL>0.9 || zoomL>0.4&&al>0.5)) ||
         (n.t==='sroot'&&zoomL>1.4&&al>0.5) ||
         (state.hover===n);
-      if(showLbl&&n.label){
+       
+      const 後段=showLbl&&n.label&&state.sel!==n&&state.hover!==n
+        ? (n.t==='croot'?-1 : n.t==='leaf'||n.t==='proot'?0 : n.t==='fruit'?1 : n.t==='btip'?2 : n.t==='sroot'?3 : 9)
+        : 9;
+      if(後段<9){
+         
+        leafLbl.push({n,al,sx:pr.sx,sy:pr.sy,d:pr.d,pri:後段,
+          fs:(n.t==='croot'?12:n.t==='btip'?11:9.5)*FZ, bold:n.t==='croot',
+          col:(n.t==='btip'?ELEMS[n.elem].c:'#f5f0e8')});
+      } else if(showLbl&&n.label){
         
         const fs=(n.t==='croot'?12:(n.t==='tier'?(W<640?10:12):(n.t==='btip'?11:9.5)))*FZ;
         ctx.font=(n.t==='croot'||n.t==='tier'?'700 ':'')+fs+'px "Noto Serif JP",serif';
@@ -2842,6 +3005,10 @@ function frame(t){
           ctx.font='600 '+(9*FZ)+'px "Cormorant Garamond",serif';ctx.fillStyle='#e8c977';
           ctx.strokeText(String(n.p.yr),tx,ty2+11);ctx.fillText(String(n.p.yr),tx,ty2+11);}
         ctx.globalAlpha=1;
+         
+        try{ ctx.font=(n.t==='croot'||n.t==='tier'?'700 ':'')+fs+'px "Noto Serif JP",serif';
+          const lw=ctx.measureText(n.label).width, hh=fs*0.68;
+          fixedLbl.push({x0:tx-3,y0:ty2-hh-3,x1:tx+lw+3,y1:ty2+hh*0.6+3}); }catch(_){}
       }
     }});
   });
@@ -2851,6 +3018,40 @@ function frame(t){
     try{ it.draw(); }
     catch(e){ if(!window.__drawErr){ window.__drawErr=String(e&&e.message||e).slice(0,200); } ctx.globalAlpha=1; try{ctx.restore();}catch(_){} }
   });
+
+   
+  try{
+    const placed=fixedLbl.slice();          
+    const pad=2;
+    ctx.textBaseline='alphabetic';
+    ctx.strokeStyle='rgba(10,10,18,0.85)'; ctx.lineWidth=3;
+     
+    leafLbl.sort((a,b)=>a.pri-b.pri||a.d-b.d).forEach(L=>{
+      const fs=L.fs, half=fs*0.62, ty=L.sy+3;
+      if(ty+half<0||ty-half>H)return;                                    
+       
+      const font=(L.bold?'700 ':'')+fs+'px "Noto Serif JP",serif';
+      if(L.n._lwFs!==fs){ ctx.font=font;
+        L.n._lw=ctx.measureText(L.n.label).width; L.n._lwFs=fs; }
+      const w=L.n._lw;
+       
+      let tx=L.sx+8;
+      if(tx+w>W) tx=L.sx-8-w;
+      if(tx<0||tx+w>W)return;
+      const box={x0:tx-pad, y0:ty-half-pad, x1:tx+w+pad, y1:ty+half*0.5+pad};
+      for(let i=0;i<placed.length;i++){
+        const q=placed[i];
+        if(box.x0<q.x1&&box.x1>q.x0&&box.y0<q.y1&&box.y1>q.y0)return;   
+      }
+      placed.push(box);
+      ctx.font=font;
+      ctx.globalAlpha=Math.min(1,L.al+0.15);
+      ctx.strokeText(L.n.label,tx,ty);
+      ctx.fillStyle=L.col; ctx.fillText(L.n.label,tx,ty);
+      ctx.globalAlpha=1;
+    });
+    window.__lblShown=placed.length; window.__lblCand=leafLbl.length;     
+  }catch(e){ if(!window.__drawErr)window.__drawErr='lbl:'+String(e&&e.message||e).slice(0,180); ctx.globalAlpha=1; }
 
    
   try{ drawDomainHighlight(); }catch(e){ if(!window.__drawErr)window.__drawErr='dom:'+String(e&&e.message||e).slice(0,180); }   
@@ -2967,6 +3168,51 @@ Object.keys(ELEMS).forEach(k=>chip($('elemChips'),ELEM_SHORT[k],ELEMS[k].c,true,
   on?state.elems.add(k):state.elems.delete(k);updateStats();}));
 [1,2,3,4].forEach(ti=>chip($('tierChips'),TIERS[ti].n,TIERS[ti].c,true,on=>{
   on?state.tiers.add(ti):state.tiers.delete(ti);updateStats();}));
+
+ 
+function scenNoteHtml(key){
+  return SCEN[key].d+'<br><span style="opacity:.75">課題の前後関係・出典・確度は、どのシナリオでも同じです。'
+    +'変えているのは暦の倍率だけで、予測を新しくしたものではありません。</span>';
+}
+function renderScenChips(){
+  const box=$('scenChips'); if(!box)return;
+  box.innerHTML='';
+  ['opt','base','pes'].forEach(k=>{
+    const s=SCEN[k], el=document.createElement('div');
+    el.className='chip'+(state.scen===k?' on':'');
+    el.innerHTML='<b>'+s.n+'</b><i>'+s.t+'</i>';
+    if(state.scen===k)el.style.background=s.c;
+    el.title=s.d;
+    el.onclick=()=>setScen(k);
+    box.appendChild(el);
+  });
+}
+function setScen(key){
+  if(!SCEN[key])return;
+  state.scen=key;
+  problems.forEach(p=>{ p.yr=scY(p.yr0); });     
+  rebuildTierLabels();
+  const end=scEnd();
+  const rg=$('tlRange'); if(rg)rg.max=end;
+  if(state.year>end)state.year=end;
+  const s=SCEN[key];
+  const note=$('scenNote');
+  if(note)note.innerHTML=scenNoteHtml(key);
+  const sp=$('tlSpan');
+  if(sp)sp.innerHTML='TIMELINE 2026–'+end
+    +(key==='base'?'':' · <span style="color:'+s.c+'">SCENARIO '+s.n+' '+s.t+'</span>');
+  const fy=$('fruitYr'); if(fy)fy.textContent=scY(2056)+'年〜';
+  renderScenChips();
+  setYear(state.year);                            
+  updateStats();
+  try{
+    if($('wlView')&&$('wlView').classList.contains('show')) wlBuild();          
+    if($('hmView')&&$('hmView').classList.contains('show')&&domain.active) renderResults();  
+  }catch(e){}
+}
+renderScenChips();
+if($('scenNote'))$('scenNote').innerHTML=scenNoteHtml('base');   
+
  
 function updateSearchSubs(){
   const q=(state.search||'').toLowerCase();
@@ -2988,8 +3234,36 @@ $('search').addEventListener('input',e=>{
       hint.style.color = n ? 'var(--gold-soft)' : '#ff8a8b';
     }
   }
+  srchBarSync();   
   updateStats();
 });
+
+ 
+function srchBarPos(){
+  const bar=$('srchBar'), tb=document.querySelector('.topbar');
+  if(bar&&tb) bar.style.top=Math.round(tb.getBoundingClientRect().bottom+8)+'px';
+}
+function srchBarSync(){
+  const bar=$('srchBar'); if(!bar)return;
+  if(!state.search){ bar.classList.remove('show'); return; }
+  srchBarPos();
+  const n=problems.filter(p=>visibleP(p)).length;
+  $('srchBarWord').textContent='「'+state.search.slice(0,18)+'」';
+  $('srchBarN').textContent = n ? '　'+n+'件' : '　一致なし';
+  $('srchBarMain').querySelector('.sb-go').style.display = n?'':'none';   
+  bar.classList.toggle('none', n===0);
+  bar.classList.add('show');
+}
+function srchClear(){
+  const sb=$('search');
+  if(sb){ sb.value=''; sb.dispatchEvent(new Event('input',{bubbles:true})); }
+  else { state.search=''; updateSearchSubs(); srchBarSync(); updateStats(); }
+}
+$('srchBarX').onclick=srchClear;
+$('srchBarMain').onclick=()=>{
+  if(problems.filter(p=>visibleP(p)).length===0)return;
+  showWorldLine(true);            
+};
 document.querySelectorAll('.vbtn[data-v]').forEach(b=>b.onclick=()=>flyTo(b.dataset.v));
 $('rotBtn').onclick=()=>{autoRot=!autoRot;updateRotBtn();};
 $('lblPlus').onclick=()=>{ state.labelBias=Math.min(3.2,state.labelBias*1.3);
@@ -3097,7 +3371,7 @@ updateStats();
 const ERA_LBL={1:'PRESENT · 現在の構造',2:'NEAR · 5〜10年',3:'MID · 10〜30年',4:'FAR · 規範と果実の時代'};
 let playing=false, playTimer=null;
 function setYear(y,fromInput){
-  state.year=Math.max(2026,Math.min(2080,Math.round(y)));
+  state.year=Math.max(2026,Math.min(scEnd(),Math.round(y)));   
   if(!fromInput)$('tlRange').value=state.year;
   $('tlYear').textContent=state.year;
   const solved=problems.filter(p=>state.year>=p.yr).length;
@@ -3112,10 +3386,10 @@ $('tlPlay').onclick=()=>{
   playing=!playing;
   $('tlPlay').textContent=playing?'❚❚':'▶';
   if(playing){
-    if(state.year>=2080)setYear(2026);
+    if(state.year>=scEnd())setYear(2026);
     playTimer=setInterval(()=>{
       setYear(state.year+1);
-      if(state.year>=2080){clearInterval(playTimer);playing=false;$('tlPlay').textContent='▶';}
+      if(state.year>=scEnd()){clearInterval(playTimer);playing=false;$('tlPlay').textContent='▶';}
     },420);
   } else clearInterval(playTimer);
 };
@@ -3158,6 +3432,7 @@ function select(n,silent){
       +(done?'年頃 解決 ── この葉は課題の色に染まっています':'年頃 解決見込み ── まだ薄金のままです')+'</span></div>';
     h+='<div class="d-tags">'+tag(p.cluster.r+' '+p.cluster.name,p.cluster.c)+tag(p.sub.id+' '+p.sub.n,'#c8c0b0')
       +tag(TIERS[p.tier].s,'#e8c977')+p.sub.e.map(k=>tag(ELEMS[k].n,ELEMS[k].c)).join('')+'</div>';
+    h+=foodBtnHtml(p);   
     h+='<div class="d-sec"><div class="d-lbl">現状 · CURRENT STATE</div><div class="d-txt">'+p.detail+'</div></div>';
     h+='<div class="d-sec"><div class="d-lbl">原因の根 · ROOT CAUSE</div><div class="d-txt">'+p.cluster.cause+'</div></div>';
     h+='<div class="d-sec"><div class="d-lbl">解決仮説 · HYPOTHESIS</div><div class="d-txt">'+p.sub.hy+'</div></div>';
@@ -3193,7 +3468,7 @@ function select(n,silent){
     const f=n.f;
     h+='<div class="d-eyebrow">'+(n.good?'FRUIT · 成果の果実':'ROTTEN FRUIT · 腐った果実')+'</div>';
     h+='<div class="d-title">'+(n.good?f.g:f.b)+'</div>';
-    h+='<div class="d-tags">'+tag(DATA[f.ci].r+' '+DATA[f.ci].name,DATA[f.ci].c)+tag('規範の枝 · 2056年〜','#a06fc0')+'</div>';
+    h+='<div class="d-tags">'+tag(DATA[f.ci].r+' '+DATA[f.ci].name,DATA[f.ci].c)+tag('規範の枝 · '+scY(2056)+'年〜','#a06fc0')+'</div>';   
     h+='<div class="d-sec"><div class="d-txt">'+(n.good?f.gd:f.bd)+'</div></div>';
     if(!n.good)h+='<div class="d-sec"><div class="d-story">腐った果実は地に落ち、土に還り、根を養う。新しい課題は次の世界樹を育てる養分である──課題の循環。</div></div>';
   } else if(n.t==='btip'){
@@ -3202,7 +3477,7 @@ function select(n,silent){
     h+='<div class="d-sec"><div class="d-lbl">この枝の小枝（サブ要素）</div><div class="d-txt">'+n.binfo.subs.join('<br>')+'</div></div>';
     if(n.elem==='norm')h+='<div class="d-sec"><div class="d-story">規範の枝は30年より下の層にはほとんど生えない。規範は一世代かけてしか変わらない──この枝にだけ、果実が実る。</div></div>';
   }
-  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b); bindInfButtons(b);   
+  b.innerHTML=h; $('detail').classList.add('show'); bindRevButtons(b); bindInfButtons(b); bindFoodButtons(b);   
 }
 window.jumpTo=function(i){ const n=nodes[i];
   camAnim={from:{...cam},to:{...cam,tx:0,ty:n.y,dist:Math.max(330,cam.dist*0.6)},t:0};
@@ -3349,6 +3624,31 @@ function bindRevButtons(root){
  
 const INF={loaded:false, items:{}, vps:{}, scope:''};
 function infFor(p){ return INF.items[p.sub.id]||null; }
+ 
+function foodBtnHtml(p){
+  const ax=FD_CONNECT[p.name]; if(!ax)return '';
+  return '<div class="d-foodcta"><button class="d-foodbtn" data-food-open="'+encodeURIComponent(ax)+'">'
+    +'<span class="ic">🌾</span><span class="tx"><span class="t1">食糧問題編で深掘りを読む</span>'
+    +'<span class="t2">'+esc(ax)+' '+esc(FD_AXNAME[ax]||'')+' の8軸90課題へ</span></span>'
+    +'<span class="go">›</span></button></div>';
+}
+function bindFoodButtons(root){
+  (root||document).querySelectorAll('[data-food-open]').forEach(b=>{
+    b.onclick=e=>{ e.stopPropagation(); showFoodAxis(decodeURIComponent(b.dataset.foodOpen)); };
+  });
+}
+function showFoodAxis(axisId){
+  closeDetail();
+  introEl.style.display='none'; $('hmView').classList.remove('show'); $('wlView').classList.remove('show');
+  FOOD.tab='issues';
+  showFood();   
+  const ax=document.querySelector('.fd-ax[data-ax="'+axisId+'"]');
+  if(!ax)return;
+  FOOD.open.add(axisId); ax.classList.add('open');
+  ax.scrollIntoView({behavior:'smooth',block:'start'});
+  ax.classList.remove('flash'); void ax.offsetWidth; ax.classList.add('flash');
+}
+
 function infBtnHtml(p){
   if(!infFor(p))return '';
   return '<div class="inf-cta"><button class="if-btn" data-inf-open="'+encodeURIComponent(p.name)+'">◈ 解決への推論を読む</button>'
@@ -3389,6 +3689,7 @@ function bindInfButtons(root){
   }).catch(()=>{ NEWS.loaded=false; });   
 })();
 
+
  
 let wlBuilt=false, wlOpenName=null;
 const WL_JUMP_SHOW=12;   
@@ -3414,7 +3715,9 @@ function wlRenderLegend(){
 }
 function wlBuild(){
   const track=$('wlTrack'); track.innerHTML='';
-  const list=problems.slice().sort((a,b)=> a.yr-b.yr || a.name.localeCompare(b.name,'ja'));
+   
+  const list=problems.filter(p=>!wlSearchOnly||visibleP(p))
+    .sort((a,b)=> a.yr-b.yr || a.name.localeCompare(b.name,'ja'));
   let curTier=null, html='';
   list.forEach(p=>{
     if(p.tier!==curTier){ curTier=p.tier; const tr=TIERS[p.tier];
@@ -3555,17 +3858,51 @@ $('dfClose').onclick=closeDrift;
 $('dfAll').onclick=()=>dfRender(null);
 
  
+ 
+const IF_TEKO=s=>{ const p=String(s||'').split(/(?<=。)/); return (p.find(x=>/テコ/.test(x))||p[0]||'').trim(); };
+const IF_NOW =i=>{ const b=(i.backcast||[]); return ((b.find(x=>x.h==='1年・今')||b[b.length-1]||{}).t)||''; };
+ 
+const IF_NUM=/(?:\d{4}年代?|\d+\s*〜\s*\d+\s*年|\d+\s*年(?:超|後|間|以内)?|一世代(?:後|超)?|半世代|\d[\d,.]*\s*(?:兆|億|万|千)?\s*(?:%|％|割|円|ポイント|pt|倍|件|人|世帯|社|自治体|課題|品目|軸)|\d[\d,.]*\s*(?:兆|億|万)円?)/g;
+ 
+const IF_KEY=['生産体制','前提条件','関係人口','制度設計','世代交代','パイロット','座組み','担い手',
+  '可視化','透明化','実証','規範','技術','意識','AI','一世代'];
+const IF_KEY_RE=new RegExp(IF_KEY.join('|'),'g');
+ 
+function ifT(s,seen){
+  let t=esc(s);
+  t=t.replace(IF_NUM, m=>'<b class="num">'+m+'</b>');
+  const st=seen||new Set();
+  t=t.replace(IF_KEY_RE, m=>{ if(st.has(m))return m; st.add(m); return '<b class="kw">'+m+'</b>'; });
+  return t;
+}
+function ifSummary(p,inf){
+  const row=(k,v)=>v?'<div class="if-sum-r"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>':'';
+  const teko=IF_TEKO(inf.leverage), now=IF_NOW(inf);
+  const seen=new Set();   
+   
+  return '<div class="if-sum"><div class="if-sum-h">◈ 要 　約'
+    + '<span class="cav">── 検証された予測ではなく、明示された推論です</span></div>'
+    + row('この課題', '<b class="kw">'+esc(p.name)+'</b>　<b class="num">'+p.yr+'年</b> 解決見込み'
+        + '<span style="color:var(--muted);font-size:0.86em">　'+esc(DATA[p.ci].r+' '+DATA[p.ci].name)+'</span>')
+    + row('筋書き', ifT(inf.hypothesis,seen))
+    + row('テ　コ', ifT(teko,seen))
+    + row('い　ま', ifT(now,seen))
+    + '</div>';
+}
+
 function ifRender(focusName){
   const t=$('ifTrack');
   const p=focusName?problems.find(x=>x.name===focusName):null;
   const inf=p?infFor(p):null;
   if(!inf){ t.innerHTML='<div class="if-lead">この課題の推論はまだ生成されていません。</div>'; $('ifKw').textContent=''; return; }
-  let h='<div class="if-lead">これは<b>「検証された予測」ではなく「明示された推論」</b>です。'
+   
+  let h='<div class="if-sub">◈ '+esc(p.sub.id)+' のサブ要素推論　起点の課題: <b style="color:var(--pearl)">'+esc(p.name)+'</b>（'+p.yr+'年 解決見込み）</div>';
+  h+='<div class="if-h">'+esc(inf.sub)+'</div>';
+  h+=ifSummary(p,inf);   
+  h+='<div class="if-lead">これは<b>「検証された予測」ではなく「明示された推論」</b>です。'
     +'バックキャスティング方法論（望ましい未来像＝大目的から逆算して、いま為すべきこと＝中目的を組み立てる）に、'
     +'35サブ要素のリソースマップと取り込み済みのエビデンスを突き合わせて生成しました。断定ではなく、思考のたたき台です。'
     +(INF.scope==='pilot-cluster-1'?'<br><span style="color:var(--muted)">※ 現在はクラスターⅠのみ試作。残りは順次追加します。</span>':'')+'</div>';
-  h+='<div class="if-sub">◈ '+esc(p.sub.id)+' のサブ要素推論　起点の課題: <b style="color:var(--pearl)">'+esc(p.name)+'</b>（'+p.yr+'年 解決見込み）</div>';
-  h+='<div class="if-h">'+esc(inf.sub)+'</div>';
 
   h+='<div class="if-sec"><div class="if-lbl">大目的 · 望ましい未来像</div><div class="if-goal">'+esc(inf.daimokuteki)+'</div></div>';
 
@@ -3609,6 +3946,13 @@ $('ifClose').onclick=closeInference;
  
 const FOOD={loaded:false, tried:false, data:null, open:new Set(), tab:'issues'};
 const PLAN={loaded:false, tried:false, data:null};   
+
+const FD_CONNECT={}, FD_AXNAME={};
+
+
+
+(function preloadFood(){ fdLoad(); })();
+
 const FD_HZ={near:'〜2030年', mid:'2030年代前半', late:'2030年代後半〜2040年代', far:'2050年以降'};
 
 function fdRate(a){ return a.rate || String(a.hypothesis||'').replace(/^律速は/,'').split(/[。、（]/)[0]; }
@@ -3999,7 +4343,10 @@ function fdLoad(){
   const grab=u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status));
   grab('food.json').catch(()=>grab('世界樹_web/food.json')).then(j=>{
     FOOD.data=j; FOOD.loaded=true;
+    
+    (j.axes||[]).forEach(a=>{ FD_AXNAME[a.id]=a.name; (a.related_existing||[]).forEach(nm=>{ FD_CONNECT[nm]=a.id; }); });
     if($('fdView').classList.contains('show'))fdRender();
+    if(state.sel)refreshDetail();
   }).catch(()=>{ FOOD.loaded=false; if($('fdView').classList.contains('show'))fdRender(); });
   PLAN.tried=true;
   grab('foodplan.json').catch(()=>grab('世界樹_web/foodplan.json')).then(j=>{
@@ -4017,17 +4364,65 @@ function fdJump(name){
 function showFood(){ $('fdView').classList.add('show'); fdRender(); fdLoad(); $('fdView').querySelector('.fd-body').scrollTop=0; }
 function closeFood(){ $('fdView').classList.remove('show'); }
 $('fdClose').onclick=closeFood;
+
+ 
+function fdShareUrl(){
+  const tab=(typeof FOOD!=='undefined'&&FOOD.tab)?FOOD.tab:'issues';
+  const q='?food'+(tab==='issues'?'':'='+tab);
+  let base=location.origin+location.pathname;
+  if(!/(^|\.)sengokudama\.com$/i.test(location.hostname)){
+    const og=document.querySelector('meta[property="og:url"]');
+    if(og&&og.content)base=og.content;
+  }
+  return base.replace(/index\.html$/i,'')+q;
+}
+const FD_SHARE_NAME={issues:'課題',contrast:'二つの読み方',roadmap:'工程表'};
+function fdCopyFallback(url){
+   
+  const el=document.createElement('input');
+  el.value=url;
+  el.setAttribute('style','position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;'
+    +'width:min(86vw,620px);padding:12px 14px;font-size:calc(13px*var(--fz));'
+    +'background:#161109;color:#f5f0e8;border:1px solid rgba(201,169,97,0.6);border-radius:6px');
+  document.body.appendChild(el);
+  el.focus(); el.select();
+  try{ document.execCommand('copy'); }catch(_){}
+  toast('このURLを長押し（PCはCtrl+C）でコピーしてください');
+  const off=()=>{ el.remove(); document.removeEventListener('pointerdown',off,true); };
+  setTimeout(()=>document.addEventListener('pointerdown',off,true),400);
+  setTimeout(off,20000);
+}
+$('fdShare').onclick=async function(){
+  const url=fdShareUrl();
+  const name=FD_SHARE_NAME[(typeof FOOD!=='undefined'&&FOOD.tab)?FOOD.tab:'issues']||'課題';
+  const title='世界樹 -YGGDRASIL- 食糧問題 特別編（'+name+'）';
+  if(navigator.share){
+    try{ await navigator.share({title,text:'8軸90課題で読む食糧問題。'+name+'の面が開きます。',url}); return; }
+    catch(e){ if(e&&e.name==='AbortError')return; }   
+  }
+  if(navigator.clipboard&&window.isSecureContext){
+    try{ await navigator.clipboard.writeText(url); toast('URLをコピーしました（'+name+'の面）。貼り付けて送れます'); return; }
+    catch(_){}
+  }
+  fdCopyFallback(url);
+};
 if($('fdBtn'))$('fdBtn').onclick=showFood;
 if($('foodLink'))$('foodLink').onclick=showFood;
 
-function showWorldLine(){
+ 
+let wlSearchOnly=false;
+function showWorldLine(searchOnly){
+  wlSearchOnly=!!searchOnly&&!!state.search;
   introEl.style.display='none'; $('hmView').classList.remove('show');
   $('wlView').classList.add('show');
-  $('wlKw').textContent=domain.active&&domain.kw?('── '+domain.kw.slice(0,44)):'';
+  $('wlKw').textContent = wlSearchOnly
+    ? ('── 検索「'+state.search.slice(0,24)+'」に一致した課題')
+    : (domain.active&&domain.kw?('── '+domain.kw.slice(0,44)):'');
   wlRenderLegend(); wlBuild();
 }
 function closeWorldLine(){ $('wlView').classList.remove('show'); }
-$('wlBtn').onclick=showWorldLine;
+ 
+$('wlBtn').onclick=()=>showWorldLine(false);
 $('wlTree').onclick=closeWorldLine;
 $('dfBtn').onclick=()=>showDrift(null);   
 
@@ -4124,10 +4519,12 @@ function clusterWhy(ci){
 function renderTimeline(){
   const box=$('tlStages'); if(!box)return; box.innerHTML='';
   const cands=problems.filter(p=>p._dom5>0).sort((a,b)=>b._domRel-a._domRel).slice(0,18);
+   
+  const m=scY(2037), f=scY(2056);
   const stages=[
-    {n:'近未来',s:'〜2036年',f:p=>p.yr<=2036},
-    {n:'中未来',s:'2037〜2055年',f:p=>p.yr>=2037&&p.yr<=2055},
-    {n:'遠未来',s:'2056年〜',f:p=>p.yr>=2056}
+    {n:'近未来',s:'〜'+(m-1)+'年',f:p=>p.yr<m},
+    {n:'中未来',s:m+'〜'+(f-1)+'年',f:p=>p.yr>=m&&p.yr<f},
+    {n:'遠未来',s:f+'年〜',f:p=>p.yr>=f}
   ];
   stages.forEach(st=>{
     const ps=cands.filter(st.f).sort((a,b)=>a.yr-b.yr).slice(0,4);
@@ -4521,17 +4918,40 @@ function askDialog(q,onYes,onNo){
   $('askYes').onclick=()=>{ $('askGuide').classList.remove('show'); if(onYes)onYes(); };
   $('askNo').onclick =()=>{ $('askGuide').classList.remove('show'); if(onNo)onNo(); };
 }
+ 
+let labelsAsked=false, labelsPending=false;
 function askLabels(){
-  askDialog('すべての社会課題を表示しますか？',
-    ()=>{ state.labelBias=3.2; toast('文字表示 320%（すべての課題名が表示されます）'); },
-    ()=>{ state.labelBias=2.0; toast('文字表示 200%'); });
+  if(labelsAsked)return; labelsAsked=true; labelsPending=false;
+   
+  const 指で=(innerWidth<innerHeight||innerWidth<768);
+  askDialog('すべての社会課題と解決の未来軸を表示しますか？',
+    ()=>{ state.labelBias=3.2;
+      toast('文字表示 320%　'+(指で?'二本指で広げて拡大する':'ホイールで拡大する')+'と、葉に課題名が現れます'); },
+    ()=>{ state.labelBias=2.0;
+      toast('文字表示 200%　メニューの「文字表示」でいつでも増やせます'); });
 }
+ 
+ 
+const ASK_OVERLAYS=['hmView','wlView','dfView','ifView','fdView'];
+const labelWatch=setInterval(function(){
+  if(labelsAsked){ clearInterval(labelWatch); return; }
+  if(labelsPending)return;                                         
+  if(!introEl||introEl.style.display!=='none')return;              
+  if(typeof pres!=='undefined'&&pres.on)return;                    
+  if($('askGuide').classList.contains('show'))return;              
+  for(let i=0;i<ASK_OVERLAYS.length;i++){
+    const el=$(ASK_OVERLAYS[i]); if(el&&el.classList.contains('show'))return;   
+  }
+  clearInterval(labelWatch);
+  askLabels();
+},1600);
 function playGuide(list){
   guideTimers.forEach(clearTimeout); guideTimers=[];
   list.forEach((m,i)=>guideTimers.push(setTimeout(()=>toast(m), i*3900)));
 }
 function showAskGuide(){
   if(askShown) return; askShown=true;
+  labelsPending=true;   
   setTimeout(()=>askDialog('簡単に説明を聞きますか？',
     ()=>{ playGuide(GUIDE); guideTimers.push(setTimeout(askLabels, GUIDE.length*3900+700)); },   
     ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       
@@ -4552,6 +4972,16 @@ function showAskGuide(){
   };
   apply();
   window.addEventListener('load',apply);
+})();
+
+ 
+(function scenDeepLink(){
+  let v; try{ v=new URLSearchParams(location.search); }catch(_){ return; }
+  const k=(v.get('scen')||'').toLowerCase();
+  if(!k||!SCEN[k]||k==='base')return;
+  const apply=function(){ try{ setScen(k); }catch(_){ } };
+  apply();
+  window.addEventListener('load',apply);   
 })();
 
  
