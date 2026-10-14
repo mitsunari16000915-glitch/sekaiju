@@ -263,6 +263,23 @@
   .ask .q{ font-size:calc(13px*var(--fz)); color:var(--pearl); letter-spacing:0.06em; margin-bottom:10px; }
   .ask .vbtn{ display:inline-block; flex:none; padding:7px 26px; margin:0 7px; font-size:calc(12.5px*var(--fz)); }
 
+   
+  .gate{ position:fixed; top:0; left:0; right:0; bottom:0; z-index:70; display:none;
+    align-items:center; justify-content:center; padding:16px; background:rgba(6,5,2,0.55); }
+  .gate.show{ display:flex; }
+  .gate-box{ background:rgba(22,17,9,0.97); border:1px solid rgba(201,169,97,0.6); border-radius:12px;
+    padding:20px 24px 16px; text-align:center; max-width:min(92vw,440px); box-shadow:0 10px 40px rgba(0,0,0,0.6); }
+  .gate-ic{ font-size:calc(22px*var(--fz)); color:var(--gold-soft); margin-bottom:4px; line-height:1.2; }
+  .gate-q{ font-size:calc(14.5px*var(--fz)); color:var(--pearl); letter-spacing:0.06em; line-height:1.7; font-weight:700; }
+  .gate-sub{ font-size:calc(11px*var(--fz)); color:var(--pearl-mid); line-height:1.75; margin-top:6px; }
+  .gate-sub:empty{ display:none; }
+  .gate-sub b{ color:#ff8a8b; font-size:1.1em; }
+  .gate-btns{ margin-top:14px; }
+  .gate-btns .vbtn{ display:inline-block; flex:none; min-width:84px; padding:8px 22px; margin:0 8px;
+    font-size:calc(13px*var(--fz)); cursor:pointer; }
+  .gate.drift .gate-box{ border-color:rgba(224,72,74,0.65); }
+  .gate.drift .gate-ic, .gate.drift .gate-q{ color:#ff8a8b; }
+
   @media (max-width:760px){
      
     .panel-toggle{ display:block; }
@@ -952,6 +969,9 @@
   .df-kind.k3{ background:rgba(74,138,181,0.16); border:1px solid rgba(74,138,181,0.5); color:#8fc3e8; }
   .df-tgt{ font-size:calc(12.5px*var(--fz)); font-weight:700; color:var(--pearl); }
   .df-date{ font-size:calc(9.5px*var(--fz)); color:var(--muted); margin-left:auto; font-family:'Cormorant Garamond',serif; }
+   
+  .df-new{ font-size:calc(9px*var(--fz)); font-weight:700; letter-spacing:0.08em; padding:1px 7px; border-radius:8px;
+    background:#e0484a; color:#fff; }
   .df-head{ font-size:calc(12px*var(--fz)); color:var(--gold-soft); font-weight:700; margin-bottom:9px; line-height:1.6; }
   .df-ba{ display:grid; grid-template-columns:56px 1fr; gap:5px 9px; font-size:calc(11px*var(--fz)); line-height:1.8;
     margin-bottom:9px; }
@@ -980,7 +1000,7 @@
 <div class="topbar">
   <div>
     <div class="ttl">世 界 樹 <span>-YGGDRASIL-</span></div>
-    <div class="sub">TREE OF LIFE · 250 PROBLEMS · <span id="tlSpan">TIMELINE 2026–2080</span> · <span style="color:#f5f0e8">世界樹 ver.8.5</span></div>
+    <div class="sub">TREE OF LIFE · 250 PROBLEMS · <span id="tlSpan">TIMELINE 2026–2080</span> · <span style="color:#f5f0e8">世界樹 ver.8.6</span></div>
   </div>
   <div class="stats" id="stats"></div>
   
@@ -1082,6 +1102,16 @@
 <div class="ask" id="askGuide">
   <div class="q" id="askQ">簡単に説明を聞きますか？</div>
   <div><div class="vbtn" id="askYes">はい</div><div class="vbtn" id="askNo">いいえ</div></div>
+</div>
+
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateQ">
+  <div class="gate-box">
+    <div class="gate-ic" id="gateIc"></div>
+    <div class="gate-q" id="gateQ"></div>
+    <div class="gate-sub" id="gateSub"></div>
+    <div class="gate-btns"><div class="vbtn" id="gateYes" role="button" tabindex="0"></div><div class="vbtn" id="gateNo" role="button" tabindex="0"></div></div>
+  </div>
 </div>
 
 
@@ -2461,7 +2491,8 @@ const state={clusters:new Set([0,1,2,3,4,5,6]),elems:new Set(['tech','prod','nor
   tiers:new Set([1,2,3,4]),search:'',sel:null,hover:null,year:2026,labelBias:1,
   scen:'base',            
   };
-if(W/H>=1.05) state.labelBias=3.0;   
+ 
+state.labelBias=3.2;
 function visibleP(p){
   if(!state.clusters.has(p.ci))return false;
   if(!state.elems.has(p.elem))return false;
@@ -3618,8 +3649,41 @@ function bindRevButtons(root){
     REV.loaded=true;
     if($('wlView').classList.contains('show')){ const nm=wlOpenName; wlBuild(); if(nm)wlToggle(nm,true); }
     if(state.sel)refreshDetail();
+    
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',driftCheck);
+    else setTimeout(driftCheck,0);
   }).catch(()=>{ REV.loaded=false; });
 })();
+
+ 
+const DRIFT_SEEN_KEY='sekaiju.driftSeen';
+const DRIFT_NEW=new Set();
+function driftMarkSeen(){
+  try{ localStorage.setItem(DRIFT_SEEN_KEY, JSON.stringify(REV.items.map(r=>r.id))); }catch(_){ }
+}
+function driftCheck(){
+  if(!REV.loaded||!REV.items.length||driftCheck.done)return;
+  driftCheck.done=true;
+  let seen=null;
+  try{ const s=localStorage.getItem(DRIFT_SEEN_KEY); if(s){ const a=JSON.parse(s); if(Array.isArray(a))seen=new Set(a); } }catch(_){ seen=null; }
+  const latest=REV.items.reduce((m,r)=>String(r.date||'')>m?String(r.date||''):m,'');
+  let fresh;
+  if(seen){ fresh=REV.items.filter(r=>!seen.has(r.id)); }
+  else {
+    const age=(Date.now()-Date.parse(latest+'T00:00:00+09:00'))/864e5;
+    fresh=(age>=0&&age<=30)?REV.items.filter(r=>r.date===latest):[];
+  }
+  if(!fresh.length){ driftMarkSeen(); return; }   
+  fresh.forEach(r=>DRIFT_NEW.add(r.id));
+  const d=latest.split('-');
+  const when=d.length===3?(+d[1])+'月'+(+d[2])+'日':latest;
+  gateAsk({ cls:'drift', ic:'⚠', q:'未来知にブレが発生しました、確認しますか？',
+    sub:(seen?'前回のご訪問のあと、':'最新の更新（'+esc(when)+'）で、')
+      +'仮説と反証の記録が <b>'+fresh.length+'件</b> 加わりました',
+    yes:'はい', no:'いいえ',
+    onYes:()=>{ driftMarkSeen(); showDrift(null); },
+    onNo:()=>{ driftMarkSeen(); } });
+}
 
  
 const INF={loaded:false, items:{}, vps:{}, scope:''};
@@ -3814,6 +3878,7 @@ function dfItemHtml(r,hit){
   h+='<div class="df-top"><span class="df-kind '+cls+'">'+esc(r.kind)+'</span>'
     +'<span class="df-tgt">'+esc(tgt)+'</span>'
     +'<span class="df-applied '+(r.applied?'yes':'no')+'">'+(r.applied?'本体に反映済み':'本体未反映・判断待ち')+'</span>'
+    +(DRIFT_NEW.has(r.id)?'<span class="df-new">NEW</span>':'')   
     +'<span class="df-date">'+esc(r.date)+'</span></div>';
   h+='<div class="df-head">'+esc(r.headline)+'</div>';
   h+='<div class="df-ba">'
@@ -3833,15 +3898,19 @@ function dfRender(focusName){
   const t=$('dfTrack');
   if(!REV.loaded||!REV.items.length){ t.innerHTML='<div class="df-lead">改訂の記録はまだありません。</div>'; return; }
   const focus=focusName?problems.find(p=>p.name===focusName):null;
-  const hits=focus?revFor(focus):[];
+   
+  const rnum=r=>parseInt(String(r.id).replace(/\D/g,''),10)||0;
+  const newestFirst=(a,b)=>String(b.date||'').localeCompare(String(a.date||''))||(rnum(b)-rnum(a));
+  const hits=(focus?revFor(focus):[]).slice().sort(newestFirst);
   const hitIds=new Set(hits.map(r=>r.id));
-  const rest=REV.items.filter(r=>!hitIds.has(r.id));
+  const rest=REV.items.filter(r=>!hitIds.has(r.id)).sort(newestFirst);
   const k={}; REV.items.forEach(r=>k[r.kind]=(k[r.kind]||0)+1);
   let h='<div class="df-lead">世界樹の仮説は「検証された予測」ではなく<b>明示された仮説</b>です。'
     +'新しいエビデンスが見つかれば書き換えます。ただし<b>過去にどう考えていたかを消しません</b>——'
     +'その振れ幅こそが、未来を読む営みの精度そのものだからです。<br>'
     +'現在の記録: <b style="color:#ff8a8b">'+REV.items.length+'件</b>'
-    +'（'+Object.entries(k).map(([a,b])=>esc(a)+' '+b).join(' · ')+'）　最終更新 '+esc(REV.generated||'')+'</div>';
+    +'（'+Object.entries(k).map(([a,b])=>esc(a)+' '+b).join(' · ')+'）　最終更新 '+esc(REV.generated||'')
+    +'　<span style="color:var(--muted)">※新しい記録ほど上に並べています</span></div>';
   if(focus&&hits.length){
     h+='<div style="font-size:calc(11px*var(--fz));letter-spacing:0.14em;color:#ff8a8b;margin:0 0 8px;font-family:\'Cormorant Garamond\',serif">この課題に関わる記録</div>';
     h+=hits.map(r=>dfItemHtml(r,true)).join('');
@@ -4756,8 +4825,31 @@ document.querySelectorAll('.zm').forEach(b=>{
 });
 
  
+const gateQueue=[]; let gateBusy=false;
+function gateAsk(o){ gateQueue.push(o); gatePump(); }
+function gateOpen(){ return $('gate').classList.contains('show'); }
+function gatePump(){
+  if(gateBusy||!gateQueue.length)return;
+  const o=gateQueue.shift(); gateBusy=true;
+  const g=$('gate');
+  g.className='gate show'+(o.cls?' '+o.cls:'');
+  $('gateIc').textContent=o.ic||'';
+  $('gateQ').textContent=o.q;
+  $('gateSub').innerHTML=o.sub||'';          
+  $('gateYes').textContent=o.yes; $('gateNo').textContent=o.no;
+  const done=fn=>()=>{ g.className='gate'; gateBusy=false; if(fn)fn(); setTimeout(gatePump,260); };
+  $('gateYes').onclick=done(o.onYes); $('gateNo').onclick=done(o.onNo);
+  ['gateYes','gateNo'].forEach(id=>{ $(id).onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $(id).click(); } }; });
+}
+
+ 
 const BGM_FILES=['001.mp3','002.mp3','003.mp3','004.mp3','005.mp3','006.mp3','007.mp3','008.mp3','009.mp3'];
-const bgm={on:true,audio:null,last:-1,started:false};
+ 
+const BGM_KEY='sekaiju.bgm';
+function bgmLoadChoice(){ try{ const v=sessionStorage.getItem(BGM_KEY); return (v==='on'||v==='off')?v:null; }catch(_){ return null; } }
+function bgmSaveChoice(on){ try{ sessionStorage.setItem(BGM_KEY,on?'on':'off'); }catch(_){ } }
+const bgmChoice=bgmLoadChoice();
+const bgm={on:bgmChoice==='on',audio:null,last:-1,started:false,chosen:bgmChoice!==null};
 function bgmNext(){
   if(!bgm.on||!BGM_FILES.length)return;
   let i; do{ i=(Math.random()*BGM_FILES.length)|0; }while(BGM_FILES.length>1&&i===bgm.last);
@@ -4768,11 +4860,19 @@ function bgmNext(){
   bgm.audio.play().then(()=>{ bgm.started=true; }).catch(()=>{});  
 }
 function updateBgmBtn(){ $('bgmBtn').textContent='♪ BGM '+(bgm.on?'ON':'OFF'); }
-$('bgmBtn').onclick=()=>{ bgm.on=!bgm.on; updateBgmBtn();
-  if(bgm.on){ bgm.started=false; bgmNext(); toast('♪ BGM ON'); }
-  else { if(bgm.audio)bgm.audio.pause(); toast('♪ BGM OFF'); } };
-bgmNext();
-addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });
+ 
+function bgmSet(on){
+  bgm.on=!!on; bgm.chosen=true; bgmSaveChoice(bgm.on); updateBgmBtn();
+  if(bgm.on){ bgm.started=false; bgmNext(); }
+  else if(bgm.audio) bgm.audio.pause();
+}
+$('bgmBtn').onclick=()=>{ bgmSet(!bgm.on); toast('♪ BGM '+(bgm.on?'ON':'OFF')); };
+updateBgmBtn();
+if(bgm.on) bgmNext();   
+addEventListener('pointerdown',()=>{ if(bgm.on&&!bgm.started)bgmNext(); });   
+ 
+if(!bgm.chosen) gateAsk({ ic:'♪', q:'音楽を再生しますか？', yes:'ON', no:'OFF',
+  onYes:()=>bgmSet(true), onNo:()=>bgmSet(false) });
 
  
 const pres={on:false,yearMs:0,camT:0,target:null,hideAt:0};
@@ -4873,6 +4973,7 @@ function learnIdleTick(){
   if(learn.on||pres.on||playing)return;
   if(introEl.style.display!=='none')return;
   if($('hmView').classList.contains('show')||$('wlView').classList.contains('show')||$('dfView').classList.contains('show'))return;
+  if(gateOpen()){ lastActAt=time; return; }   
   if(!lastActAt){ lastActAt=time; return; }
   if(time-lastActAt>LEARN_IDLE_MS) learnStart(true);
 }
@@ -4906,10 +5007,15 @@ const GUIDE=[
   '世界樹（世界の構造樹）へようこそ',
   '構造の先にある社会課題が、葉として生い茂っています',
   '時代が進むにつれ、“解決された課題の葉”に色がつきます',
-  '文字表示を増やすと課題名が現れ、クリックで概要を見られます',
+   
+  '拡大すると課題名がさらに現れ、クリックで概要を見られます',
   '迷ったら「🎬 自動プレゼン」── 2080年までのシミュレーションを実行します',
   '美しい音楽と共にお楽しみください'
 ];
+ 
+function guideList(){
+  return bgm.on ? GUIDE : GUIDE.slice(0,5).concat(['メニューの「♪ BGM」で、音楽と共にお楽しみいただけます']);
+}
 let askShown=false, guideTimers=[];
  
 function askDialog(q,onYes,onNo){
@@ -4919,42 +5025,15 @@ function askDialog(q,onYes,onNo){
   $('askNo').onclick =()=>{ $('askGuide').classList.remove('show'); if(onNo)onNo(); };
 }
  
-let labelsAsked=false, labelsPending=false;
-function askLabels(){
-  if(labelsAsked)return; labelsAsked=true; labelsPending=false;
-   
-  const 指で=(innerWidth<innerHeight||innerWidth<768);
-  askDialog('すべての社会課題と解決の未来軸を表示しますか？',
-    ()=>{ state.labelBias=3.2;
-      toast('文字表示 320%　'+(指で?'二本指で広げて拡大する':'ホイールで拡大する')+'と、葉に課題名が現れます'); },
-    ()=>{ state.labelBias=2.0;
-      toast('文字表示 200%　メニューの「文字表示」でいつでも増やせます'); });
-}
- 
- 
-const ASK_OVERLAYS=['hmView','wlView','dfView','ifView','fdView'];
-const labelWatch=setInterval(function(){
-  if(labelsAsked){ clearInterval(labelWatch); return; }
-  if(labelsPending)return;                                         
-  if(!introEl||introEl.style.display!=='none')return;              
-  if(typeof pres!=='undefined'&&pres.on)return;                    
-  if($('askGuide').classList.contains('show'))return;              
-  for(let i=0;i<ASK_OVERLAYS.length;i++){
-    const el=$(ASK_OVERLAYS[i]); if(el&&el.classList.contains('show'))return;   
-  }
-  clearInterval(labelWatch);
-  askLabels();
-},1600);
 function playGuide(list){
   guideTimers.forEach(clearTimeout); guideTimers=[];
   list.forEach((m,i)=>guideTimers.push(setTimeout(()=>toast(m), i*3900)));
 }
 function showAskGuide(){
   if(askShown) return; askShown=true;
-  labelsPending=true;   
   setTimeout(()=>askDialog('簡単に説明を聞きますか？',
-    ()=>{ playGuide(GUIDE); guideTimers.push(setTimeout(askLabels, GUIDE.length*3900+700)); },   
-    ()=>{ toast(GUIDE[5]); guideTimers.push(setTimeout(askLabels, 4200)); }                       
+    ()=>{ playGuide(guideList()); },
+    ()=>{ toast(guideList()[5]); }
   ),1400);
 }
 
