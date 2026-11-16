@@ -17,12 +17,25 @@ const j = JSON.parse(fs.readFileSync(NEWS, 'utf8'));
 const add = JSON.parse(fs.readFileSync(NEWITEMS, 'utf8'));
 const probs = new Map(JSON.parse(fs.readFileSync(PROBS, 'utf8')).map(p => [p.name, p.cluster]));
 const KEYS = ['id', 'title', 'summary', 'url', 'source', 'date', 'problems', 'cluster', 'status', 'kind', 'reason', 'verified', 'first_seen'];
-const norm = u => u.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/[?#].*$/, '').replace(/\/$/, '');
+// 正規化: スキーム・www・#以降・末尾/ を除き、クエリは計測用（utm_ 等）だけ落とす。
+// 時事通信（article?k=…）のようにクエリで記事を見分けるサイトがあるため、クエリ全体は消さない。
+const TRACK = /^(utm_\w+|fbclid|gclid|yclid|rct|ref|from|cx_\w+|n_cid|ncid)$/i;
+const norm = u => {
+  let [base, q = ''] = u.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/#.*$/, '').split('?');
+  q = q.split('&').filter(kv => kv && !TRACK.test(kv.split('=')[0])).sort().join('&');
+  return base.replace(/\/$/, '') + (q ? '?' + q : '');
+};
 const hash = s => { let h = 0; for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const reach = u => {
+const reach1 = u => {
   try { return execFileSync('curl', ['-sS', '-L', '--max-time', '30', '-A', UA, '-o', '/dev/null', '-w', '%{http_code}', u], { encoding: 'utf8' }).trim(); }
   catch (e) { return '000'; }
+};
+// 一時的な通信切れ（000）や混雑（429・5xx）は少し待って最大2回まで取り直す
+const reach = u => {
+  let code = reach1(u);
+  for (let k = 0; k < 2 && /^(000|429|5\d\d)$/.test(code); k++) { execFileSync('sleep', ['3']); code = reach1(u); }
+  return code;
 };
 
 const have = new Set(j.items.map(x => norm(x.url)));
